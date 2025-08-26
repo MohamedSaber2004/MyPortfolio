@@ -1,0 +1,93 @@
+﻿@using MyPortfolio.Models.ProjectModels
+@model ProjectViewModel
+
+@{
+    ViewData["Title"] = "Create Project";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="page-title">Create Project</h1>
+            <p class="page-subtitle">Add a new project.</p>
+        </div>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ProjectURL" class="form-label"></label>
+                        <input asp-for="ProjectURL" type="url" class="form-control" placeholder="https://example.com/project" />
+                        <span asp-validation-for="ProjectURL" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="StartDate" class="form-label"></label>
+                        <input asp-for="StartDate" type="date" class="form-control" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="EndDate" class="form-label"></label>
+                        <input asp-for="EndDate" type="date" class="form-control" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ProjectImage" class="form-label"></label>
+                        <input asp-for="ProjectImage" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" />
+                        <span asp-validation-for="ProjectImage" class="text-danger"></span>
+                        <div class="form-text">Supported: JPG, JPEG, PNG, WEBP, GIF</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const start = document.getElementById('StartDate');
+            const end = document.getElementById('EndDate');
+            if (start && end) {
+                start.addEventListener('change', () => {
+                    if (start.value) {
+                        end.min = start.value;
+                        if (end.value && end.value < start.value) {
+                            end.value = start.value;
+                        }
+                    } else {
+                        end.removeAttribute('min');
+                    }
+                });
+            }
+        })();
+    </script>
+}
+

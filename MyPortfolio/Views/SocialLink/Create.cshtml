@@ -1,0 +1,83 @@
+﻿@using MyPortfolio.Models.SocialLinkModels
+@model SocialLinkViewModel
+@{
+    ViewData["Title"] = "Create Social Link";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="page-title">Create Social Link</h1>
+            <p class="page-subtitle">Add a new social/profile link.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <form asp-action="Create"
+                  method="post"
+                  autocomplete="off"
+                  novalidate>
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="PlatformName" class="form-label"></label>
+                        <input asp-for="PlatformName"
+                               class="form-control"
+                               list="platformOptions"
+                               placeholder="e.g., GitHub" />
+                        <datalist id="platformOptions">
+                            <option value="GitHub"></option>
+                            <option value="LinkedIn"></option>
+                            <option value="Twitter"></option>
+                            <option value="X"></option>
+                            <option value="Facebook"></option>
+                            <option value="Instagram"></option>
+                            <option value="YouTube"></option>
+                            <option value="StackOverflow"></option>
+                            <option value="Reddit"></option>
+                            <option value="Medium"></option>
+                            <option value="Dev.to"></option>
+                            <option value="Hashnode"></option>
+                            <option value="Portfolio"></option>
+                        </datalist>
+                        <span asp-validation-for="PlatformName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="URL" class="form-label"></label>
+                        <input asp-for="URL"
+                               type="url"
+                               class="form-control"
+                               placeholder="https://github.com/your-username" />
+                        <span asp-validation-for="URL" class="text-danger"></span>
+                        <div class="form-text">Use a full absolute URL (starts with https://).</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+

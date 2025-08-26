@@ -1,0 +1,159 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="page-header">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-subtitle">Welcome back! Here's what's happening with your portfolio.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid fade-in">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Total Users</div>
+                <div class="stat-icon primary">
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+            <div class="stat-value">2,847</div>
+            <div class="stat-change positive">
+                <i class="bi bi-arrow-up"></i>
+                <span>+12.5% from last month</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Active Projects</div>
+                <div class="stat-icon success">
+                    <i class="bi bi-folder-check"></i>
+                </div>
+            </div>
+            <div class="stat-value">24</div>
+            <div class="stat-change positive">
+                <i class="bi bi-arrow-up"></i>
+                <span>+3 new this week</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Revenue</div>
+                <div class="stat-icon info">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+            </div>
+            <div class="stat-value">$45,210</div>
+            <div class="stat-change positive">
+                <i class="bi bi-arrow-up"></i>
+                <span>+8.2% from last month</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-title">Conversion Rate</div>
+                <div class="stat-icon warning">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+            </div>
+            <div class="stat-value">3.24%</div>
+            <div class="stat-change negative">
+                <i class="bi bi-arrow-down"></i>
+                <span>-2.1% from last month</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-grid fade-in">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Analytics Overview</h3>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Last 30 days
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Last 7 days</a></li>
+                        <li><a class="dropdown-item" href="#">Last 30 days</a></li>
+                        <li><a class="dropdown-item" href="#">Last 90 days</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="analyticsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Portfolio Views</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="portfolioChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Charts Row -->
+    <div class="charts-grid fade-in">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Skills Distribution</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="skillsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Recent Activity</h3>
+            </div>
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <div class="activity-icon primary">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">New user registered</div>
+                        <div class="activity-time">2 minutes ago</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Project completed</div>
+                        <div class="activity-time">1 hour ago</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">System maintenance scheduled</div>
+                        <div class="activity-time">3 hours ago</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon info">
+                        <i class="bi bi-upload"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">New files uploaded</div>
+                        <div class="activity-time">5 hours ago</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>

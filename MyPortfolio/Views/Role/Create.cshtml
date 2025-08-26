@@ -1,0 +1,29 @@
+﻿@using MyPortfolio.Models.ManagerModels.RoleModels
+@model CreateEditRoleViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="row justify-content-center align-content-center mt-3">
+        <h1 class="col-8 my-4">Create Role</h1>
+        <form method="post" asp-controller="Role" asp-action="Create" class="row col-8" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <partial name="RolePartialViews/CreateEditRolePartialView" model="Model" />
+
+            <div class="mt-4 m-auto">
+                <input class="btn btn-primary" type="submit" value="Save" />
+                <a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

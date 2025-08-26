@@ -1,0 +1,17 @@
+﻿global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using DataAccessLayer.Models.Shared;
+global using DataAccessLayer.Models.Shared.Enums;
+global using DataAccessLayer.Models.UserModels;
+global using DataAccessLayer.Models.ProjectModels;
+global using DataAccessLayer.Models.SocialLinksModels;
+global using DataAccessLayer.Models.ExperienceModels;
+global using DataAccessLayer.Models.SkillModels;
+global using DataAccessLayer.Models.EducationModels;
+global using DataAccessLayer.Models.ContactModels;
+global using DataAccessLayer.Data.Contexts;
+global using DataAccessLayer.Repositories.Interfaces;
+global using Microsoft.AspNetCore.Identity;
+global using DataAccessLayer.Models.RoleModels;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using System.Reflection;

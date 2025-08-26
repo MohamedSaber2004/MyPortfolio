@@ -1,0 +1,61 @@
+﻿@using BusinessLogicLayer.DTos.SkillDTos
+@model SkillDto
+@{
+    ViewData["Title"] = "Create Skill";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="page-title">Create Skill</h1>
+            <p class="page-subtitle">Add a new skill entry.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-secondary" asp-action="Index">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <form asp-action="Create" method="post" autocomplete="off" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="SkillName" class="form-label"></label>
+                        <input asp-for="SkillName" class="form-control" placeholder="e.g., C#, SQL, React" />
+                        <span asp-validation-for="SkillName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ProficiencyLevel" class="form-label"></label>
+                        <select asp-for="ProficiencyLevel" class="form-select"
+                                asp-items="Html.GetEnumSelectList<ProficiencyLevels>()">
+                            <option value="">-- Select Level --</option>
+                        </select>
+                        <span asp-validation-for="ProficiencyLevel" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2-circle"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

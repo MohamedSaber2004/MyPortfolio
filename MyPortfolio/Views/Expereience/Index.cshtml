@@ -1,0 +1,213 @@
+﻿@using MyPortfolio.Models.ExperienceModels
+@model IEnumerable<ExperienceViewModel>
+
+@{
+    ViewData["Title"] = "Experience";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    string? currentSearch = Context?.Request?.Query["experienceSearchName"];
+}
+
+<main class="main-content">
+    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+    {
+        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3" style="bottom:25px; right:25px; z-index:100;">
+            <div class="toast fade show">
+                <div class="toast-header">
+                    <strong class="me-auto text-success">Notice</strong>
+                    <small>Just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["Message"]
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="page-title">Experience Management</h1>
+            <p class="page-subtitle">View, search, and manage experience records.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-primary" asp-controller="Expereience" asp-action="Create">
+                <i class="bi bi-plus-lg"></i> Add New Experience
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
+                <div class="col-md-9">
+                    <input id="experienceSearchName"
+                           name="experienceSearchName"
+                           class="form-control"
+                           value="@currentSearch"
+                           placeholder="Search by company or role" />
+                </div>
+                <div class="col-md-3">
+                    <button id="searchBtn" type="submit" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="experienceTableContainer">
+        @if (Model?.Any() ?? false)
+        {
+            <div class="card shadow border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle mb-0">
+                            <thead class="table-light text-center">
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Role</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                    <th>Edit</th>
+                                    <th>Delete / Restore</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @foreach (var exp in Model)
+                                {
+                                    <tr class="@(exp.IsDeleted ? "table-danger" : "")">
+                                        <td>@exp.CompanyName</td>
+                                        <td>@exp.Role</td>
+                                        <td>@exp.StartDate.ToString("yyyy-MM")</td>
+                                        <td>@exp.EndDate.ToString("yyyy-MM")</td>
+                                        <td>
+                                            @if (exp.IsDeleted)
+                                            {
+                                                <span class="badge bg-danger">Deleted</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-info text-white"
+                                               asp-action="Details"
+                                               asp-controller="Expereience"
+                                               asp-route-id="@exp.Id">
+                                                <i class="bi bi-eye"></i> Details
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-warning text-dark"
+                                               asp-action="Edit"
+                                               asp-controller="Expereience"
+                                               asp-route-id="@exp.Id">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @if (exp.IsDeleted)
+                                            {
+                                                <form asp-action="Restore"
+                                                      asp-controller="Expereience"
+                                                      asp-route-id="@exp.Id"
+                                                      method="post"
+                                                      class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-sm btn-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteExperienceModal-@exp.Id">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+
+                                                <div class="modal fade"
+                                                     id="deleteExperienceModal-@exp.Id"
+                                                     tabindex="-1"
+                                                     aria-labelledby="deleteExperienceModalLabel-@exp.Id"
+                                                     aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0">
+                                                            <div class="modal-header bg-danger text-white">
+                                                                <h5 class="modal-title" id="deleteExperienceModalLabel-@exp.Id">
+                                                                    <i class="bi bi-trash me-2"></i> Delete Experience
+                                                                </h5>
+                                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete:
+                                                                <strong>@exp.CompanyName - @exp.Role</strong>?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <form asp-action="Delete"
+                                                                      asp-controller="Expereience"
+                                                                      asp-route-id="@exp.Id"
+                                                                      method="post"
+                                                                      class="mt-0">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mt-2 mb-0">
+                <h4 class="mb-0">No experience records found.</h4>
+            </div>
+        }
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        (function () {
+            const btn = document.getElementById('searchBtn');
+            const input = document.getElementById('experienceSearchName');
+            const containerSelector = '#experienceTableContainer';
+
+            if (btn && input) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const val = input.value;
+                    fetch('@Url.Action("Index","Expereience")?experienceSearchName=' + encodeURIComponent(val), {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                        .then(r => r.text())
+                        .then(html => {
+                            const temp = document.createElement('div');
+                            temp.innerHTML = html;
+                            const newContent = temp.querySelector(containerSelector);
+                            if (newContent) {
+                                document.querySelector(containerSelector).innerHTML = newContent.innerHTML;
+                            }
+                        })
+                        .catch(console.error);
+                });
+            }
+        })();
+    </script>
+}
+

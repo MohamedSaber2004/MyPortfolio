@@ -1,0 +1,50 @@
+﻿@model IEnumerable<UserManagerViewModel>
+@{
+    ViewData["Title"] = "PendingUsers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>FullName</th>
+                            <th>RegisterAt</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                                <td>@user.FullName</td>
+                                <td>@user.RegisteredAt</td>
+                                <td>
+                                    <form asp-action="ApproveUser" asp-controller="User" asp-route-id="@user.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                    </form>
+                                    <form asp-action="RejectUser" asp-controller="User" asp-route-id="@user.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">No pending requests.</div>
+            }
+        </div>
+    </div>
+</main>
+

@@ -1,0 +1,562 @@
+﻿@using MyPortfolio.Models.Home
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+
+    string FormatDate(DateOnly d) => d.ToString("MMM yyyy");
+    string FormatDuration(DateOnly start, DateOnly end)
+    {
+        var months = (end.Year - start.Year) * 12 + (end.Month - start.Month) + 1;
+        if (months <= 0) return string.Empty;
+        if (months < 12) return $"{months} mo";
+        var years = months / 12;
+        var rem = months % 12;
+        return rem == 0
+            ? $"{years} yr{(years > 1 ? "s" : "")}"
+            : $"{years} yr{(years > 1 ? "s" : "")} {rem} mo";
+    }
+
+    var aboutShort = ViewBag.AboutShort as string ?? "Passionate software developer focused on building clean, scalable and user-centered applications.";
+    var aboutLong  = ViewBag.AboutLong  as string ?? "I enjoy working across the stack, refining architecture, optimizing performance, and mentoring others. Outside of coding I constantly explore new technologies and improve developer workflows.";
+    var photoUrl   = ViewBag.PhotoUrl   as string ?? Url.Content("~/Files/Images/Profile.png");
+    var displayName = ViewBag.DisplayName as string ?? "Mohamed Saber Ahmed";
+
+    string YearSpan(DateOnly s, DateOnly e)
+    {
+        var years = e.Year - s.Year + 1;
+        return years <= 0 ? "" : years == 1 ? "1 yr" : $"{years} yrs";
+    }
+
+    // Token helper for optional tech strings if such properties exist on ProjectDto (e.g. TechStack / Technologies / Tags)
+    IEnumerable<string> TechTokens(object? project)
+    {
+        var raw =
+            project?.GetType().GetProperty("TechStack")?.GetValue(project) as string ??
+            project?.GetType().GetProperty("Technologies")?.GetValue(project) as string ??
+            project?.GetType().GetProperty("Tags")?.GetValue(project) as string;
+
+        if (string.IsNullOrWhiteSpace(raw)) yield break;
+
+        foreach (var t in raw.Split(new[] { ',', ';', '|' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                             .Distinct(StringComparer.OrdinalIgnoreCase)
+                             .Take(6))
+        {
+            yield return t;
+        }
+    }
+
+    string? GetStringProp(object p, string name)
+        => p.GetType().GetProperty(name)?.GetValue(p) as string;
+
+    string SocialIcon(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "bi-link-45deg";
+        return name.Trim().ToLowerInvariant() switch
+        {
+            "github" => "bi-github",
+            "linkedin" => "bi-linkedin",
+            "twitter" or "x" => "bi-twitter",
+            "facebook" => "bi-facebook",
+            "instagram" => "bi-instagram",
+            "youtube" => "bi-youtube",
+            "stackoverflow" or "stack overflow" => "bi-stack-overflow",
+            "medium" => "bi-medium",
+            "dev" or "dev.to" => "bi-terminal",
+            "discord" => "bi-discord",
+            "gitlab" => "bi-git",
+            _ => "bi-link-45deg"
+        };
+    }
+
+    string ContactIcon(string? type)
+    {
+        if (string.IsNullOrWhiteSpace(type)) return "bi-link-45deg";
+        return type.Trim().ToLowerInvariant() switch
+        {
+            "email" or "mail" => "bi-envelope-at",
+            "phone" or "mobile" or "tel" => "bi-telephone",
+            "whatsapp" => "bi-whatsapp",
+            "telegram" => "bi-telegram",
+            "location" or "address" => "bi-geo-alt",
+            "website" or "site" or "url" => "bi-globe2",
+            "portfolio" => "bi-window-stack",
+            "linkedin" => "bi-linkedin",
+            "github" => "bi-github",
+            _ => "bi-link-45deg"
+        };
+    }
+
+    (bool hasLink, string href) BuildContactLink(string? type, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return (false, string.Empty);
+        type = type?.Trim().ToLowerInvariant();
+        var v = value.Trim();
+
+        if (type is "email" or "mail")
+            return (true, v.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase) ? v : $"mailto:{v}");
+
+        if (type is "phone" or "mobile" or "tel")
+        {
+            var digits = new string(v.Where(ch => char.IsDigit(ch) || ch == '+').ToArray());
+            return (true, $"tel:{digits}");
+        }
+
+        if (type is "whatsapp")
+        {
+            var digits = new string(v.Where(ch => char.IsDigit(ch) || ch == '+').ToArray());
+            return (true, $"https://wa.me/{digits.TrimStart('+')}");
+        }
+
+        if (Uri.TryCreate(v, UriKind.Absolute, out var uri))
+            return (true, uri.ToString());
+
+        if (v.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
+            return (true, $"https://{v}");
+
+        return (false, v);
+    }
+}
+
+<div class="hero py-5 text-center">
+    <h1 class="display-4 fw-bold">Welcome to My Portfolio</h1>
+    <p class="lead text-muted">Skills, experience, education, projects and ways to connect.</p>
+</div>
+
+<!-- About -->
+<section id="about" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>About Me
+        </h2>
+    </div>
+    <div class="row align-items-center g-4">
+        <div class="col-12 col-md-4 text-center">
+            <img src="@photoUrl"
+                 alt="@displayName"
+                 class="img-fluid rounded-circle shadow-sm border border-3 border-light-subtle"
+                 width="240" height="240" loading="lazy" />
+        </div>
+        <div class="col-12 col-md-8">
+            <p class="lead mb-3">@aboutShort</p>
+            <p class="text-muted mb-0">@aboutLong</p>
+            <div class="mt-3 d-flex flex-wrap gap-2">
+                <a href="~/files/CV.pdf" class="btn btn-sm btn-outline-primary">Download CV</a>
+                <a href="#contact" class="btn btn-sm btn-primary">Get in Touch</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>Skills
+        </h2>
+    </div>
+    @if (Model.Skills?.Any() == true)
+    {
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+            @foreach (var s in Model.Skills.Take(12))
+            {
+                var levelKey = s.ProficiencyLevel.ToString().Trim().ToLowerInvariant();
+                var pct = levelKey switch
+                {
+                    "beginner" or "begainner" => 33,
+                    "intermmediate" => 66,
+                    "advanced" => 100,
+                    _ => 0
+                };
+                <div class="col">
+                    <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
+                        <div class="pc-accent"></div>
+                        <div class="card-body p-3 d-flex flex-column">
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <span class="fw-semibold small text-truncate" title="@s.SkillName">@s.SkillName</span>
+                                <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize">@levelKey</span>
+                            </div>
+                            <div class="progress skill-progress mb-2" style="height:6px;" aria-label="Proficiency">
+                                <div class="progress-bar" role="progressbar"
+                                     style="width:@pct%;"
+                                     aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="mt-auto small text-muted">
+                                @(pct == 0 ? "Unspecified" : $"{pct}% proficiency")
+                            </div>
+                        </div>
+                        <div class="pc-hover-glow"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else { <div class="alert alert-info mb-0">No skills yet.</div> }
+</section>
+
+<!-- Experience -->
+<section id="experience" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>Experience
+        </h2>
+    </div>
+    @if (Model.Experiences?.Any() == true)
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var exp in Model.Experiences.Take(6))
+            {
+                var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
+                <div class="col">
+                    <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden">
+                        <div class="pc-accent"></div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="me-2">
+                                    <h5 class="card-title fs-6 mb-1 text-truncate" title="@exp.Role">@exp.Role</h5>
+                                    <div class="small text-muted text-truncate" title="@exp.CompanyName">@exp.CompanyName</div>
+                                </div>
+                                @if (exp.IsDeleted)
+                                {
+                                    <span class="badge bg-danger small">Deleted</span>
+                                }
+                            </div>
+                            <div class="small text-secondary mb-2">
+                                <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                @if (!string.IsNullOrEmpty(durationLabel))
+                                {
+                                    <span class="ms-2 text-muted">(@durationLabel)</span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(exp.Description))
+                            {
+                                <div class="small text-muted mb-0 exp-desc">
+                                    @{
+                                        var lines = exp.Description
+                                            .Replace("\r\n", "\n")
+                                            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                    }
+                                    @foreach (var line in lines) { <div>@line</div> }
+                                </div>
+                            }
+                        </div>
+                        <div class="pc-hover-glow"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else { <div class="alert alert-info mb-0">No experience records.</div> }
+</section>
+
+<!-- Education -->
+<section id="education" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>Education
+        </h2>
+    </div>
+    @if (Model.Educations?.Any() == true)
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4">
+            @foreach (var ed in Model.Educations.Take(4))
+            {
+                var duration = YearSpan(ed.StartDate, ed.EndDate);
+                <div class="col">
+                    <div class="edu-card card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                        <div class="edu-accent"></div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="pe-2 flex-grow-1">
+                                    <h5 class="card-title h6 mb-1 text-truncate" title="@ed.Degree">@ed.Degree</h5>
+                                    @if (!string.IsNullOrWhiteSpace(ed.InstitutionName))
+                                    {
+                                        <p class="small mb-1 text-muted text-truncate" title="@ed.InstitutionName">@ed.InstitutionName</p>
+                                    }
+                                </div>
+                                @if (!string.IsNullOrEmpty(duration))
+                                {
+                                    <span class="badge bg-primary-subtle text-primary-emphasis fw-semibold small shadow-sm">@duration</span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(ed.FieldOfStudy))
+                            {
+                                <div class="edu-field-badge badge rounded-pill bg-info-subtle text-info-emphasis small mb-2 text-truncate" title="@ed.FieldOfStudy">
+                                    @ed.FieldOfStudy
+                                </div>
+                            }
+                            <p class="small text-secondary mb-3 d-flex align-items-center gap-1">
+                                <span class="bi bi-calendar-range opacity-75"></span>
+                                <span>@ed.StartDate – @ed.EndDate</span>
+                            </p>
+                            @if (!string.IsNullOrWhiteSpace(ed.Description))
+                            {
+                                <div class="edu-desc small text-muted mb-0">
+                                    @{
+                                        var lines = ed.Description
+                                            .Replace("\r\n", "\n")
+                                            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                    }
+                                    @foreach (var line in lines) { <div>@line</div> }
+                                </div>
+                            }
+                            @if (ed.IsDeleted)
+                            {
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-2 z-2">Deleted</span>
+                            }
+                        </div>
+                        <div class="edu-hover-glow"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else { <div class="alert alert-info mb-0">No education records.</div> }
+</section>
+
+<!-- Projects -->
+<section id="projects" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>Projects
+        </h2>
+    </div>
+
+    @if (Model.Projects?.Any() == true)
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+            @foreach (var p in Model.Projects.Take(6))
+            {
+                // Expect ProjectDto has ExistingProjectImage (string?)
+                var fileName = p.GetType().GetProperty("ExistingProjectImage")?.GetValue(p) as string;
+                fileName = string.IsNullOrWhiteSpace(fileName) ? null : fileName.Trim();
+                var imagePath = !string.IsNullOrWhiteSpace(fileName)
+                    ? Url.Content($"~/Files/Images/Projects/{fileName}")
+                    : null;
+
+                var tokens   = TechTokens(p).ToList();
+                var repoUrl  = GetStringProp(p, "RepoUrl") ?? GetStringProp(p, "RepositoryUrl") ?? GetStringProp(p, "SourceUrl");
+                var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
+                var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
+
+                <div class="col">
+                    <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden">
+                        <div class="pc-accent"></div>
+
+                        <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
+                            @if (!string.IsNullOrWhiteSpace(imagePath))
+                            {
+                                <img src="@imagePath"
+                                     alt="@p.Title"
+                                     class="img-fluid project-thumb-img"
+                                     loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted small fw-semibold project-thumb-placeholder">
+                                    <span class="mb-1">No Image</span>
+                                    <span class="text-uppercase">@p.Title?.FirstOrDefault()</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title h6 mb-2 text-truncate" title="@p.Title">@p.Title</h5>
+
+                            @if (tokens.Count > 0)
+                            {
+                                <div class="mb-2 d-flex flex-wrap gap-1 project-tags">
+                                    @foreach (var t in tokens)
+                                    {
+                                        <span class="badge rounded-pill bg-info-subtle text-info-emphasis small">@t</span>
+                                    }
+                                </div>
+                            }
+
+                            <p class="project-desc small text-muted flex-grow-1 mb-3 line-clamp-3">
+                                @p.Description
+                            </p>
+
+
+                            <a asp-controller="Project"
+                               asp-action="Details"
+                               asp-route-id="@p.Id"
+                               class="stretched-link project-stretch"
+                               aria-label="View project @p.Title"></a>
+                        </div>
+
+                        <div class="pc-hover-glow"></div>
+                        <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
+                            <div class="d-flex gap-2 flex-wrap">
+                                @if (!string.IsNullOrWhiteSpace(siteUrl))
+                                {
+                                    <a href="@siteUrl" target="_blank" rel="noopener"
+                                       class="btn btn-xs btn-outline-light fw-semibold"
+                                       aria-label="Project site for @p.Title">Site</a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(repoUrl))
+                                {
+                                    <a href="@repoUrl" target="_blank" rel="noopener"
+                                       class="btn btn-xs btn-light fw-semibold"
+                                       aria-label="Repository for @p.Title">Repo</a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(demoUrl))
+                                {
+                                    <a href="@demoUrl" target="_blank" rel="noopener"
+                                       class="btn btn-xs btn-primary fw-semibold"
+                                       aria-label="Live demo for @p.Title">Live</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mb-0">No projects available.</div>
+    }
+</section>
+
+<!-- Social Links -->
+<section id="social" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>Social Links
+        </h2>
+    </div>
+    @if (Model.SocialLinks?.Any() == true)
+    {
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4">
+            @foreach (var link in Model.SocialLinks.Take(10))
+            {
+                var platform = link.PlatformName?.Trim() ?? "";
+                var platformKey = platform.ToLowerInvariant();
+                <div class="col">
+                    <div class="portfolio-card card card-social h-100 text-center position-relative overflow-hidden"
+                         data-platform="@platformKey">
+                        <div class="pc-accent"></div>
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div class="social-tile d-flex flex-column align-items-center">
+                                <span class="social-icon mb-2">
+                                    <i class="@SocialIcon(platform)" aria-hidden="true"></i>
+                                </span>
+                                <span class="fw-semibold small text-truncate social-label" title="@platform">
+                                    @platform
+                                </span>
+                            </div>
+                        </div>
+                        <a href="@link.URL"
+                           target="_blank"
+                           rel="noopener"
+                           class="stretched-link"
+                           aria-label="@platform (opens in new tab)"></a>
+                        <div class="pc-hover-glow"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mb-0">No social links.</div>
+    }
+</section>
+
+<!-- Contact -->
+<section id="contact" class="section-block">
+    <div class="d-flex justify-content-center mb-4">
+        <h2 class="h2 mb-0 section-heading position-relative">
+            <span class="section-accent me-2"></span>Contact
+        </h2>
+    </div>
+    @if (Model.Contacts?.Any() == true)
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            @foreach (var c in Model.Contacts.Take(6))
+            {
+                var type = c.ContactType?.Trim() ?? "";
+                var (hasLink, href) = BuildContactLink(type, c.ContactValue);
+                var icon = ContactIcon(type);
+
+                <div class="col">
+                    <div class="portfolio-card card card-contact h-100 position-relative overflow-hidden">
+                        <div class="pc-accent"></div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="contact-icon-wrapper">
+                                        <i class="@icon contact-icon" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="fw-semibold small text-truncate contact-type" title="@type">
+                                        @type
+                                    </span>
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <button type="button"
+                                            class="btn btn-clip btn-xs btn-copy-contact"
+                                            data-copy="@c.ContactValue"
+                                            aria-label="Copy @type">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-auto">
+                                @if (hasLink)
+                                {
+                                    <a href="@href"
+                                       class="contact-value small text-decoration-none d-inline-flex align-items-center gap-1"
+                                       target="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "_blank" : "_self")"
+                                       rel="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "noopener" : null)"
+                                       title="@c.ContactValue">
+                                        <span class="text-truncate">@c.ContactValue</span>
+                                        @if (href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <i class="bi bi-box-arrow-up-right opacity-75 small"></i>
+                                        }
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="contact-value small text-muted text-break" title="@c.ContactValue">
+                                        @c.ContactValue
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <div class="pc-hover-glow"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mb-0">No contact entries.</div>
+    }
+
+    <script>
+        (function(){
+            const cls = 'btn-copy-contact';
+            document.addEventListener('click', async e => {
+                const btn = e.target.closest('.' + cls);
+                if(!btn) return;
+                const originalHtml = btn.innerHTML;
+                const text = btn.getAttribute('data-copy');
+                try {
+                    await navigator.clipboard.writeText(text);
+                    btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+                    btn.classList.add('copied');
+                    setTimeout(()=> {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.remove('copied');
+                    }, 1600);
+                } catch {
+                    btn.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
+                    setTimeout(()=> btn.innerHTML = originalHtml, 1600);
+                }
+            }, { passive: true });
+        })();
+    </script>
+</section>

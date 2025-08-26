@@ -1,0 +1,77 @@
+﻿@model UserDetailsViewModel
+
+<div class="row g-3">
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Full name</label>
+        <div class="form-control-plaintext border rounded px-3 py-2 bg-light">@Model.FullName</div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Email</label>
+        <div class="form-control-plaintext border rounded px-3 py-2 bg-light">@Model.Email</div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Roles</label>
+        @if (Model.Roles?.Any() == true)
+        {
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle w-100 text-truncate"
+                        type="button"
+                        id="rolesDropdown-@Model.Id"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    @string.Join(", ", Model.Roles)
+                </button>
+                <ul class="dropdown-menu w-100" aria-labelledby="rolesDropdown-@Model.Id">
+                    @foreach (var role in Model.Roles)
+                    {
+                        <li><span class="dropdown-item-text">@role</span></li>
+                    }
+                </ul>
+            </div>
+            <div class="form-text">Assigned roles (read-only)</div>
+        }
+        else
+        {
+            <div class="form-control-plaintext text-muted">No roles</div>
+        }
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Created by</label>
+        <div class="form-control-plaintext border rounded px-3 py-2 bg-light">@Model.CreatedBy</div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Last modified by</label>
+        <div class="form-control-plaintext border rounded px-3 py-2 bg-light">@Model.LastModifiedBy</div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Created on</label>
+        <div class="form-control-plaintext border rounded px-3 py-2 bg-light">@(Model.CreatedOn.ToString("yyyy-MM-dd HH:mm") ?? "-")</div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Last modified on</label>
+        <div class="form-control-plaintext border rounded px-3 py-2 bg-light">
+            @(Model.LastModifiedOn?.ToString("yyyy-MM-dd HH:mm") ?? "—")
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label mb-1">Status</label>
+        <div>
+            @if (Model.IsDeleted)
+            {
+                <span class="badge bg-danger">Deleted</span>
+            }
+            else
+            {
+                <span class="badge bg-success">Active</span>
+            }
+        </div>
+    </div>
+</div>

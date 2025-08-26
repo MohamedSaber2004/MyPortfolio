@@ -1,0 +1,165 @@
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\js\bootstrap.bundle.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\css\bootstrap.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\dist\jquery.min.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation\dist\additional-methods.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\css\user-edit.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\js\site.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\css\site.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\css\adminHome.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\dist\jquery.slim.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\css\bootstrap.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\dist\jquery.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\LICENSE.txt
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation\LICENSE.md
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\css\bootstrap.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\dist\jquery.slim.min.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\dist\jquery.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery\dist\jquery.slim.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\css\bootstrap.min.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\favicon.ico
+E:\My Portifolio\MyPortfolio\MyPortfolio\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\css\adminHome.css
+wwwroot\css\site.css
+wwwroot\css\user-edit.css
+wwwroot\favicon.ico
+wwwroot\Files\Images\Profile.png
+wwwroot\Files\Images\Projects\11f3a047-afad-478c-bbee-e0dfd2f89ebf_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\1a072bc2-89a5-4396-b1d0-40984d0b40df_Screenshot 2025-08-19 191540.png
+wwwroot\Files\Images\Projects\2c915274-eac2-4b93-90c0-42e167820c67_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\32c1876b-747d-41ec-9555-4e430b082f5d_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\44e80ad5-6042-4ec8-83c1-5b09e9207924_WhatsApp Image 2025-08-20 at 13.39.36_882e097c.jpg
+wwwroot\Files\Images\Projects\48df7eb6-1ff3-4327-9013-6c647e5aeed2_Screenshot 2025-08-19 191540.png
+wwwroot\Files\Images\Projects\507f726b-971d-49db-ae06-b59b3ceb3199_Screenshot 2025-08-19 191540.png
+wwwroot\Files\Images\Projects\5210469d-dd91-4148-9d0c-53aedc390c05_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\5cc9bda4-9136-44a2-a81f-01a0273fdabd_Screenshot 2025-08-19 191540.png
+wwwroot\Files\Images\Projects\66649fd4-af8f-4fa2-8b57-cd3344429f94_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\6df70584-4af4-4976-a0a1-54ce1f4766a6_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\6f8b43ba-27a6-4b21-8f14-720733a695a7_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\80316c01-5bf1-47f0-966a-aab2dbf063de_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\93955b45-c335-4b07-9006-c491e3ab2fb7_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\a1cb18d8-5116-4b53-ace0-359177f41b7e_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\d72eabf5-2583-4169-9907-04f8650a7dca_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\d924e1db-9f30-4b68-95ec-9387ff8d426b_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\de4ea743-cd5a-40bd-9c3b-064066677c5a_Screenshot 2025-08-19 201930.png
+wwwroot\Files\Images\Projects\e8c6d66f-8814-4885-a8c0-c45e6c7fd31e_Screenshot 2025-08-19 201930.png
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\css\bootstrap.css
+wwwroot\lib\bootstrap\css\bootstrap.css.map
+wwwroot\lib\bootstrap\css\bootstrap.min.css
+wwwroot\lib\bootstrap\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\dist\jquery.slim.js
+wwwroot\lib\jquery\dist\jquery.slim.min.js
+wwwroot\lib\jquery\dist\jquery.slim.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt

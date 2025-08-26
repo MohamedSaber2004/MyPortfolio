@@ -1,0 +1,169 @@
+﻿@using MyPortfolio.Models.SocialLinkModels
+@model IEnumerable<SocialLinkViewModel>
+
+@{
+    ViewData["Title"] = "Social Links";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+    {
+        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3" style="bottom: 25px; right:25px; z-index: 100;">
+            <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto text-success">Success!!</strong>
+                    <small>Just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["Message"]
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="page-title">Social Links Management</h1>
+            <p class="page-subtitle">View, search, and manage all social links.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-primary" asp-controller="SocialLink" asp-action="Create">
+                <i class="bi bi-plus-lg"></i> Add New Social Link
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
+                <div class="col-md-8">
+                    <input id="searchSocialLinkName"
+                           class="form-control"
+                           type="text"
+                           name="socialLinkSearchName"
+                           value="@(Context?.Request?.Query["socialLinkSearchName"].ToString())"
+                           placeholder="Search by platform name" />
+                </div>
+                <div class="col-md-4">
+                    <button id="searchBtn" type="submit" class="btn btn-outline-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="socialLinkTableContainer">
+        @if (Model?.Any() ?? false)
+        {
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th>@Html.DisplayNameFor(r => r.PlatformName)</th>
+                                <th>@Html.DisplayNameFor(r => r.URL)</th>
+                                <th>Details</th>
+                                <th>Update</th>
+                                <th>Delete / Restore</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                        @foreach (var link in Model)
+                        {
+                            <tr class="@(link.IsDeleted ? "table-danger" : "")">
+                                <td>@link.PlatformName</td>
+                                <td>
+                                    <a href="@link.URL" target="_blank" rel="noopener" class="text-decoration-none">
+                                        @link.URL
+                                    </a>
+                                </td>
+
+                                <partial name="_ButtonsPartialView" model="link.Id" />
+
+                                <td>
+                                    @if (link.IsDeleted)
+                                    {
+                                        <form asp-action="Restore"
+                                              asp-controller="SocialLink"
+                                              asp-route-id="@link.Id"
+                                              method="post"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#DeleteModal-@link.Id">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    }
+
+                                    <div class="modal fade" id="DeleteModal-@link.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@link.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border-0">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title" id="deleteModalLabel-@link.Id">
+                                                        <i class="bi bi-trash me-2"></i> Delete Social Link
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete the social link:
+                                                    <strong>@link.PlatformName</strong>?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form asp-action="Delete"
+                                                          asp-controller="SocialLink"
+                                                          asp-route-id="@link.Id"
+                                                          method="post"
+                                                          class="mt-0">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mt-2 mb-0">
+                <h4 class="mb-0">No Social Links Found!</h4>
+            </div>
+        }
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#searchBtn').on('click', function (e) {
+                e.preventDefault();
+                var searchValue = $('#searchSocialLinkName').val();
+                $.get('@Url.Action("Index", "SocialLink")',
+                    { socialLinkSearchName: searchValue },
+                    function (data) {
+                        var newTable = $(data).find('#socialLinkTableContainer').html();
+                        $('#socialLinkTableContainer').html(newTable);
+                    });
+            });
+        });
+    </script>
+}
+
+

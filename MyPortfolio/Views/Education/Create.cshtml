@@ -1,0 +1,107 @@
+﻿@using MyPortfolio.Models.EducationModels
+@model EducationViewModel
+@{
+    ViewData["Title"] = "Create Education";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="page-title">Create Education</h1>
+            <p class="page-subtitle">Add a new education record.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <form asp-action="Create"
+                  method="post"
+                  autocomplete="off"
+                  novalidate>
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="InstitutionName" class="form-label"></label>
+                        <input asp-for="InstitutionName" class="form-control" placeholder="e.g., University of Example" />
+                        <span asp-validation-for="InstitutionName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Degree" class="form-label"></label>
+                        <input asp-for="Degree" class="form-control" placeholder="e.g., B.Sc. Computer Science" />
+                        <span asp-validation-for="Degree" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="FieldOfStudy" class="form-label"></label>
+                        <input asp-for="FieldOfStudy" class="form-control" placeholder="e.g., Software Engineering" />
+                        <span asp-validation-for="FieldOfStudy" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="StartDate" class="form-label"></label>
+                        <input asp-for="StartDate" type="date" class="form-control" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="EndDate" class="form-label"></label>
+                        <input asp-for="EndDate" type="date" class="form-control" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" rows="4" class="form-control" placeholder="Optional: summarize coursework, honors, focus areas"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <div class="form-text">You can leave this empty if not needed.</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const start = document.getElementById('StartDate');
+            const end = document.getElementById('EndDate');
+            if (start && end) {
+                const sync = () => {
+                    if (start.value) {
+                        end.min = start.value;
+                        if (end.value && end.value < start.value) {
+                            end.value = start.value;
+                        }
+                    } else {
+                        end.removeAttribute('min');
+                    }
+                };
+                start.addEventListener('change', sync);
+                end.addEventListener('change', sync);
+                sync();
+            }
+        })();
+    </script>
+}
+

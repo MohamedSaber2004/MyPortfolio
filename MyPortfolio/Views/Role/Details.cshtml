@@ -1,0 +1,38 @@
+﻿@using MyPortfolio.Models.ManagerModels.RoleModels
+@model RoleViewModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="main-content">
+    <div class="container py-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h1 class="h3 mb-0">Role Details</h1>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">General</span>
+                <span class="badge @(Model.IsDeleted ? "bg-danger" : "bg-success")">
+                    @(Model.IsDeleted ? "Deleted" : "Active")
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" asp-for="RoleName"></label>
+                        <input asp-for="RoleName" class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+            </div>
+        </div>
+    </div>
+</main>
+

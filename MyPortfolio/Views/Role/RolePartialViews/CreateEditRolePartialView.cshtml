@@ -1,0 +1,19 @@
+﻿@using MyPortfolio.Models.ManagerModels.RoleModels
+@model CreateEditRoleViewModel
+
+<div class="form-group mb-3 col-12">
+    <label class="form-label" asp-for="RoleName"></label>
+
+    @if (Model.AvailableRoles?.Any() == true)
+    {
+        <select asp-for="RoleName" asp-items="Model.AvailableRoles" class="form-select">
+            <option value="">Select role</option>
+        </select>
+    }
+    else
+    {
+        <input asp-for="RoleName" class="form-control" placeholder="Enter role name" />
+    }
+
+    <span asp-validation-for="RoleName" class="text-danger"></span>
+</div>
