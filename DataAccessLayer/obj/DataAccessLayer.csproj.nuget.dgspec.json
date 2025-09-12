@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\DataAccessLayer.csproj": {}
+    "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\DataAccessLayer.csproj": {}
   },
   "projects": {
-    "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\DataAccessLayer.csproj": {
+    "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\DataAccessLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectUniqueName": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\DataAccessLayer.csproj",
         "projectName": "DataAccessLayer",
-        "projectPath": "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\DataAccessLayer.csproj",
+        "projectPath": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\DataAccessLayer.csproj",
         "packagesPath": "C:\\Users\\ALQasem\\.nuget\\packages\\",
-        "outputPath": "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\obj\\",
+        "outputPath": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "E:\\Program Files\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -2780,11 +2780,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\My Portifolio\\MyPortfolio\\BusinessLogicLayer\\BusinessLogicLayer.csproj",
+      "projectUniqueName": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\BusinessLogicLayer\\BusinessLogicLayer.csproj",
       "projectName": "BusinessLogicLayer",
-      "projectPath": "E:\\My Portifolio\\MyPortfolio\\BusinessLogicLayer\\BusinessLogicLayer.csproj",
+      "projectPath": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\BusinessLogicLayer\\BusinessLogicLayer.csproj",
       "packagesPath": "C:\\Users\\ALQasem\\.nuget\\packages\\",
-      "outputPath": "E:\\My Portifolio\\MyPortfolio\\BusinessLogicLayer\\obj\\",
+      "outputPath": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\BusinessLogicLayer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "E:\\Program Files\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2806,8 +2806,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\DataAccessLayer.csproj": {
-              "projectPath": "E:\\My Portifolio\\MyPortfolio\\DataAccessLayer\\DataAccessLayer.csproj"
+            "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\DataAccessLayer.csproj": {
+              "projectPath": "E:\\My Portifolio\\MyPortfolio\\MyPortfolio-1\\DataAccessLayer\\DataAccessLayer.csproj"
             }
           }
         }
