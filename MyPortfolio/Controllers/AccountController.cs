@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Models.RoleModels;
+using DataAccessLayer.Models.RoleModels;
 using DataAccessLayer.Models.UserModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -241,7 +241,7 @@ namespace MyPortfolio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SendResetPasswordLink(ForgetPasswordViewModel viewModel)
+        public async Task<IActionResult> SendResetPasswordLink(ForgetPasswordViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -251,10 +251,10 @@ namespace MyPortfolio.Controllers
                     return View(nameof(ForgetPassword), viewModel);
                 }
 
-                var user = _userManager.FindByEmailAsync(viewModel.Email).Result;
+                var user = await _userManager.FindByEmailAsync(viewModel.Email);
                 if (user is not null)
                 {
-                    var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var resetPasswordLink = Url.Action("ResetPassword", "Account", new { email = viewModel.Email, token = token }, Request.Scheme);
 
                     var emailMessage = new EmailMessageFormat()
@@ -266,7 +266,7 @@ namespace MyPortfolio.Controllers
 
                     try
                     {
-                        _mailService.SendEmail(emailMessage);
+                        await _mailService.SendEmailAsync(emailMessage);
                         return RedirectToAction("CheckYourInbox", "Account");
                     }
                     catch (ArgumentException ex)

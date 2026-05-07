@@ -1,28 +1,64 @@
-﻿@{
+@{
     Layout = "_AdminLayout";
 }
 
-
-
-<!-- Main Content -->
 <main class="main-content">
     <div class="page-header">
         <h1 class="page-title">Dashboard Overview</h1>
         <p class="page-subtitle">Welcome back! Here's what's happening with your portfolio.</p>
     </div>
 
+    <!-- Welcome Banner -->
+    <div class="welcome-banner fade-in">
+        <div class="welcome-text">
+            <h2>👋 Good to see you, Admin!</h2>
+            <p>Your portfolio is live and looking great. Manage your content below.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" target="_blank" class="welcome-badge">
+            <i class="bi bi-eye me-1"></i> View Portfolio
+        </a>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions fade-in">
+        <a asp-controller="Project" asp-action="Create" class="quick-action-card">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>New Project</span>
+        </a>
+        <a asp-controller="Skill" asp-action="Create" class="quick-action-card">
+            <i class="bi bi-lightning-fill"></i>
+            <span>Add Skill</span>
+        </a>
+        <a asp-controller="Expereience" asp-action="Create" class="quick-action-card">
+            <i class="bi bi-briefcase-fill"></i>
+            <span>Add Experience</span>
+        </a>
+        <a asp-controller="Education" asp-action="Create" class="quick-action-card">
+            <i class="bi bi-mortarboard-fill"></i>
+            <span>Add Education</span>
+        </a>
+        <a asp-controller="SocialLink" asp-action="Create" class="quick-action-card">
+            <i class="bi bi-share-fill"></i>
+            <span>Social Link</span>
+        </a>
+        <a asp-controller="User" asp-action="Index" class="quick-action-card">
+            <i class="bi bi-people-fill"></i>
+            <span>Manage Users</span>
+        </a>
+    </div>
+
     <!-- Stats Cards -->
-    <div class="stats-grid fade-in">
+    <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-header">
                 <div class="stat-title">Total Users</div>
                 <div class="stat-icon primary">
-                    <i class="bi bi-people"></i>
+                    <i class="bi bi-people-fill"></i>
                 </div>
             </div>
             <div class="stat-value">2,847</div>
             <div class="stat-change positive">
-                <i class="bi bi-arrow-up"></i>
+                <i class="bi bi-arrow-up-short"></i>
                 <span>+12.5% from last month</span>
             </div>
         </div>
@@ -36,36 +72,36 @@
             </div>
             <div class="stat-value">24</div>
             <div class="stat-change positive">
-                <i class="bi bi-arrow-up"></i>
+                <i class="bi bi-arrow-up-short"></i>
                 <span>+3 new this week</span>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-header">
-                <div class="stat-title">Revenue</div>
+                <div class="stat-title">Portfolio Views</div>
                 <div class="stat-icon info">
-                    <i class="bi bi-currency-dollar"></i>
+                    <i class="bi bi-eye-fill"></i>
                 </div>
             </div>
-            <div class="stat-value">$45,210</div>
+            <div class="stat-value">1,204</div>
             <div class="stat-change positive">
-                <i class="bi bi-arrow-up"></i>
+                <i class="bi bi-arrow-up-short"></i>
                 <span>+8.2% from last month</span>
             </div>
         </div>
 
         <div class="stat-card">
             <div class="stat-header">
-                <div class="stat-title">Conversion Rate</div>
+                <div class="stat-title">Skills Listed</div>
                 <div class="stat-icon warning">
-                    <i class="bi bi-graph-up"></i>
+                    <i class="bi bi-lightning-charge-fill"></i>
                 </div>
             </div>
-            <div class="stat-value">3.24%</div>
-            <div class="stat-change negative">
-                <i class="bi bi-arrow-down"></i>
-                <span>-2.1% from last month</span>
+            <div class="stat-value">18</div>
+            <div class="stat-change positive">
+                <i class="bi bi-arrow-up-short"></i>
+                <span>+2 recently added</span>
             </div>
         </div>
     </div>
@@ -74,12 +110,12 @@
     <div class="charts-grid fade-in">
         <div class="chart-card">
             <div class="chart-header">
-                <h3 class="chart-title">Analytics Overview</h3>
+                <h3 class="chart-title">Portfolio Views — 2025</h3>
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Last 30 days
+                        Last 12 months
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="#">Last 7 days</a></li>
                         <li><a class="dropdown-item" href="#">Last 30 days</a></li>
                         <li><a class="dropdown-item" href="#">Last 90 days</a></li>
@@ -93,22 +129,22 @@
 
         <div class="chart-card">
             <div class="chart-header">
-                <h3 class="chart-title">Portfolio Views</h3>
-            </div>
-            <div class="chart-container">
-                <canvas id="portfolioChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Additional Charts Row -->
-    <div class="charts-grid fade-in">
-        <div class="chart-card">
-            <div class="chart-header">
                 <h3 class="chart-title">Skills Distribution</h3>
             </div>
             <div class="chart-container">
                 <canvas id="skillsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row -->
+    <div class="charts-grid fade-in">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Projects by Month</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="portfolioChart"></canvas>
             </div>
         </div>
 
@@ -118,39 +154,38 @@
             </div>
             <ul class="activity-list">
                 <li class="activity-item">
-                    <div class="activity-icon primary">
-                        <i class="bi bi-person-plus"></i>
-                    </div>
+                    <div class="activity-icon primary"><i class="bi bi-person-plus"></i></div>
                     <div class="activity-content">
                         <div class="activity-title">New user registered</div>
                         <div class="activity-time">2 minutes ago</div>
                     </div>
                 </li>
                 <li class="activity-item">
-                    <div class="activity-icon success">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
+                    <div class="activity-icon success"><i class="bi bi-check-circle"></i></div>
                     <div class="activity-content">
-                        <div class="activity-title">Project completed</div>
+                        <div class="activity-title">Project added</div>
                         <div class="activity-time">1 hour ago</div>
                     </div>
                 </li>
                 <li class="activity-item">
-                    <div class="activity-icon warning">
-                        <i class="bi bi-exclamation-triangle"></i>
-                    </div>
+                    <div class="activity-icon warning"><i class="bi bi-pencil-square"></i></div>
                     <div class="activity-content">
-                        <div class="activity-title">System maintenance scheduled</div>
+                        <div class="activity-title">Skill updated</div>
                         <div class="activity-time">3 hours ago</div>
                     </div>
                 </li>
                 <li class="activity-item">
-                    <div class="activity-icon info">
-                        <i class="bi bi-upload"></i>
-                    </div>
+                    <div class="activity-icon info"><i class="bi bi-upload"></i></div>
                     <div class="activity-content">
                         <div class="activity-title">New files uploaded</div>
                         <div class="activity-time">5 hours ago</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon danger"><i class="bi bi-trash"></i></div>
+                    <div class="activity-content">
+                        <div class="activity-title">Old entry removed</div>
+                        <div class="activity-time">Yesterday</div>
                     </div>
                 </li>
             </ul>

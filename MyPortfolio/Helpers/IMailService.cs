@@ -1,9 +1,9 @@
-﻿using MyPortfolio.Helpers.CustomerServiceModels;
+using MyPortfolio.Helpers.CustomerServiceModels;
 
 namespace MyPortfolio.Helpers
 {
     public interface IMailService
     {
-        void SendEmail(EmailMessageFormat _emailMessage);
+        Task SendEmailAsync(EmailMessageFormat _emailMessage);
     }
 }

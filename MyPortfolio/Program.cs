@@ -1,3 +1,5 @@
+using System.Reflection;
+using Serilog;
 
 namespace MyPortfolio
 {
@@ -6,6 +8,23 @@ namespace MyPortfolio
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var env = builder.Environment;
+
+            builder.Configuration.Sources.Clear();
+            builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+            if (env.IsDevelopment() || env.EnvironmentName == "Test")
+            {
+                var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
+                if (appAssembly != null) builder.Configuration.AddUserSecrets(appAssembly, optional: true);
+            }
+
+            builder.Configuration.AddEnvironmentVariables().AddCommandLine(args);
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateBootstrapLogger();
 
             // Add services to the container.
             #region Dependency Injection Container
