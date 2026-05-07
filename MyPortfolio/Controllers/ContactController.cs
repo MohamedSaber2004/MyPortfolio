@@ -1,8 +1,11 @@
-﻿using BusinessLogicLayer.DTos.ContactDTos;
+using BusinessLogicLayer.DTos.ContactDTos;
 using MyPortfolio.Models.ContactModels;
+
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ContactController(IContactService _contactService,
                                    IWebHostEnvironment _environement,
                                    ILogger<ContactController> _logger) : Controller

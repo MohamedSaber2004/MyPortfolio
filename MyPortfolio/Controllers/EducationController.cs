@@ -1,8 +1,11 @@
-﻿using BusinessLogicLayer.DTos.EducationDTos;
+using BusinessLogicLayer.DTos.EducationDTos;
 using MyPortfolio.Models.EducationModels;
+
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EducationController(IEducationService _educationService,
                                      IWebHostEnvironment _environment,
                                      ILogger<EducationController> _logger) : Controller

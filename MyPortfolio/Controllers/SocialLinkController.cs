@@ -1,10 +1,13 @@
-﻿using BusinessLogicLayer.DTos.ExperienceDTos;
+using BusinessLogicLayer.DTos.ExperienceDTos;
 using BusinessLogicLayer.DTos.SocialLinksDTos;
 using MyPortfolio.Models.ExperienceModels;
 using MyPortfolio.Models.SocialLinkModels;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SocialLinkController(ISocialLinkService _socialLinkService,
                                       IWebHostEnvironment _environment,
                                       ILogger<SocialLinkController> _logger) : Controller

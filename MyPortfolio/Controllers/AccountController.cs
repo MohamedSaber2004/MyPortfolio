@@ -85,24 +85,24 @@ namespace MyPortfolio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginViewModel viewModel)
+        public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
 
-            var user = _userManager.FindByEmailAsync(viewModel.Email).Result;
+            var user = await _userManager.FindByEmailAsync(viewModel.Email);
 
             if (user is not null)
             {
-                var isPending = _userManager.IsInRoleAsync(user, "Pending").Result;
+                var isPending = await _userManager.IsInRoleAsync(user, "Pending");
                 if (isPending)
                 {
                     ModelState.AddModelError(string.Empty, "Your account is pending approval. Please wait for admin confirmation.");
                     return View(viewModel);
                 }
 
-                var isAdmin = _userManager.IsInRoleAsync(user, "Admin").Result;
+                var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
 
-                var Result = _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false).Result;
+                var Result = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
 
                 if (Result.Succeeded)
                 {
@@ -299,17 +299,17 @@ namespace MyPortfolio.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ResetPassword(ResetPasswordViewModel viewModel)
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
 
             string email = TempData["email"] as string ?? string.Empty;
             string token = TempData["token"] as string ?? string.Empty;
 
-            var user = _userManager.FindByEmailAsync(email).Result;
+            var user = await _userManager.FindByEmailAsync(email);
             if (user is not null)
             {
-                var result = _userManager.ResetPasswordAsync(user, token, viewModel.Password).Result;
+                var result = await _userManager.ResetPasswordAsync(user, token, viewModel.Password);
                 if (result.Succeeded)
                 {
                     return RedirectToAction(nameof(Login));

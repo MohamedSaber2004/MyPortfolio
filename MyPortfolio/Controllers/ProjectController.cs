@@ -1,10 +1,13 @@
-﻿using BusinessLogicLayer.DTos.ProjectDTos;
+using BusinessLogicLayer.DTos.ProjectDTos;
 using BusinessLogicLayer.Services.Interfaces;
 using MyPortfolio.Models.ProjectModels;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProjectController(IProjectService _projectService,
                                    IWebHostEnvironment _environment,
                                    ILogger<ProjectController> _logger) : Controller
@@ -48,7 +51,7 @@ namespace MyPortfolio.Controllers
                         EndDate = projectViewModel.EndDate,
                         ProjectURL = projectViewModel.ProjectURL,
                         ProjectImage = projectViewModel.ProjectImage,
-                        IsDeleted = projectViewModel.IsDeleted
+                        IsDeleted = false  // New projects should always be visible
                     };
                     int result = await _projectService.AddProject(projectDto);
                     string message = result > 0

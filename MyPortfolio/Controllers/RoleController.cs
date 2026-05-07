@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Models.RoleModels;
+using DataAccessLayer.Models.RoleModels;
 using DataAccessLayer.Models.UserModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -9,8 +9,11 @@ using MyPortfolio.Models.ManagerModels.RoleModels;
 using System;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RoleController(RoleManager<Role> _roleManager,
                                 IWebHostEnvironment _environment,
                                 ILogger<RoleController> _logger) : Controller

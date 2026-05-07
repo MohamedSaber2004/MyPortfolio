@@ -1,9 +1,12 @@
-﻿using BusinessLogicLayer.DTos.ExperienceDTos;
+using BusinessLogicLayer.DTos.ExperienceDTos;
 using BusinessLogicLayer.DTos.SkillDTos;
 using MyPortfolio.Models.ExperienceModels;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SkillController(ISkillService _skillService,
                                  IWebHostEnvironment _environment,
                                  ILogger<SkillController> _logger) : Controller

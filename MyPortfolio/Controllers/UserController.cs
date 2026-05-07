@@ -1,12 +1,15 @@
-﻿using BusinessLogicLayer.Services.Interfaces;
+using BusinessLogicLayer.Services.Interfaces;
 using DataAccessLayer.Models.RoleModels;
 using DataAccessLayer.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 using MyPortfolio.Models.ManagerModels.UserModels;
 using System;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController(UserManager<User> _userManager,
                                 RoleManager<Role> _roleManager,
                                 IUserService _userService,

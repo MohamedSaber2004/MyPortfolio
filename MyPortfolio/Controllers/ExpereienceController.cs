@@ -1,8 +1,11 @@
-﻿using BusinessLogicLayer.DTos.ExperienceDTos;
+using BusinessLogicLayer.DTos.ExperienceDTos;
 using MyPortfolio.Models.ExperienceModels;
+
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyPortfolio.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ExpereienceController(IExperienceService _experienceService,
                                        IWebHostEnvironment _environment,
                                        ILogger<ExpereienceController> _logger) : Controller
