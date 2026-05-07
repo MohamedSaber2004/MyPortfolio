@@ -446,3 +446,7 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+/MyPortfolio/appsettings.Production.json
+/MyPortfolio/appsettings.Development.json
+/MyPortfolio/appsettings.json
+/MyPortfolio/Properties/PublishProfiles/site67633-WebDeploy.pubxml
