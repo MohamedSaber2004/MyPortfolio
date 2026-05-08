@@ -11,7 +11,8 @@ namespace MyPortfolio.Controllers
     public class AccountController(UserManager<User> _userManager,
                                    RoleManager<Role> _roleManager,
                                    SignInManager<User> _signInManager,
-                                   IMailService _mailService) : Controller
+                                   IMailService _mailService,
+                                   IRoleChangeRequestService _roleChangeRequestService) : Controller
     {
         #region Register
         [HttpGet]
@@ -21,7 +22,7 @@ namespace MyPortfolio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {
-            var isFirstUser = _userManager.Users.Any();
+            var isFirstUser = !_userManager.Users.Any();
 
             var user = new User()
             {
@@ -63,6 +64,14 @@ namespace MyPortfolio.Controllers
                 else
                 {
                     await _userManager.AddToRoleAsync(user, E_Role.Pending.ToString());
+
+                    // إنشاء طلب تغيير الصلاحية تلقائياً
+                    var userRole = await _roleManager.FindByNameAsync(E_Role.User.ToString());
+                    if (userRole != null)
+                    {
+                        await _roleChangeRequestService.CreateRequestAsync(user.Id, userRole.Id);
+                    }
+
                     TempData["Message"] = "Registration successful. Please wait for admin approval.";
                 }
 
@@ -194,6 +203,13 @@ namespace MyPortfolio.Controllers
                         else
                         {
                             await _userManager.AddToRoleAsync(user, E_Role.Pending.ToString());
+
+                            // إنشاء طلب تغيير الصلاحية تلقائياً
+                            var userRole = await _roleManager.FindByNameAsync(E_Role.User.ToString());
+                            if (userRole != null)
+                            {
+                                await _roleChangeRequestService.CreateRequestAsync(user.Id, userRole.Id);
+                            }
                         }
                     }
 

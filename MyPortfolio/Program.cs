@@ -1,4 +1,6 @@
 using System.Reflection;
+using BusinessLogicLayer.Services.Implementations;
+using MyPortfolio.Middleware;
 using Serilog;
 
 namespace MyPortfolio
@@ -55,16 +57,24 @@ namespace MyPortfolio
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
             });
 
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                options.Secure = CookieSecurePolicy.Always;
+            });
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
             })
             .AddGoogle(options =>
             {
                 IConfigurationSection configurationBuilder = builder.Configuration.GetSection("Authentication:Google");
                 options.ClientId = configurationBuilder["ClientId"]!;
                 options.ClientSecret = configurationBuilder["ClientSecret"]!;
+                options.CorrelationCookie.SameSite = SameSiteMode.None;
+                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
             builder.Services.AddAutoMapper(m => m.AddProfile(new mappingProfiles()));
@@ -79,6 +89,7 @@ namespace MyPortfolio
             builder.Services.AddScoped<IExperienceService, ExperienceService>();
             builder.Services.AddScoped<ISocialLinkService, SocialLinkService>();
             builder.Services.AddScoped<ISkillService, SkillService>();
+            builder.Services.AddScoped<IRoleChangeRequestService, RoleChangeRequestService>();
             #endregion
 
             var app = builder.Build();
@@ -94,8 +105,13 @@ namespace MyPortfolio
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseCookiePolicy();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Custom middleware for authentication redirect
+            app.UseMiddleware<AuthenticationRedirectMiddleware>();
 
             app.MapStaticAssets();
 

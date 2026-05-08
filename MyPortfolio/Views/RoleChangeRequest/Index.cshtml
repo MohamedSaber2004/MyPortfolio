@@ -1,0 +1,77 @@
+@using MyPortfolio.Models.RoleChangeRequestModels
+@model List<RoleChangeRequestViewModel>
+
+@{
+    ViewData["Title"] = "Role Change Requests";
+}
+
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Role Change Requests</h1>
+        <span class="badge bg-warning text-dark">@Model.Count Pending</span>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            No pending role change requests at the moment.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Requested Role</th>
+                        <th>Requested Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@request.UserFullName</strong>
+                            </td>
+                            <td>
+                                <a href="mailto:@request.UserEmail">@request.UserEmail</a>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">@request.RequestedRoleName</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">@request.CreatedOn.ToString("dd MMM yyyy HH:mm")</small>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = request.Id })" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> Review
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

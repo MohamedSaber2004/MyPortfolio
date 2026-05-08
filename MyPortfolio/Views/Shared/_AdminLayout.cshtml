@@ -71,62 +71,75 @@
                             <div class="nav-indicator"></div>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="User" asp-action="Index">
-                            <i class="bi bi-people nav-icon"></i>
-                            <span class="nav-text">Users</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Role" asp-action="Index">
-                            <i class="bi bi-shield-lock nav-icon"></i>
-                            <span class="nav-text">Roles & Permissions</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Project" asp-action="Index">
-                            <i class="bi bi-folder nav-icon"></i>
-                            <span class="nav-text">Projects</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Contact" asp-action="Index">
-                            <i class="bi bi-file-earmark-text nav-icon"></i>
-                            <span class="nav-text">Contacts</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Education" asp-action="Index">
-                            <i class="bi bi-file-earmark-text nav-icon"></i>
-                            <span class="nav-text">Educations</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Expereience" asp-action="Index">
-                            <i class="bi bi-file-earmark-text nav-icon"></i>
-                            <span class="nav-text">Experiences</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="SocialLink" asp-action="Index">
-                            <i class="bi bi-file-earmark-text nav-icon"></i>
-                            <span class="nav-text">Social Links</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Skill" asp-action="Index">
-                            <i class="bi bi-file-earmark-text nav-icon"></i>
-                            <span class="nav-text">Skills</span>
-                            <div class="nav-indicator"></div>
-                        </a>
-                    </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="User" asp-action="Index">
+                                <i class="bi bi-people nav-icon"></i>
+                                <span class="nav-text">Users</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Role" asp-action="Index">
+                                <i class="bi bi-shield-lock nav-icon"></i>
+                                <span class="nav-text">Roles & Permissions</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="RoleChangeRequest" asp-action="Index">
+                                <i class="bi bi-clock-history nav-icon"></i>
+                                <span class="nav-text">Role Requests</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Project" asp-action="Index">
+                                <i class="bi bi-folder nav-icon"></i>
+                                <span class="nav-text">Projects</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Contact" asp-action="Index">
+                                <i class="bi bi-file-earmark-text nav-icon"></i>
+                                <span class="nav-text">Contacts</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Education" asp-action="Index">
+                                <i class="bi bi-file-earmark-text nav-icon"></i>
+                                <span class="nav-text">Educations</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Expereience" asp-action="Index">
+                                <i class="bi bi-file-earmark-text nav-icon"></i>
+                                <span class="nav-text">Experiences</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="SocialLink" asp-action="Index">
+                                <i class="bi bi-file-earmark-text nav-icon"></i>
+                                <span class="nav-text">Social Links</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Skill" asp-action="Index">
+                                <i class="bi bi-file-earmark-text nav-icon"></i>
+                                <span class="nav-text">Skills</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
 

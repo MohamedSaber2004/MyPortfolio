@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="welcome-container" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 2rem;">
+    
+    <div style="max-width: 600px;">
+        <h1 style="font-size: 3.5rem; margin-bottom: 1rem; font-weight: bold;">
+            Welcome to My Portfolio
+        </h1>
+        
+        <p style="font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.95;">
+            Discover my skills, projects, and experience
+        </p>
+        
+        <p style="font-size: 1.1rem; margin-bottom: 3rem; opacity: 0.9; line-height: 1.6;">
+            Please sign in to view my portfolio and connect with me. To get started, either create a new account or log in with your existing credentials.
+        </p>
+        
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="@Url.Action("Login", "Account")" 
+               class="btn btn-light btn-lg" 
+               style="padding: 0.75rem 2rem; font-weight: 600;">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </a>
+            
+            <a href="@Url.Action("Register", "Account")" 
+               class="btn btn-outline-light btn-lg" 
+               style="padding: 0.75rem 2rem; font-weight: 600; border-width: 2px;">
+                <i class="bi bi-pencil-square me-2"></i>Create Account
+            </a>
+        </div>
+        
+        <hr style="margin: 3rem 0; opacity: 0.3;">
+        
+        <p style="font-size: 0.95rem; opacity: 0.8;">
+            <i class="bi bi-shield-check me-2"></i>
+            Your information is secure and private
+        </p>
+    </div>
+</div>
+
+<style>
+    .welcome-container a {
+        transition: all 0.3s ease;
+    }
+    
+    .welcome-container .btn-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .welcome-container .btn-outline-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+</style>
