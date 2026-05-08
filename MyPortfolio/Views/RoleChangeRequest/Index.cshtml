@@ -3,12 +3,12 @@
 
 @{
     ViewData["Title"] = "Role Change Requests";
+    var currentStatus = ViewBag.CurrentStatus ?? "Pending";
 }
 
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Role Change Requests</h1>
-        <span class="badge bg-warning text-dark">@Model.Count Pending</span>
     </div>
 
     @if (TempData["Success"] != null)
@@ -27,11 +27,40 @@
         </div>
     }
 
+    <!-- Filter Tabs -->
+    <div class="mb-3">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(currentStatus == "Pending" ? "active" : "")" href="@Url.Action("Index", new { status = "Pending" })" role="tab">
+                    <i class="bi bi-hourglass-split"></i> Pending
+                    <span class="badge bg-warning text-dark ms-2">@Model.Count</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(currentStatus == "Approved" ? "active" : "")" href="@Url.Action("Index", new { status = "Approved" })" role="tab">
+                    <i class="bi bi-check-circle"></i> Approved
+                    <span class="badge bg-success ms-2">@Model.Count</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(currentStatus == "Rejected" ? "active" : "")" href="@Url.Action("Index", new { status = "Rejected" })" role="tab">
+                    <i class="bi bi-x-circle"></i> Rejected
+                    <span class="badge bg-danger ms-2">@Model.Count</span>
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(currentStatus == "All" ? "active" : "")" href="@Url.Action("Index", new { status = "All" })" role="tab">
+                    <i class="bi bi-list"></i> All History
+                </a>
+            </li>
+        </ul>
+    </div>
+
     @if (Model.Count == 0)
     {
         <div class="alert alert-info">
             <i class="bi bi-info-circle me-2"></i>
-            No pending role change requests at the moment.
+            No role change requests found.
         </div>
     }
     else
@@ -43,7 +72,13 @@
                         <th>User</th>
                         <th>Email</th>
                         <th>Requested Role</th>
+                        <th>Status</th>
                         <th>Requested Date</th>
+                        @if (currentStatus != "Pending")
+                        {
+                            <th>Processed Date</th>
+                            <th>Processed By</th>
+                        }
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -61,8 +96,42 @@
                                 <span class="badge bg-primary">@request.RequestedRoleName</span>
                             </td>
                             <td>
+                                @if (request.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-hourglass-split"></i> @request.Status
+                                    </span>
+                                }
+                                else if (request.Status == "Approved")
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> @request.Status
+                                    </span>
+                                }
+                                else if (request.Status == "Rejected")
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> @request.Status
+                                    </span>
+                                }
+                            </td>
+                            <td>
                                 <small class="text-muted">@request.CreatedOn.ToString("dd MMM yyyy HH:mm")</small>
                             </td>
+                            @if (currentStatus != "Pending")
+                            {
+                                <td>
+                                    <small class="text-muted">
+                                        @if (request.ProcessedOn.HasValue)
+                                        {
+                                            @request.ProcessedOn.Value.ToString("dd MMM yyyy HH:mm")
+                                        }
+                                    </small>
+                                </td>
+                                <td>
+                                    <small>@(request.ProcessedByName ?? "N/A")</small>
+                                </td>
+                            }
                             <td>
                                 <a href="@Url.Action("Details", new { id = request.Id })" class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> Review

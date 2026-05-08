@@ -41,5 +41,20 @@ namespace BusinessLogicLayer.Services.Interfaces
         /// الحصول على جميع طلبات المستخدم
         /// </summary>
         Task<List<RoleChangeRequest>> GetUserRequestsAsync(string userId);
+
+        /// <summary>
+        /// الحصول على جميع الطلبات المعتمدة
+        /// </summary>
+        Task<List<RoleChangeRequest>> GetApprovedRequestsAsync();
+
+        /// <summary>
+        /// الحصول على جميع الطلبات المرفوضة
+        /// </summary>
+        Task<List<RoleChangeRequest>> GetRejectedRequestsAsync();
+
+        /// <summary>
+        /// الحصول على جميع الطلبات
+        /// </summary>
+        Task<List<RoleChangeRequest>> GetAllRequestsAsync();
     }
 }

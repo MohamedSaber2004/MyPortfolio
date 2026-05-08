@@ -146,5 +146,46 @@ namespace BusinessLogicLayer.Services.Implementations
                 .OrderByDescending(r => r.CreatedOn)
                 .ToListAsync();
         }
+
+        /// <summary>
+        /// الحصول على جميع الطلبات المعتمدة
+        /// </summary>
+        public async Task<List<RoleChangeRequest>> GetApprovedRequestsAsync()
+        {
+            return await _context.RoleChangeRequests
+                .Where(r => r.Status == "Approved")
+                .Include(r => r.User)
+                .Include(r => r.RequestedRole)
+                .Include(r => r.ProcessedByUser)
+                .OrderByDescending(r => r.ProcessedOn)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// الحصول على جميع الطلبات المرفوضة
+        /// </summary>
+        public async Task<List<RoleChangeRequest>> GetRejectedRequestsAsync()
+        {
+            return await _context.RoleChangeRequests
+                .Where(r => r.Status == "Rejected")
+                .Include(r => r.User)
+                .Include(r => r.RequestedRole)
+                .Include(r => r.ProcessedByUser)
+                .OrderByDescending(r => r.ProcessedOn)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// الحصول على جميع الطلبات
+        /// </summary>
+        public async Task<List<RoleChangeRequest>> GetAllRequestsAsync()
+        {
+            return await _context.RoleChangeRequests
+                .Include(r => r.User)
+                .Include(r => r.RequestedRole)
+                .Include(r => r.ProcessedByUser)
+                .OrderByDescending(r => r.CreatedOn)
+                .ToListAsync();
+        }
     }
 }

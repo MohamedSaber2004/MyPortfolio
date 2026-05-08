@@ -28,7 +28,7 @@ namespace MyPortfolio.Controllers
         }
 
         /// <summary>
-        /// عرض جميع طلبات التغيير المعلقة
+        /// عرض جميع طلبات التغيير مع إمكانية الفلترة حسب الحالة
         /// </summary>
         public async Task<IActionResult> Index(string? status = "Pending")
         {
@@ -39,28 +39,26 @@ namespace MyPortfolio.Controllers
                 if (status == "Pending")
                 {
                     var pendingRequests = await _roleChangeRequestService.GetPendingRequestsAsync();
-                    requests = pendingRequests.Select(r => new RoleChangeRequestViewModel
-                    {
-                        Id = r.Id,
-                        UserId = r.UserId,
-                        UserFullName = r.User?.FullName ?? "Unknown",
-                        UserEmail = r.User?.Email ?? "Unknown",
-                        RequestedRoleId = r.RequestedRoleId,
-                        RequestedRoleName = r.RequestedRole?.Name ?? "Unknown",
-                        Status = r.Status,
-                        CreatedOn = r.CreatedOn,
-                        ProcessedOn = r.ProcessedOn,
-                        ProcessedByName = r.ProcessedByUser?.FullName,
-                        RejectionReason = r.RejectionReason,
-                        AdminNotes = r.AdminNotes
-                    }).ToList();
+                    requests = MapToViewModels(pendingRequests);
+                }
+                else if (status == "Approved")
+                {
+                    var approvedRequests = await _roleChangeRequestService.GetApprovedRequestsAsync();
+                    requests = MapToViewModels(approvedRequests);
+                }
+                else if (status == "Rejected")
+                {
+                    var rejectedRequests = await _roleChangeRequestService.GetRejectedRequestsAsync();
+                    requests = MapToViewModels(rejectedRequests);
                 }
                 else
                 {
-                    // يمكن إضافة فلترة للطلبات المعتمدة والمرفوضة لاحقاً
-                    requests = new List<RoleChangeRequestViewModel>();
+                    // Show all requests if no specific status filter
+                    var allRequests = await _roleChangeRequestService.GetAllRequestsAsync();
+                    requests = MapToViewModels(allRequests);
                 }
 
+                ViewBag.CurrentStatus = status ?? "Pending";
                 return View(requests);
             }
             catch (Exception ex)
@@ -68,6 +66,25 @@ namespace MyPortfolio.Controllers
                 _logger.LogError(ex, "Error retrieving role change requests");
                 return View(new List<RoleChangeRequestViewModel>());
             }
+        }
+
+        private List<RoleChangeRequestViewModel> MapToViewModels(List<DataAccessLayer.Models.RoleModels.RoleChangeRequest> requests)
+        {
+            return requests.Select(r => new RoleChangeRequestViewModel
+            {
+                Id = r.Id,
+                UserId = r.UserId,
+                UserFullName = r.User?.FullName ?? "Unknown",
+                UserEmail = r.User?.Email ?? "Unknown",
+                RequestedRoleId = r.RequestedRoleId,
+                RequestedRoleName = r.RequestedRole?.Name ?? "Unknown",
+                Status = r.Status,
+                CreatedOn = r.CreatedOn,
+                ProcessedOn = r.ProcessedOn,
+                ProcessedByName = r.ProcessedByUser?.FullName,
+                RejectionReason = r.RejectionReason,
+                AdminNotes = r.AdminNotes
+            }).ToList();
         }
 
         /// <summary>

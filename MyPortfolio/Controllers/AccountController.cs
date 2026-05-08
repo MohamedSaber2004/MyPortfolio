@@ -2,6 +2,7 @@ using DataAccessLayer.Models.RoleModels;
 using DataAccessLayer.Models.UserModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.EntityFrameworkCore;
 using MyPortfolio.Helpers;
 using MyPortfolio.Helpers.CustomerServiceModels;
 using System.Security.Claims;
@@ -98,7 +99,8 @@ namespace MyPortfolio.Controllers
         {
             if (!ModelState.IsValid) return View(viewModel);
 
-            var user = await _userManager.FindByEmailAsync(viewModel.Email);
+            var normalizedEmail = _userManager.NormalizeEmail(viewModel.Email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
 
             if (user is not null)
             {
@@ -153,7 +155,8 @@ namespace MyPortfolio.Controllers
                 var nameClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
                 if (emailClaim != null)
                 {
-                    var user = await _userManager.FindByEmailAsync(emailClaim.Value);
+                    var normalizedEmail = _userManager.NormalizeEmail(emailClaim.Value);
+                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
 
                     if (user == null)
                     {
@@ -219,20 +222,6 @@ namespace MyPortfolio.Controllers
                         TempData["Message"] = "Your account is pending approval. Please wait for admin confirmation.";
                         return RedirectToAction(nameof(Login));
                     }
-
-                    await _signInManager.SignOutAsync();
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-                    if (isAdmin)
-                    {
-                        TempData["Message"] = "Welcome, Admin!";
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
                 }
             }
 
@@ -267,7 +256,8 @@ namespace MyPortfolio.Controllers
                     return View(nameof(ForgetPassword), viewModel);
                 }
 
-                var user = await _userManager.FindByEmailAsync(viewModel.Email);
+                var normalizedEmail = _userManager.NormalizeEmail(viewModel.Email);
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
                 if (user is not null)
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);

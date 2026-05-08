@@ -1,6 +1,7 @@
 using BusinessLogicLayer.Services.Interfaces;
 using DataAccessLayer.Models.RoleModels;
 using DataAccessLayer.Models.UserModels;
+using DataAccessLayer.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using MyPortfolio.Models.ManagerModels.UserModels;
 using System;
@@ -14,7 +15,8 @@ namespace MyPortfolio.Controllers
                                 RoleManager<Role> _roleManager,
                                 IUserService _userService,
                                 IWebHostEnvironment _environment,
-                                ILogger<UserController> _logger) : Controller
+                                ILogger<UserController> _logger,
+                                PortfolioDbContext _dbContext) : Controller
     {
         public async Task<IActionResult> Index(string? SearchUserName)
         {
@@ -95,6 +97,17 @@ namespace MyPortfolio.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 return NotFound();
+
+            // Delete related RoleChangeRequests first
+            var roleChangeRequests = await _dbContext.RoleChangeRequests
+                .Where(r => r.UserId == id)
+                .ToListAsync();
+
+            if (roleChangeRequests.Any())
+            {
+                _dbContext.RoleChangeRequests.RemoveRange(roleChangeRequests);
+                await _dbContext.SaveChangesAsync();
+            }
 
             user.LastModifiedOn = DateTime.Now;
             user.LastModifiedBy = User?.Identity?.Name ?? "System";
@@ -265,6 +278,17 @@ namespace MyPortfolio.Controllers
                 var user = await _userManager.FindByIdAsync(id);
                 if (user is null)
                     return NotFound();
+
+                // Delete related RoleChangeRequests first
+                var roleChangeRequests = await _dbContext.RoleChangeRequests
+                    .Where(r => r.UserId == id)
+                    .ToListAsync();
+
+                if (roleChangeRequests.Any())
+                {
+                    _dbContext.RoleChangeRequests.RemoveRange(roleChangeRequests);
+                    await _dbContext.SaveChangesAsync();
+                }
 
                 user.IsDeleted = true;
                 user.LastModifiedOn = DateTime.Now;
