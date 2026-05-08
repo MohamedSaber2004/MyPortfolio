@@ -148,85 +148,100 @@ namespace MyPortfolio.Controllers
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
-            var claims = result.Principal?.Identities?.FirstOrDefault()?.Claims;
-            if (claims != null)
+            if (!result.Succeeded)
             {
-                var emailClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-                var nameClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-                if (emailClaim != null)
+                TempData["Message"] = "Google authentication failed.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var claims = result.Principal?.Identities?.FirstOrDefault()?.Claims;
+            if (claims == null)
+            {
+                TempData["Message"] = "Google authentication failed.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var emailClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            if (emailClaim == null)
+            {
+                TempData["Message"] = "Unable to retrieve email from Google account.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            var nameClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+            var normalizedEmail = _userManager.NormalizeEmail(emailClaim.Value);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
+
+            if (user == null)
+            {
+                var isFirstUser = !_userManager.Users.Any();
+
+                user = new User
                 {
-                    var normalizedEmail = _userManager.NormalizeEmail(emailClaim.Value);
-                    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = emailClaim.Value,
+                    Email = emailClaim.Value,
+                    FullName = nameClaim?.Value ?? emailClaim.Value,
+                    CreatedBy = "SYSTEM",
+                    LastModifiedBy = "SYSTEM",
+                    CreatedOn = DateTime.UtcNow,
+                    LastModifiedOn = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+                var createResult = await _userManager.CreateAsync(user);
 
-                    if (user == null)
+                if (!createResult.Succeeded)
+                {
+                    TempData["Message"] = "An error occurred while creating your account.";
+                    return RedirectToAction(nameof(Login));
+                }
+
+                foreach (var role in Enum.GetValues(typeof(E_Role)).Cast<E_Role>())
+                {
+                    if (!await _roleManager.RoleExistsAsync(role.ToString()))
                     {
-                        var isFirstUser = !_userManager.Users.Any();
-
-                        user = new User
+                        await _roleManager.CreateAsync(new Role
                         {
-                            Id = Guid.NewGuid().ToString(),
-                            UserName = emailClaim.Value,
-                            Email = emailClaim.Value,
-                            FullName = nameClaim?.Value ?? emailClaim.Value,
+                            Name = role.ToString(),
                             CreatedBy = "SYSTEM",
                             LastModifiedBy = "SYSTEM",
                             CreatedOn = DateTime.UtcNow,
                             LastModifiedOn = DateTime.UtcNow,
                             IsDeleted = false
-                        };
-                        var createResult = await _userManager.CreateAsync(user);
-
-                        if (!createResult.Succeeded)
-                        {
-                            TempData["Message"] = "An error occurred while creating your account.";
-                            return RedirectToAction(nameof(Login));
-                        }
-
-                        foreach (var role in Enum.GetValues(typeof(E_Role)).Cast<E_Role>())
-                        {
-                            if (!await _roleManager.RoleExistsAsync(role.ToString()))
-                            {
-                                await _roleManager.CreateAsync(new Role
-                                {
-                                    Name = role.ToString(),
-                                    CreatedBy = "SYSTEM",
-                                    LastModifiedBy = "SYSTEM",
-                                    CreatedOn = DateTime.UtcNow,
-                                    LastModifiedOn = DateTime.UtcNow,
-                                    IsDeleted = false
-                                });
-                            }
-                        }
-
-                        if (isFirstUser)
-                        {
-                            await _userManager.AddToRoleAsync(user, E_Role.Admin.ToString());
-                            TempData["Message"] = "Registration successful. You are the first user and have been assigned as Admin.";
-                        }
-                        else
-                        {
-                            await _userManager.AddToRoleAsync(user, E_Role.Pending.ToString());
-
-                            // إنشاء طلب تغيير الصلاحية تلقائياً
-                            var userRole = await _roleManager.FindByNameAsync(E_Role.User.ToString());
-                            if (userRole != null)
-                            {
-                                await _roleChangeRequestService.CreateRequestAsync(user.Id, userRole.Id);
-                            }
-                        }
+                        });
                     }
+                }
 
-                    var isPending = await _userManager.IsInRoleAsync(user, "Pending");
-                    if (isPending)
+                if (isFirstUser)
+                {
+                    await _userManager.AddToRoleAsync(user, E_Role.Admin.ToString());
+                    TempData["Message"] = "Registration successful. You are the first user and have been assigned as Admin.";
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, E_Role.Pending.ToString());
+
+                    // إنشاء طلب تغيير الصلاحية تلقائياً
+                    var userRole = await _roleManager.FindByNameAsync(E_Role.User.ToString());
+                    if (userRole != null)
                     {
-                        TempData["Message"] = "Your account is pending approval. Please wait for admin confirmation.";
-                        return RedirectToAction(nameof(Login));
+                        await _roleChangeRequestService.CreateRequestAsync(user.Id, userRole.Id);
                     }
+
+                    TempData["Message"] = "Registration successful. Please wait for admin approval.";
+                    return RedirectToAction(nameof(Login));
                 }
             }
 
-            TempData["Message"] = "Google authentication failed.";
-            return RedirectToAction(nameof(Login));
+            var isPending = await _userManager.IsInRoleAsync(user, "Pending");
+            if (isPending)
+            {
+                TempData["Message"] = "Your account is pending approval. Please wait for admin confirmation.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToAction("Index", "Home");
         }
         #endregion
 
