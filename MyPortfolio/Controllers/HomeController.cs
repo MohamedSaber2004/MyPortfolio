@@ -43,7 +43,6 @@ namespace MyPortfolio.Controllers
             return View();
         }
 
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             var vm = new HomeViewModel

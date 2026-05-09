@@ -13,10 +13,9 @@ namespace MyPortfolio.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // استثناء طلبات Google authentication callback
             var path = context.Request.Path.Value ?? "";
 
-            // تخطي أي مسارات متعلقة بـ authentication
+            // تخطي المسارات المتعلقة بـ authentication والموارد الثابتة
             if (path.Contains("/signin", StringComparison.OrdinalIgnoreCase) ||
                 path.Contains("/callback", StringComparison.OrdinalIgnoreCase) ||
                 path.Contains("/auth", StringComparison.OrdinalIgnoreCase) ||
@@ -32,10 +31,15 @@ namespace MyPortfolio.Middleware
                 return;
             }
 
-            // إذا كان المستخدم يحاول الوصول إلى Home/Index بدون تسجيل
-            if (path == "/" && context.User.Identity?.IsAuthenticated != true)
+            // الصفحة الرئيسية (Home/Index) متاحة للجميع بدون تسجيل دخول
+            // فقط الصفحات الأخرى تحتاج تسجيل دخول
+            var isHomePage = path == "/" ||
+                             string.Equals(path, "/Home", StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(path, "/Home/Index", StringComparison.OrdinalIgnoreCase);
+
+            if (!isHomePage && context.User.Identity?.IsAuthenticated != true)
             {
-                context.Response.Redirect("/Home/Welcome");
+                context.Response.Redirect($"/Account/Login?returnUrl={Uri.EscapeDataString(path)}");
                 return;
             }
 

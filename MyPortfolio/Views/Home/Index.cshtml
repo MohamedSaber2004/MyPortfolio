@@ -157,6 +157,27 @@
     document.head.appendChild(style);
 </script>
 
+@* Pass authentication state to JavaScript *@
+<div id="auth-state" data-authenticated="@User.Identity?.IsAuthenticated.ToString().ToLower()" style="display:none;"></div>
+
+@* Login overlay shown when unauthenticated user clicks anything *@
+<div id="login-gate-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,10,20,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); align-items:center; justify-content:center; flex-direction:column; gap:1.5rem;">
+    <div style="background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:1.5rem; padding:2.5rem 3rem; text-align:center; max-width:420px; color:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+        <div style="font-size:3rem; margin-bottom:1rem;">🔐</div>
+        <h2 style="font-size:1.6rem; font-weight:700; margin-bottom:0.75rem;">Sign in to continue</h2>
+        <p style="opacity:0.8; margin-bottom:2rem; line-height:1.6;">You need an account to interact with this portfolio. Please sign in or create a new account.</p>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="@Url.Action("Login", "Account")" style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; font-weight:600; padding:0.7rem 1.8rem; border-radius:999px; text-decoration:none; font-size:0.95rem; transition:transform .2s,box-shadow .2s;">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+            <a href="@Url.Action("Register", "Account")" style="display:inline-flex; align-items:center; gap:0.5rem; background:transparent; color:#fff; font-weight:600; padding:0.7rem 1.8rem; border-radius:999px; text-decoration:none; font-size:0.95rem; border:2px solid rgba(255,255,255,0.45); transition:transform .2s,background .2s;">
+                <i class="bi bi-pencil-square"></i> Register
+            </a>
+        </div>
+        <button onclick="document.getElementById('login-gate-overlay').style.display='none'" style="margin-top:1.5rem; background:transparent; border:none; color:rgba(255,255,255,0.5); font-size:0.85rem; cursor:pointer; text-decoration:underline;">Continue browsing</button>
+    </div>
+</div>
+
 <div class="hero">
     <h1>@displayName</h1>
     <p class="lead">Skills · Experience · Projects · Open to opportunities</p>
@@ -1034,5 +1055,54 @@
             navbar.classList.toggle('scrolled', window.scrollY > 60);
         }, {passive:true});
     }
+})();
+</script>
+
+<script>
+(function () {
+    // Read auth state injected by server
+    const authState = document.getElementById('auth-state');
+    const isAuthenticated = authState && authState.dataset.authenticated === 'true';
+
+    if (isAuthenticated) return; // Authenticated users: no restrictions
+
+    const overlay = document.getElementById('login-gate-overlay');
+    if (!overlay) return;
+
+    // Show overlay with flex
+    function showLoginGate(e) {
+        // Allow "Continue browsing" button and the overlay buttons themselves to work normally
+        if (e.target.closest('#login-gate-overlay')) return;
+
+        // Allow anchor links (same-page #id) to navigate freely — scroll is ok
+        const anchor = e.target.closest('a');
+        if (anchor) {
+            const href = anchor.getAttribute('href') || '';
+            // Internal hash links (#about, #projects etc.) are fine — they just scroll
+            if (href.startsWith('#')) return;
+        }
+
+        // Block interaction and show gate
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        overlay.style.display = 'flex';
+    }
+
+    // Intercept all clicks on the page body
+    document.addEventListener('click', showLoginGate, true);
+
+    // Subtle hint: add a faint "lock" cursor over interactive elements
+    const style = document.createElement('style');
+    style.textContent = `
+        .portfolio-card, .edu-card, .btn, button, [class*="card-"] {
+            cursor: pointer !important;
+        }
+        #login-gate-overlay { animation: gateIn .25s ease; }
+        @@keyframes gateIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
 })();
 </script>
