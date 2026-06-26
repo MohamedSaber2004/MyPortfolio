@@ -1,319 +1,321 @@
-Prompt
+# Professional Prompt – Redesign Authentication (Login & Register) Pages
 
-You are a Senior Frontend Engineer, UI/UX Designer, and ASP.NET Core MVC specialist.
+You are a Senior ASP.NET Core MVC Frontend Engineer, UI/UX Designer, and CSS Architecture Expert.
 
-First, analyze the entire repository and understand the current architecture before making any changes.
+First, analyze the entire repository and understand the authentication layout, shared layouts, partial views, CSS files, JavaScript, Bootstrap grid system, and responsive behavior before making any modifications.
 
 Repository:
 https://github.com/MohamedSaber2004/MyPortfolio
 
-Your objective is to completely redesign the application's user interface into a modern, premium, highly interactive portfolio website while preserving all existing functionality and backend logic.
+## Objective
 
-Main Goal
+Completely redesign the **Login** and **Register** pages to achieve a premium, modern, responsive authentication experience.
 
-Transform every page from a basic CRUD-style interface into a polished, responsive, professional web application with smooth JavaScript animations and an excellent user experience.
+The current authentication pages suffer from severe layout issues, including:
 
-Do NOT break any existing functionality.
+* Excessive width
+* Broken margins
+* Incorrect padding
+* Poor content alignment
+* Forms stretched across the full screen
+* Weak visual hierarchy
+* Inconsistent spacing
+* Large empty areas
+* Generic Bootstrap appearance
 
-UI Design Requirements
+Fix the **root cause** instead of applying CSS overrides.
 
-Create a modern UI inspired by premium websites such as:
+---
 
-Apple
-Vercel
-Linear
-Stripe
-Framer
-Notion
-GitHub
-Awwwards-winning websites
+# 1. Authentication Layout
 
-The design should feel:
+Replace the current full-width form with a professional centered authentication layout.
 
-Clean
-Premium
-Minimal
-Elegant
-Modern
-Interactive
+Create a maximum content width of approximately **1100px** and center it horizontally and vertically.
 
-Avoid generic Bootstrap-looking pages.
+The layout should be:
 
-Responsive Design
+```
+--------------------------------------------------------
+|                    Authentication Card               |
+|------------------------------------------------------|
+| Left Side (Branding) | Right Side (Login/Register)   |
+|                      |                               |
+| Logo                 | Form Title                   |
+| Short Description    | Subtitle                     |
+| Features             | Inputs                       |
+| Illustration         | Buttons                      |
+|                      | Links                        |
+--------------------------------------------------------
+```
 
-Every page must be fully responsive for:
+The authentication container should never span the entire browser width.
+
+---
+
+# 2. Fix Spacing System
+
+Implement a consistent spacing system using an 8px scale:
+
+* 8px
+* 16px
+* 24px
+* 32px
+* 48px
+* 64px
+
+Ensure consistent:
+
+* Page padding
+* Card padding
+* Input spacing
+* Button spacing
+* Section spacing
+* Margins between headings and forms
+
+Remove arbitrary margin and padding values.
+
+---
+
+# 3. Center the Authentication Card
+
+The login and register card should:
+
+* Be horizontally centered
+* Be vertically centered (or near center on smaller screens)
+* Have proper spacing from viewport edges
+* Maintain a balanced layout on all screen sizes
+
+Avoid stretched forms.
+
+---
+
+# 4. Improve Form Width
+
+Current issue:
+
+The inputs stretch almost the entire browser width.
+
+Fix by:
+
+* Limiting form width
+* Using proper Bootstrap grid columns
+* Creating comfortable reading width
+* Improving whitespace
+
+---
+
+# 5. Modern Card Design
+
+Redesign the authentication card with:
+
+* Rounded corners (16–20px)
+* Soft shadow
+* Glassmorphism or subtle dark surface
+* Thin border
+* Modern background
+* Smooth hover effect
+
+The card should feel like a premium SaaS product.
+
+---
+
+# 6. Branding Panel
+
+On desktop, include a left branding panel with:
+
+* Website logo
+* Website name
+* Short marketing message
+* 3–4 feature highlights with icons
+* Optional illustration or abstract graphic
+
+Example:
+
+✓ Secure Authentication
+
+✓ Modern Portfolio Platform
+
+✓ Fast & Responsive Experience
+
+✓ Built with ASP.NET Core
+
+Hide or reposition this panel on mobile devices.
+
+---
+
+# 7. Form Improvements
+
+Improve every form control by adding:
+
+* Floating labels or well-aligned labels
+* Better placeholders
+* Consistent heights
+* Rounded corners
+* Focus glow
+* Smooth transitions
+* Password visibility toggle
+* Proper validation spacing
+
+---
+
+# 8. Buttons
+
+Create premium buttons:
+
+Primary Button:
+
+* Full width
+* Gradient or brand color
+* Rounded corners
+* Hover animation
+* Active state
+* Loading spinner during submit
+
+Secondary Button (Google Login):
+
+* White/outlined style
+* Proper Google icon
+* Better spacing
+* Hover effect
+
+---
+
+# 9. Typography
+
+Improve typography hierarchy:
+
+Page Title:
+
+* Large
+* Bold
+* Proper spacing
+
+Subtitle:
+
+* Muted color
+* Comfortable line height
+
+Labels:
+
+* Medium weight
+
+Helper text:
+
+* Smaller
+* Secondary color
+
+---
+
+# 10. Responsive Design
+
+Ensure excellent responsiveness for:
 
 Desktop
+
 Laptop
+
 Tablet
+
 Mobile
 
-No horizontal scrolling.
+On smaller screens:
 
-No broken layouts.
+* Remove two-column layout
+* Stack content vertically
+* Keep comfortable spacing
+* Maintain centered card
+* Prevent horizontal scrolling
 
-No overflowing elements.
+---
 
-Use proper spacing and typography.
+# 11. Background
 
-Global Theme
+Replace the plain background with one of the following:
 
-Create a consistent design system.
+* Soft gradient
+* Abstract blurred shapes
+* Minimal pattern
+* Glassmorphism background
+* Animated particles (subtle)
+* Professional dark theme
 
-Include:
+Avoid distracting visuals.
 
-Color palette
-Typography scale
-Button styles
-Card styles
-Border radius
-Shadows
-Hover states
-Focus states
-Animation timing
-Spacing system
-Icon style
-Form style
+---
 
-Every page must follow the same design language.
+# 12. JavaScript Enhancements
 
-Layout Improvements
+Add smooth animations:
 
-Improve:
+* Fade-in page
+* Card entrance animation
+* Button ripple
+* Input focus animation
+* Password toggle animation
+* Toast notifications
+* Loading animation during login/register
+* Smooth validation transitions
 
-Navbar
-Footer
-Sidebar (if exists)
-Hero section
-Sections spacing
-Containers
-Cards
-Tables
-Forms
-Alerts
-Badges
-Modals
-Empty states
-Loading states
+Animations should be subtle and performance-friendly.
 
-Everything should feel consistent.
-
-JavaScript Animations
+---
 
-Implement modern animations using lightweight libraries where appropriate (e.g., AOS, GSAP, Motion One, or vanilla IntersectionObserver). Avoid excessive dependencies.
+# 13. Accessibility
 
-Include:
+Ensure:
 
-Page Load
-Fade in
-Scale in
-Smooth appearance
-Scroll Animations
+* Keyboard navigation
+* Proper focus states
+* Label associations
+* Color contrast compliance
+* ARIA attributes where appropriate
 
-Animate sections when entering viewport.
+---
 
-Examples:
+# 14. CSS Refactoring
 
-Fade Up
-Fade Left
-Fade Right
-Zoom
-Slide
-Stagger animations
+Refactor authentication styles by:
 
-Animations should trigger once and remain smooth.
+* Removing duplicated CSS
+* Removing inline styles
+* Creating reusable authentication components
+* Using CSS variables for spacing, colors, shadows, border radius, and typography
+* Eliminating unnecessary Bootstrap utility classes
 
-Cards
+Avoid using `!important` unless absolutely necessary.
 
-Cards should have:
+---
 
-Hover elevation
-Soft shadow animation
-Slight scale
-Border glow
-Smooth transitions
-Buttons
+# 15. Preserve Existing Functionality
 
-Buttons should have:
+Do NOT modify:
 
-Ripple effect
-Hover animation
-Smooth background transition
-Active state
-Loading spinner
-Navbar
+* Authentication logic
+* Identity configuration
+* Controllers
+* Validation logic
+* Backend services
+* Routing
+* API endpoints
 
-Create:
+Only improve the frontend presentation and layout.
 
-Sticky navbar
-Blur background on scroll
-Active navigation highlighting
-Smooth mobile menu
-Animated hamburger icon
-Hero Section
+---
 
-Enhance with:
-
-Animated heading
-Typing effect (if suitable)
-Floating elements
-Gradient backgrounds
-CTA hover effects
-Scroll indicator
-Animated statistics counters
-Images
-
-Apply:
-
-Lazy loading
-Fade in on load
-Hover zoom
-Rounded corners
-Soft shadows
-Smooth transitions
-Forms
-
-Improve every form.
-
-Include:
-
-Floating labels
-Animated validation
-Focus glow
-Success animation
-Error shake animation
-Password visibility toggle
-Loading button while submitting
-Tables
-
-Modernize tables.
-
-Include:
-
-Sticky header
-Hover rows
-Rounded corners
-Search animation
-Pagination transitions
-Responsive collapse on mobile
-Dashboard
-
-If dashboards exist:
-
-Create modern cards with:
-
-Icons
-Statistics
-Progress bars
-Animated counters
-Mini charts if appropriate
-Empty States
-
-Every empty page should include:
-
-Illustration
-Friendly message
-Call-to-action button
-Loading Experience
-
-Replace plain loading indicators with:
-
-Skeleton loaders
-Animated placeholders
-Smooth fade transitions
-Toast Notifications
-
-Replace default alerts with modern toast notifications.
-
-Include:
-
-Success
-Error
-Warning
-Info
-
-Animate them smoothly.
-
-Modals
-
-Modern modal design:
-
-Backdrop blur
-Scale animation
-Escape support
-Smooth opening/closing
-Page Transitions
-
-Between pages:
-
-Fade transition
-Smooth loading animation
-Preserve scroll position where appropriate
-Icons
-
-Use a consistent icon library such as:
-
-Lucide
-Heroicons
-Font Awesome
-
-Remove inconsistent icons.
-
-Accessibility
-
-Maintain accessibility by ensuring:
-
-Proper color contrast
-Keyboard navigation
-Focus indicators
-ARIA attributes where needed
-Reduced motion support
-Performance
-
-Animations must remain smooth (target 60 FPS).
-
-Optimize by:
-
-Using CSS transforms instead of layout-changing animations
-Lazy loading assets
-Debouncing scroll events
-Avoiding animation of expensive properties
-Minimizing JavaScript overhead
-Code Quality
-
-Refactor frontend code to:
-
-Remove duplicated CSS
-Remove inline styles
-Organize CSS into reusable components
-Organize JavaScript into reusable modules
-Use semantic HTML
-Improve maintainability
-Preserve Existing Functionality
-
-Do NOT change:
-
-Business logic
-Authentication
-Authorization
-API contracts
-Backend endpoints
-Database logic
-Routing behavior
-
-Only improve presentation and user experience.
-
-Deliverables
+# Deliverables
 
 After completing the redesign, provide:
 
-A summary of all modified files.
-The purpose of each UI enhancement.
-All animation libraries added and why they were chosen.
-Performance optimizations implemented.
-Accessibility improvements made.
-Responsive design improvements.
-Before/after explanation for major pages.
-Suggestions for future UI enhancements.
+1. A summary of all modified files.
+2. The root cause of the layout, padding, and margin issues.
+3. Details of the new authentication layout.
+4. Responsive improvements implemented.
+5. CSS architecture improvements.
+6. JavaScript enhancements added.
+7. Accessibility improvements.
+8. Performance optimizations.
 
-The final result should resemble a premium SaaS application or an Awwwards-quality portfolio website, with a cohesive design system, elegant animations, and a polished, production-ready user experience while keeping the existing backend fully intact.
+## Expected Result
+
+The final Login and Register pages should resemble the authentication experience of modern SaaS platforms such as **Vercel**, **Linear**, **Stripe**, **GitHub**, or **Clerk**—with a centered authentication card, balanced spacing, refined typography, modern animations, and a polished, production-ready design that feels professional rather than a default Bootstrap form.

@@ -39,7 +39,7 @@
     <div class="card shadow-sm border-0 mb-4 fade-in">
         <div class="card-body">
             <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-end-0">
                             <i class="bi bi-search text-muted"></i>
@@ -51,7 +51,7 @@
                                placeholder="Search by institution, degree, or field..." />
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <button id="searchBtn" type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search"></i> Search
                     </button>
@@ -63,7 +63,7 @@
     <div id="educationTableContainer">
         @if (Model?.Any() ?? false)
         {
-            <div class="card shadow border-0">
+            <div class="card shadow-sm border-0 fade-in">
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -179,7 +179,7 @@
         }
         else
         {
-            <div class="card shadow border-0">
+            <div class="card shadow-sm border-0 fade-in">
                 <div class="card-body">
                     <div class="empty-state">
                         <div class="empty-icon">

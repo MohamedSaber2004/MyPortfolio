@@ -95,10 +95,13 @@
       const form = btn.closest('form');
       if (form && !form.checkValidity()) return;
       btn.disabled = true;
-      const original = btn.innerHTML;
-      btn.dataset.originalHtml = original;
-      btn.innerHTML = '<span class="spinner"></span>';
-      btn.classList.add('btn-loading');
+      btn.classList.add('loading');
+      if (!btn.querySelector('.btn-loader')) {
+        const original = btn.innerHTML;
+        btn.dataset.originalHtml = original;
+        btn.innerHTML = '<span class="spinner"></span>';
+        btn.classList.add('btn-loading');
+      }
     });
   }
 
@@ -178,7 +181,11 @@
     const toggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
     if (!toggle || !sidebar) return;
-    toggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      const content = document.getElementById('adminContent');
+      if (content) content.classList.toggle('collapsed');
+    });
   }
 
   /* ---------- Initialize ---------- */

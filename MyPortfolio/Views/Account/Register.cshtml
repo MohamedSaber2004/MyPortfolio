@@ -4,86 +4,124 @@
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="auth-card">
-    <div class="text-center">
-        <div class="auth-logo">
-            <i class="bi bi-person-plus"></i>
-        </div>
-        <h1 class="auth-title">Create your account</h1>
-        <p class="auth-subtitle">Join to explore the full portfolio experience.</p>
-    </div>
-
-    <form asp-action="Register" method="post" novalidate>
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label asp-for="FirstName" class="form-label"></label>
-                <input asp-for="FirstName" class="form-control" placeholder="First name" required />
-                <span asp-validation-for="FirstName" class="text-danger small"></span>
-            </div>
-            <div class="col-md-6">
-                <label asp-for="LastName" class="form-label"></label>
-                <input asp-for="LastName" class="form-control" placeholder="Last name" required />
-                <span asp-validation-for="LastName" class="text-danger small"></span>
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <label asp-for="UserName" class="form-label"></label>
-            <input asp-for="UserName" class="form-control" placeholder="Choose a username" required />
-            <span asp-validation-for="UserName" class="text-danger small"></span>
-        </div>
-
-        <div class="mb-4">
-            <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" placeholder="name@example.com" required />
-            <span asp-validation-for="Email" class="text-danger small"></span>
-        </div>
-
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label asp-for="Password" class="form-label"></label>
-                <div class="position-relative">
-                    <input asp-for="Password" class="form-control" placeholder="Create password" required type="password" id="regPassword" />
-                    <button type="button" class="btn btn-sm position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent text-muted" data-pw-toggle="regPassword" tabindex="-1">
-                        <i class="bi bi-eye"></i>
-                    </button>
+<div class="auth-container">
+    <div class="auth-card auth-card--register">
+        <div class="auth-brand-panel">
+            <div class="auth-brand-content">
+                <div class="auth-brand-logo">
+                    <i class="bi bi-code-slash"></i>
                 </div>
-                <span asp-validation-for="Password" class="text-danger small"></span>
+                <h2 class="auth-brand-name">MyPortfolio</h2>
+                <p class="auth-brand-desc">Join thousands of professionals showcasing their work.</p>
+                <ul class="auth-features">
+                    <li class="auth-feature-item">
+                        <i class="bi bi-laptop"></i>
+                        <span>Responsive project showcase</span>
+                    </li>
+                    <li class="auth-feature-item">
+                        <i class="bi bi-bar-chart"></i>
+                        <span>Detailed analytics dashboard</span>
+                    </li>
+                    <li class="auth-feature-item">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Role-based access control</span>
+                    </li>
+                    <li class="auth-feature-item">
+                        <i class="bi bi-palette"></i>
+                        <span>Dark & light theme support</span>
+                    </li>
+                </ul>
             </div>
-            <div class="col-md-6">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm password" required type="password" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-            </div>
+            <p class="auth-brand-footer">&copy; @DateTime.Now.Year MyPortfolio. All rights reserved.</p>
         </div>
 
-        <div class="form-check mt-3">
-            <input asp-for="IsAgree" class="form-check-input" required />
-            <label asp-for="IsAgree" class="form-check-label small">
-                I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a>
-            </label>
+        <div class="auth-form-panel">
+            <div class="auth-form-inner">
+                <div class="auth-form-header">
+                    <h1 class="auth-title">Create your account</h1>
+                    <p class="auth-subtitle">Join to explore the full portfolio experience.</p>
+                </div>
+
+                <form asp-action="Register" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" placeholder="First name" required />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" placeholder="Last name" required />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" placeholder="Choose a username" required />
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="name@example.com" required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label"></label>
+                            <div class="position-relative">
+                                <input asp-for="Password" class="form-control" placeholder="Create password" required type="password" id="regPassword" />
+                                <button type="button" class="auth-pw-toggle" data-pw-toggle="regPassword" tabindex="-1" aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm password" required type="password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input asp-for="IsAgree" class="form-check-input" required />
+                        <label asp-for="IsAgree" class="form-check-label small fw-normal">
+                            I agree to the <a href="#" class="auth-link">Terms & Conditions</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary auth-btn w-100" data-loading>
+                        <span class="btn-text">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Create Account</span>
+                        </span>
+                        <span class="btn-loader spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </button>
+                </form>
+
+                <div class="auth-divider">
+                    <span>or continue with</span>
+                </div>
+
+                <form asp-controller="Account" asp-action="GoogleLogin" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-primary auth-btn w-100">
+                        <i class="bi bi-google"></i>
+                        <span>Sign up with Google</span>
+                    </button>
+                </form>
+
+                <p class="auth-switch">
+                    Already have an account?
+                    <a asp-action="Login" class="auth-link fw-semibold">Sign in</a>
+                </p>
+            </div>
         </div>
-
-        <button type="submit" class="btn btn-primary w-100 mt-4 mb-4" data-loading>
-            <i class="bi bi-person-plus"></i> Create Account
-        </button>
-    </form>
-
-    <div class="divider">or continue with</div>
-
-    <form asp-controller="Account" asp-action="GoogleLogin" method="post" class="mb-0">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
-            <i class="bi bi-google"></i>
-            <span>Sign up with Google</span>
-        </button>
-    </form>
-
-    <div class="mt-4 text-center small">
-        Already have an account?
-        <a asp-action="Login" class="text-decoration-none fw-semibold">Sign in</a>
     </div>
 </div>

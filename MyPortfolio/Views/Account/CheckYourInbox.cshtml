@@ -3,20 +3,31 @@
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="auth-card text-center">
-    <div class="auth-logo mx-auto">
-        <i class="bi bi-envelope-check"></i>
-    </div>
-    <h1 class="auth-title">Check your inbox</h1>
-    <p class="auth-subtitle mb-3">
-        If an account with that email exists, we've sent a password reset link.
-    </p>
-    <i class="bi bi-envelope-open auth-icon-large"></i>
-    <p class="small text-muted mb-3">Didn't receive the email? Check your spam folder or try again.</p>
-    <a asp-action="ForgetPassword" class="btn btn-outline-primary">
-        <i class="bi bi-arrow-counterclockwise"></i> Try Again
-    </a>
-    <div class="mt-3 small">
-        <a asp-action="Login" class="text-decoration-none">Back to Sign in</a>
+<div class="auth-container auth-container--sm">
+    <div class="auth-card-single">
+        <div class="auth-form-header text-center">
+            <div class="auth-single-icon">
+                <i class="bi bi-envelope-check"></i>
+            </div>
+            <h1 class="auth-title">Check your inbox</h1>
+            <p class="auth-subtitle mb-0">
+                If an account with that email exists, we've sent a password reset link.
+            </p>
+        </div>
+
+        <div class="text-center py-3">
+            <i class="bi bi-envelope-open text-primary" style="font-size: 3rem;"></i>
+        </div>
+
+        <p class="small text-muted text-center mb-4">Didn't receive the email? Check your spam folder or try again.</p>
+
+        <a asp-action="ForgetPassword" class="btn btn-outline-primary auth-btn w-100 mb-3">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            <span>Try Again</span>
+        </a>
+
+        <p class="auth-switch">
+            <a asp-action="Login" class="auth-link">Back to Sign in</a>
+        </p>
     </div>
 </div>
