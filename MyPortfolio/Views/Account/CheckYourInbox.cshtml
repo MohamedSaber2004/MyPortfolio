@@ -3,31 +3,26 @@
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="auth-container auth-container--sm">
-    <div class="auth-card-single">
-        <div class="auth-form-header text-center">
-            <div class="auth-single-icon">
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
                 <i class="bi bi-envelope-check"></i>
             </div>
             <h1 class="auth-title">Check your inbox</h1>
-            <p class="auth-subtitle mb-0">
-                If an account with that email exists, we've sent a password reset link.
-            </p>
+            <p class="auth-subtitle">We've sent you an email with instructions to reset your password.</p>
         </div>
-
-        <div class="text-center py-3">
-            <i class="bi bi-envelope-open text-primary" style="font-size: 3rem;"></i>
+        <div class="auth-body">
+            <div class="text-center mb-4">
+                <i class="bi bi-envelope-open text-primary" style="font-size: 2.5rem;"></i>
+            </div>
+            <a href="https://mail.google.com/mail/u/1/#inbox" target="_blank" class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2 mb-2">
+                <i class="bi bi-box-arrow-up-right"></i>
+                <span>Go To Your Inbox</span>
+            </a>
+            <div class="mt-3 text-center auth-meta">
+                <a asp-action="Login" class="text-decoration-none text-primary">Back to Sign in</a>
+            </div>
         </div>
-
-        <p class="small text-muted text-center mb-4">Didn't receive the email? Check your spam folder or try again.</p>
-
-        <a asp-action="ForgetPassword" class="btn btn-outline-primary auth-btn w-100 mb-3">
-            <i class="bi bi-arrow-counterclockwise"></i>
-            <span>Try Again</span>
-        </a>
-
-        <p class="auth-switch">
-            <a asp-action="Login" class="auth-link">Back to Sign in</a>
-        </p>
     </div>
 </div>

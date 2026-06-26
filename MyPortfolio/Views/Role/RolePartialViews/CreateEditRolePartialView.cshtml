@@ -4,7 +4,7 @@
 <div class="form-group mb-3 col-12">
     <label class="form-label" asp-for="RoleName"></label>
 
-    @if (Model.AvailableRoles?.Any() == true)
+    @if (Model?.AvailableRoles?.Any() == true)
     {
         <select asp-for="RoleName" asp-items="Model.AvailableRoles" class="form-select">
             <option value="">Select role</option>

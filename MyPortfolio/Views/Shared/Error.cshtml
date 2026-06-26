@@ -4,17 +4,17 @@
 }
 
 <div class="min-vh-100 d-flex align-items-center justify-content-center p-4" style="background: var(--bg-secondary);">
-    <div class="card shadow-lg border-0 fade-in" style="max-width: 520px; width: 100%; border-radius: var(--radius-xl);">
+    <div class="card shadow-lg border-0 fade-in" style="max-width: 520px; width: 100%;">
         <div class="card-body text-center p-5">
-            <div class="d-inline-flex align-items-center justify-content-center rounded-4 p-3 mb-4" style="background: rgba(239,68,68,0.1);">
-                <i class="bi bi-exclamation-triangle text-danger" style="font-size: 2.5rem;"></i>
+            <div class="d-inline-flex align-items-center justify-content-center rounded-4 p-3 mb-4 bg-danger-subtle">
+                <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
             </div>
             <h2 class="fw-bold mb-2">Something went wrong</h2>
             <p class="text-muted mb-4">An unexpected error occurred while processing your request.</p>
 
             @if (Model.ShowRequestId)
             {
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-3 mb-4" style="background: var(--bg-tertiary); font-size: 0.8rem;">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-3 mb-4 small" style="background: var(--bg-tertiary);">
                     <span class="text-muted">Request ID:</span>
                     <code class="fw-semibold">@Model.RequestId</code>
                 </div>

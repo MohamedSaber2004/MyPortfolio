@@ -27,7 +27,6 @@
         return years <= 0 ? "" : years == 1 ? "1 yr" : $"{years} yrs";
     }
 
-    // Token helper for optional tech strings if such properties exist on ProjectDto (e.g. TechStack / Technologies / Tags)
     IEnumerable<string> TechTokens(object? project)
     {
         var raw =
@@ -118,82 +117,188 @@
 }
 
 <style>
-    .hidden-items {
-        display: none !important;
+    .hidden-items { display: none !important; }
+    .hidden-items.open { display: block !important; animation: slideDown 0.35s ease-out; }
+    .toggle-btn { margin-top: 1.5rem; }
+    @@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-glow {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+        top: -200px;
+        right: -200px;
+        pointer-events: none;
+        animation: glowFloat 8s ease-in-out infinite alternate;
     }
-    .hidden-items.open {
-        display: block !important;
-        animation: slideDown 0.35s ease-out;
+    .hero-glow-2 {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+        bottom: -150px;
+        left: -150px;
+        pointer-events: none;
+        animation: glowFloat 10s ease-in-out infinite alternate-reverse;
     }
-    .toggle-btn {
-        margin-top: 1.5rem;
+    @@keyframes glowFloat {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(40px, -30px) scale(1.1); }
     }
-    @@keyframes slideDown {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2.5rem;
+        flex-wrap: wrap;
+        margin-top: 2.5rem;
+    }
+    .hero-stat {
+        text-align: center;
+    }
+    .hero-stat-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+    }
+    .hero-stat-label {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .profile-image-wrap {
+        position: relative;
+        display: inline-block;
+    }
+    .profile-image-wrap::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 1.25rem;
+        background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary), var(--clr-accent));
+        opacity: 0.3;
+        animation: shimmer 3s ease-in-out infinite alternate;
+    }
+    @@keyframes shimmer {
+        0% { opacity: 0.2; transform: rotate(0deg); }
+        100% { opacity: 0.4; transform: rotate(3deg); }
+    }
+
+    .section-title-wrap {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .section-title-wrap .section-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--clr-primary-subtle);
+        color: var(--clr-primary);
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+    .section-title-wrap h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.5rem;
+    }
+    .section-title-wrap p {
+        color: var(--text-tertiary);
+        font-size: 0.95rem;
+        max-width: 480px;
+        margin: 0 auto;
     }
 </style>
 
-<div class="hero">
-    <h1>@displayName</h1>
-    <p class="lead">Software developer crafting clean, scalable, and user-centered digital experiences across the full stack.</p>
-    <div class="hero-badges">
-        <span class="hero-badge"><i class="bi bi-code-slash"></i> Full Stack</span>
-        <span class="hero-badge"><i class="bi bi-cloud"></i> Cloud</span>
-        <span class="hero-badge"><i class="bi bi-people"></i> Open Source</span>
+<!-- Hero -->
+<section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow-2"></div>
+    <div class="container position-relative">
+        <div class="hero-badges">
+            <span class="hero-badge"><i class="bi bi-code-slash"></i> Full Stack</span>
+            <span class="hero-badge"><i class="bi bi-cloud"></i> Cloud</span>
+            <span class="hero-badge"><i class="bi bi-people"></i> Open Source</span>
+        </div>
+        <h1>@displayName</h1>
+        <p class="lead">Software developer crafting clean, scalable, and user-centered digital experiences across the full stack.</p>
+        <div class="hero-cta">
+            <a href="#projects" class="btn-hero-primary"><i class="bi bi-grid"></i> View Projects</a>
+            <a href="#contact" class="btn-hero-outline"><i class="bi bi-chat-dots"></i> Get in Touch</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">@(Model.Projects?.Count() ?? 0)+</div>
+                <div class="hero-stat-label">Projects</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">@(Model.Skills?.Count() ?? 0)+</div>
+                <div class="hero-stat-label">Skills</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">@(Model.Experiences?.Count() ?? 0)</div>
+                <div class="hero-stat-label">Experiences</div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+            <span>Scroll to explore</span>
+        </div>
     </div>
-    <div class="hero-cta">
-        <a href="#projects" class="btn-hero-primary"><i class="bi bi-grid"></i> View Projects</a>
-        <a href="#contact" class="btn-hero-outline"><i class="bi bi-chat-dots"></i> Get in Touch</a>
-    </div>
-    <div class="scroll-indicator">
-        <div class="mouse"></div>
-        <span>Scroll to explore</span>
-    </div>
-</div>
+</section>
 
 <!-- About -->
 <section id="about" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>About Me
-        </h2>
-    </div>
-    <div class="section-decoration">
-        <span></span><span></span><span></span>
-    </div>
-    <div class="row align-items-center g-5 mt-2">
-        <div class="col-12 col-md-5 text-center">
-            <div class="position-relative d-inline-block">
-                <img src="@photoUrl"
-                     alt="@displayName"
-                     class="img-fluid rounded-4 shadow-lg border border-3 border-light-subtle"
-                     width="260" height="260" loading="lazy"
-                     style="object-fit:cover;" />
-
-            </div>
+        <div class="section-title-wrap">
+            <div class="section-number">01</div>
+            <h2>About Me</h2>
+            <p>Get to know more about my background and what drives me.</p>
         </div>
-        <div class="col-12 col-md-7">
-            <p class="fs-5 fw-semibold mb-3" style="color: var(--text-primary);">@aboutShort</p>
-            <p class="text-muted mb-4" style="line-height: 1.8;">@aboutLong</p>
-            <div class="d-flex flex-wrap gap-3 mb-4">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-2 p-2" style="background: var(--clr-primary-subtle);">
-                        <i class="bi bi-code-slash text-primary"></i>
-                    </div>
-                    <div><div class="fw-semibold small">8</div><div class="text-muted" style="font-size:0.75rem;">Months Experience</div></div>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-2 p-2" style="background: var(--clr-success); opacity:0.1;">
-                        <i class="bi bi-folder-check" style="color: var(--clr-success);"></i>
-                    </div>
-                    <div><div class="fw-semibold small">10+</div><div class="text-muted" style="font-size:0.75rem;">Projects</div></div>
+        <div class="row align-items-center g-5 mt-2">
+            <div class="col-12 col-md-5 text-center">
+                <div class="profile-image-wrap">
+                    <img src="@photoUrl"
+                         alt="@displayName"
+                         class="img-fluid rounded-4 shadow-lg border border-3 border-light-subtle img-cover"
+                         width="260" height="260" loading="lazy" />
                 </div>
             </div>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="@Url.Content("~/files/CV.pdf")" class="btn btn-outline-primary rounded-pill"><i class="bi bi-download"></i> Download CV</a>
-                <a href="#contact" class="btn btn-primary rounded-pill"><i class="bi bi-send"></i> Get in Touch</a>
+            <div class="col-12 col-md-7">
+                <p class="fs-5 fw-semibold mb-3" style="color: var(--text-primary);">@aboutShort</p>
+                <p class="text-muted mb-4 text-readable">@aboutLong</p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-2 p-2" style="background: var(--clr-primary-subtle);">
+                            <i class="bi bi-code-slash text-primary"></i>
+                        </div>
+                        <div><div class="fw-semibold small">8</div><div class="text-muted small">Months Experience</div></div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-2 p-2" style="background: var(--clr-success); opacity:0.1;">
+                            <i class="bi bi-folder-check" style="color: var(--clr-success);"></i>
+                        </div>
+                        <div><div class="fw-semibold small">10+</div><div class="text-muted small">Projects</div></div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="@Url.Content("~/files/CV.pdf")" class="btn btn-outline-primary rounded-pill"><i class="bi bi-download"></i> Download CV</a>
+                    <a href="#contact" class="btn btn-primary rounded-pill"><i class="bi bi-send"></i> Get in Touch</a>
+                </div>
             </div>
         </div>
     </div>
@@ -202,788 +307,786 @@
 <!-- Skills -->
 <section id="skills" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>Skills
-        </h2>
-    </div>
-    @if (Model.Skills?.Any() == true)
-    {
-        <div class="read-more-container" data-section="skills">
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
-                @{ var skillsList = Model.Skills.ToList(); }
-                @foreach (var s in skillsList.Take(8))
-                {
-                    var levelKey = s.ProficiencyLevel.ToString().Trim().ToLowerInvariant();
-                    var pct = levelKey switch
+        <div class="section-title-wrap">
+            <div class="section-number">02</div>
+            <h2>Skills</h2>
+            <p>Technologies and tools I work with on a daily basis.</p>
+        </div>
+        @if (Model.Skills?.Any() == true)
+        {
+            <div class="read-more-container" data-section="skills">
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+                    @{ var skillsList = Model.Skills.ToList(); }
+                    @foreach (var s in skillsList.Take(8))
                     {
-                        "beginner" or "begainner" => 33,
-                        "intermmediate" => 66,
-                        "advanced" => 100,
-                        _ => 0
-                    };
-                    <div class="col">
-                        <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
-                            <div class="pc-accent"></div>
-                            <div class="card-body p-3 d-flex flex-column">
-                                <div class="d-flex align-items-center gap-2 mb-3">
-                                    <div class="skill-icon-wrap">
-                                        <i class="bi bi-braces"></i>
+                        var levelKey = s.ProficiencyLevel.ToString().Trim().ToLowerInvariant();
+                        var pct = levelKey switch
+                        {
+                            "beginner" or "begainner" => 33,
+                            "intermmediate" => 66,
+                            "advanced" => 100,
+                            _ => 0
+                        };
+                        <div class="col">
+                            <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
+                                <div class="pc-accent"></div>
+                                <div class="card-body p-3 d-flex flex-column">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <div class="skill-icon-wrap">
+                                            <i class="bi bi-braces"></i>
+                                        </div>
+                                        <div class="flex-grow-1 min-width-0">
+                                            <span class="fw-semibold small text-truncate d-block" title="@s.SkillName">@s.SkillName</span>
+                                            <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize mt-1">@levelKey</span>
+                                        </div>
                                     </div>
-                                    <div class="flex-grow-1 min-width-0">
-                                        <span class="fw-semibold small text-truncate d-block" title="@s.SkillName">@s.SkillName</span>
-                                        <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize mt-1">@levelKey</span>
+                                    <div class="progress skill-progress mb-2" aria-label="Proficiency">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width:@pct%;"
+                                             aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="mt-auto small text-muted">
+                                        @(pct == 0 ? "Unspecified" : $"{pct}% proficiency")
                                     </div>
                                 </div>
-                                <div class="progress skill-progress mb-2" aria-label="Proficiency">
-                                    <div class="progress-bar" role="progressbar"
-                                         style="width:@pct%;"
-                                         aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <div class="mt-auto small text-muted">
-                                    @(pct == 0 ? "Unspecified" : $"{pct}% proficiency")
-                                </div>
+                                <div class="pc-hover-glow"></div>
                             </div>
-                            <div class="pc-hover-glow"></div>
+                        </div>
+                    }
+                </div>
+
+                @if (skillsList.Count > 8)
+                {
+                    <div class="hidden-items">
+                        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4 mt-3">
+                            @foreach (var s in skillsList.Skip(8))
+                            {
+                                var levelKey = s.ProficiencyLevel.ToString().Trim().ToLowerInvariant();
+                                var pct = levelKey switch
+                                {
+                                    "beginner" or "begainner" => 33,
+                                    "intermmediate" => 66,
+                                    "advanced" => 100,
+                                    _ => 0
+                                };
+                                <div class="col">
+                                    <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
+                                        <div class="pc-accent"></div>
+                                        <div class="card-body p-3 d-flex flex-column">
+                                            <div class="d-flex align-items-center gap-2 mb-3">
+                                                <div class="skill-icon-wrap">
+                                                    <i class="bi bi-braces"></i>
+                                                </div>
+                                                <div class="flex-grow-1 min-width-0">
+                                                    <span class="fw-semibold small text-truncate d-block" title="@s.SkillName">@s.SkillName</span>
+                                                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize mt-1">@levelKey</span>
+                                                </div>
+                                            </div>
+                                            <div class="progress skill-progress mb-2" aria-label="Proficiency">
+                                                <div class="progress-bar" role="progressbar"
+                                                     style="width:@pct%;"
+                                                     aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="mt-auto small text-muted">
+                                                @(pct == 0 ? "Unspecified" : $"{pct}% proficiency")
+                                            </div>
+                                        </div>
+                                        <div class="pc-hover-glow"></div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
+                    <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="skills">
+                        <span class="toggle-text">Show More</span>
+                    </button>
                 }
             </div>
-            
-            @if (skillsList.Count > 8)
-            {
-                <div class="hidden-items">
-                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4 mt-3">
-                        @foreach (var s in skillsList.Skip(8))
-                        {
-                            var levelKey = s.ProficiencyLevel.ToString().Trim().ToLowerInvariant();
-                            var pct = levelKey switch
-                            {
-                                "beginner" or "begainner" => 33,
-                                "intermmediate" => 66,
-                                "advanced" => 100,
-                                _ => 0
-                            };
-                            <div class="col">
-                                <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
-                                    <div class="pc-accent"></div>
-                                    <div class="card-body p-3 d-flex flex-column">
-                                        <div class="d-flex align-items-center gap-2 mb-3">
-                                            <div class="skill-icon-wrap">
-                                                <i class="bi bi-braces"></i>
-                                            </div>
-                                            <div class="flex-grow-1 min-width-0">
-                                                <span class="fw-semibold small text-truncate d-block" title="@s.SkillName">@s.SkillName</span>
-                                                <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize mt-1">@levelKey</span>
-                                            </div>
-                                        </div>
-                                        <div class="progress skill-progress mb-2" aria-label="Proficiency">
-                                            <div class="progress-bar" role="progressbar"
-                                                 style="width:@pct%;"
-                                                 aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <div class="mt-auto small text-muted">
-                                            @(pct == 0 ? "Unspecified" : $"{pct}% proficiency")
-                                        </div>
-                                    </div>
-                                    <div class="pc-hover-glow"></div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="skills">
-                    <span class="toggle-text">Show More</span>
-                </button>
-            }
-        </div>
-    }
-    else { <div class="alert alert-info mb-0">No skills yet.</div> }
+        }
+        else { <div class="alert alert-info mb-0">No skills yet.</div> }
     </div>
 </section>
 
 <!-- Experience -->
 <section id="experience" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>Experience
-        </h2>
-    </div>
-    @if (Model.Experiences?.Any() == true)
-    {
-        <div class="read-more-container" data-section="experience">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                @{ var expList = Model.Experiences.ToList(); }
-                @foreach (var exp in expList.Take(3))
-                {
-                    var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
-                    <div class="col">
-                        <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden ps-3">
-                            <div class="card-body p-3 d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
-                                    <div class="me-2">
-                                        <h5 class="card-title fs-6 mb-1" title="@exp.Role">@exp.Role</h5>
-                                        <div class="small text-muted" title="@exp.CompanyName">@exp.CompanyName</div>
-                                    </div>
-                                    @if (exp.IsDeleted)
-                                    {
-                                        <span class="badge bg-danger small flex-shrink-0">Deleted</span>
-                                    }
-                                </div>
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <span class="exp-date-badge">
-                                        <i class="bi bi-calendar3"></i>
-                                        <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
-                                    </span>
-                                    @if (!string.IsNullOrEmpty(durationLabel))
-                                    {
-                                        <span class="small text-muted">· @durationLabel</span>
-                                    }
-                                </div>
-                                @if (!string.IsNullOrWhiteSpace(exp.Description))
-                                {
-                                    <div class="small text-muted mb-0 exp-desc" style="line-height:1.7;">
-                                        @{
-                                            var descLines = exp.Description
-                                                .Replace("\r\n", "\n")
-                                                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        <div class="section-title-wrap">
+            <div class="section-number">03</div>
+            <h2>Experience</h2>
+            <p>Professional journey and the companies I've worked with.</p>
+        </div>
+        @if (Model.Experiences?.Any() == true)
+        {
+            <div class="read-more-container" data-section="experience">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    @{ var expList = Model.Experiences.ToList(); }
+                    @foreach (var exp in expList.Take(3))
+                    {
+                        var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
+                        <div class="col">
+                            <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden ps-3">
+                                <div class="card-body p-3 d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                                        <div class="me-2">
+                                            <h5 class="card-title fs-6 mb-1" title="@exp.Role">@exp.Role</h5>
+                                            <div class="small text-muted" title="@exp.CompanyName">@exp.CompanyName</div>
+                                        </div>
+                                        @if (exp.IsDeleted)
+                                        {
+                                            <span class="badge bg-danger small flex-shrink-0">Deleted</span>
                                         }
-                                        @foreach (var descLine in descLines) { <div>@descLine</div> }
                                     </div>
-                                }
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="exp-date-badge">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                        </span>
+                                        @if (!string.IsNullOrEmpty(durationLabel))
+                                        {
+                                            <span class="small text-muted">· @durationLabel</span>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(exp.Description))
+                                    {
+                                        <div class="small text-muted mb-0 exp-desc">
+                                            @{
+                                                var descLines = exp.Description
+                                                    .Replace("\r\n", "\n")
+                                                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                            }
+                                            @foreach (var descLine in descLines) { <div>@descLine</div> }
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-            
-            @if (expList.Count > 3)
-            {
-                <div class="hidden-items">
-                    <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
-                        @foreach (var exp in expList.Skip(3))
-                        {
-                            var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
-                            <div class="col">
-                                <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden ps-3">
-                                    <div class="card-body p-3 d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
-                                            <div class="me-2">
-                                                <h5 class="card-title fs-6 mb-1" title="@exp.Role">@exp.Role</h5>
-                                                <div class="small text-muted" title="@exp.CompanyName">@exp.CompanyName</div>
-                                            </div>
-                                            @if (exp.IsDeleted)
-                                            {
-                                                <span class="badge bg-danger small flex-shrink-0">Deleted</span>
-                                            }
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <span class="exp-date-badge">
-                                                <i class="bi bi-calendar3"></i>
-                                                <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
-                                            </span>
-                                            @if (!string.IsNullOrEmpty(durationLabel))
-                                            {
-                                                <span class="small text-muted">· @durationLabel</span>
-                                            }
-                                        </div>
-                                        @if (!string.IsNullOrWhiteSpace(exp.Description))
-                                        {
-                                            <div class="small text-muted mb-0 exp-desc" style="line-height:1.7;">
-                                                @{
-                                                    var moreDescLines = exp.Description
-                                                        .Replace("\r\n", "\n")
-                                                        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    }
+                </div>
+
+                @if (expList.Count > 3)
+                {
+                    <div class="hidden-items">
+                        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+                            @foreach (var exp in expList.Skip(3))
+                            {
+                                var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
+                                <div class="col">
+                                    <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden ps-3">
+                                        <div class="card-body p-3 d-flex flex-column">
+                                            <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                                                <div class="me-2">
+                                                    <h5 class="card-title fs-6 mb-1" title="@exp.Role">@exp.Role</h5>
+                                                    <div class="small text-muted" title="@exp.CompanyName">@exp.CompanyName</div>
+                                                </div>
+                                                @if (exp.IsDeleted)
+                                                {
+                                                    <span class="badge bg-danger small flex-shrink-0">Deleted</span>
                                                 }
-                                                @foreach (var moreDescLine in moreDescLines) { <div>@moreDescLine</div> }
                                             </div>
-                                        }
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <span class="exp-date-badge">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                                </span>
+                                                @if (!string.IsNullOrEmpty(durationLabel))
+                                                {
+                                                    <span class="small text-muted">· @durationLabel</span>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrWhiteSpace(exp.Description))
+                                            {
+                                                <div class="small text-muted mb-0 exp-desc">
+                                                    @{
+                                                        var moreDescLines = exp.Description
+                                                            .Replace("\r\n", "\n")
+                                                            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                                    }
+                                                    @foreach (var moreDescLine in moreDescLines) { <div>@moreDescLine</div> }
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
-                </div>
-                <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="experience">
-                    <span class="toggle-text">Show More</span>
-                </button>
-            }
-        </div>
-    }
-    else { <div class="alert alert-info mb-0">No experience records.</div> }
+                    <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="experience">
+                        <span class="toggle-text">Show More</span>
+                    </button>
+                }
+            </div>
+        }
+        else { <div class="alert alert-info mb-0">No experience records.</div> }
     </div>
 </section>
 
 <!-- Education -->
 <section id="education" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>Education
-        </h2>
-    </div>
-    @if (Model.Educations?.Any() == true)
-    {
-        <div class="read-more-container" data-section="education">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4">
-                @{ var eduList = Model.Educations.ToList(); }
-                @foreach (var ed in eduList.Take(2))
-                {
-                    var duration = YearSpan(ed.StartDate, ed.EndDate);
-                    <div class="col">
-                        <div class="edu-card card h-100 border-0 shadow-sm position-relative overflow-hidden">
-                            <div class="edu-accent"></div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="pe-2 flex-grow-1">
-                                        <h5 class="card-title h6 mb-1 text-truncate" title="@ed.Degree">@ed.Degree</h5>
-                                        @if (!string.IsNullOrWhiteSpace(ed.InstitutionName))
-                                        {
-                                            <p class="small mb-1 text-muted text-truncate" title="@ed.InstitutionName">@ed.InstitutionName</p>
-                                        }
-                                    </div>
-                                    @if (!string.IsNullOrEmpty(duration))
-                                    {
-                                        <span class="badge bg-primary-subtle text-primary-emphasis fw-semibold small shadow-sm">@duration</span>
-                                    }
-                                </div>
-                                @if (!string.IsNullOrWhiteSpace(ed.FieldOfStudy))
-                                {
-                                    <div class="edu-field-badge badge rounded-pill bg-info-subtle text-info-emphasis small mb-2 text-truncate" title="@ed.FieldOfStudy">
-                                        @ed.FieldOfStudy
-                                    </div>
-                                }
-                                <p class="small text-secondary mb-3 d-flex align-items-center gap-1">
-                                    <span class="bi bi-calendar-range opacity-75"></span>
-                                    <span>@ed.StartDate – @ed.EndDate</span>
-                                </p>
-                                @if (!string.IsNullOrWhiteSpace(ed.Description))
-                                {
-                                    <div class="edu-desc small text-muted mb-0">
-                                        @{
-                                            var eduDescLines = ed.Description
-                                                .Replace("\r\n", "\n")
-                                                .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                                        }
-                                        @foreach (var eduDescLine in eduDescLines) { <div>@eduDescLine</div> }
-                                    </div>
-                                }
-                                @if (ed.IsDeleted)
-                                {
-                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2 z-2">Deleted</span>
-                                }
-                            </div>
-                            <div class="edu-hover-glow"></div>
-                        </div>
-                    </div>
-                }
-            </div>
-            
-            @if (eduList.Count > 2)
-            {
-                <div class="hidden-items">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4 mt-3">
-                        @foreach (var ed in eduList.Skip(2))
-                        {
-                            var duration = YearSpan(ed.StartDate, ed.EndDate);
-                            <div class="col">
-                                <div class="edu-card card h-100 border-0 shadow-sm position-relative overflow-hidden">
-                                    <div class="edu-accent"></div>
-                                    <div class="card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div class="pe-2 flex-grow-1">
-                                                <h5 class="card-title h6 mb-1 text-truncate" title="@ed.Degree">@ed.Degree</h5>
-                                                @if (!string.IsNullOrWhiteSpace(ed.InstitutionName))
-                                                {
-                                                    <p class="small mb-1 text-muted text-truncate" title="@ed.InstitutionName">@ed.InstitutionName</p>
-                                                }
-                                            </div>
-                                            @if (!string.IsNullOrEmpty(duration))
+        <div class="section-title-wrap">
+            <div class="section-number">04</div>
+            <h2>Education</h2>
+            <p>Academic background and qualifications.</p>
+        </div>
+        @if (Model.Educations?.Any() == true)
+        {
+            <div class="read-more-container" data-section="education">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4">
+                    @{ var eduList = Model.Educations.ToList(); }
+                    @foreach (var ed in eduList.Take(2))
+                    {
+                        var duration = YearSpan(ed.StartDate, ed.EndDate);
+                        <div class="col">
+                            <div class="edu-card card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                                <div class="edu-accent"></div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="pe-2 flex-grow-1">
+                                            <h5 class="card-title h6 mb-1 text-truncate" title="@ed.Degree">@ed.Degree</h5>
+                                            @if (!string.IsNullOrWhiteSpace(ed.InstitutionName))
                                             {
-                                                <span class="badge bg-primary-subtle text-primary-emphasis fw-semibold small shadow-sm">@duration</span>
+                                                <p class="small mb-1 text-muted text-truncate" title="@ed.InstitutionName">@ed.InstitutionName</p>
                                             }
                                         </div>
-                                        @if (!string.IsNullOrWhiteSpace(ed.FieldOfStudy))
+                                        @if (!string.IsNullOrEmpty(duration))
                                         {
-                                            <div class="edu-field-badge badge rounded-pill bg-info-subtle text-info-emphasis small mb-2 text-truncate" title="@ed.FieldOfStudy">
-                                                @ed.FieldOfStudy
-                                            </div>
-                                        }
-                                        <p class="small text-secondary mb-3 d-flex align-items-center gap-1">
-                                            <span class="bi bi-calendar-range opacity-75"></span>
-                                            <span>@ed.StartDate – @ed.EndDate</span>
-                                        </p>
-                                        @if (!string.IsNullOrWhiteSpace(ed.Description))
-                                        {
-                                            <div class="edu-desc small text-muted mb-0">
-                                                @{
-                                                    var moreEduDescLines = ed.Description
-                                                        .Replace("\r\n", "\n")
-                                                        .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                                                }
-                                                @foreach (var moreEduDescLine in moreEduDescLines) { <div>@moreEduDescLine</div> }
-                                            </div>
-                                        }
-                                        @if (ed.IsDeleted)
-                                        {
-                                            <span class="badge bg-danger position-absolute top-0 end-0 m-2 z-2">Deleted</span>
+                                            <span class="badge bg-primary-subtle text-primary-emphasis fw-semibold small shadow-sm">@duration</span>
                                         }
                                     </div>
-                                    <div class="edu-hover-glow"></div>
+                                    @if (!string.IsNullOrWhiteSpace(ed.FieldOfStudy))
+                                    {
+                                        <div class="edu-field-badge badge rounded-pill bg-info-subtle text-info-emphasis small mb-2 text-truncate" title="@ed.FieldOfStudy">
+                                            @ed.FieldOfStudy
+                                        </div>
+                                    }
+                                    <p class="small text-secondary mb-3 d-flex align-items-center gap-1">
+                                        <span class="bi bi-calendar-range opacity-75"></span>
+                                        <span>@ed.StartDate – @ed.EndDate</span>
+                                    </p>
+                                    @if (!string.IsNullOrWhiteSpace(ed.Description))
+                                    {
+                                        <div class="edu-desc small text-muted mb-0">
+                                            @{
+                                                var eduDescLines = ed.Description
+                                                    .Replace("\r\n", "\n")
+                                                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                            }
+                                            @foreach (var eduDescLine in eduDescLines) { <div>@eduDescLine</div> }
+                                        </div>
+                                    }
+                                    @if (ed.IsDeleted)
+                                    {
+                                        <span class="badge bg-danger position-absolute top-0 end-0 m-2 z-2">Deleted</span>
+                                    }
                                 </div>
+                                <div class="edu-hover-glow"></div>
                             </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
-                <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="education">
-                    <span class="toggle-text">Show More</span>
-                </button>
-            }
-        </div>
-    }
-    else { <div class="alert alert-info mb-0">No education records.</div> }
+
+                @if (eduList.Count > 2)
+                {
+                    <div class="hidden-items">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-4 g-4 mt-3">
+                            @foreach (var ed in eduList.Skip(2))
+                            {
+                                var duration = YearSpan(ed.StartDate, ed.EndDate);
+                                <div class="col">
+                                    <div class="edu-card card h-100 border-0 shadow-sm position-relative overflow-hidden">
+                                        <div class="edu-accent"></div>
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div class="pe-2 flex-grow-1">
+                                                    <h5 class="card-title h6 mb-1 text-truncate" title="@ed.Degree">@ed.Degree</h5>
+                                                    @if (!string.IsNullOrWhiteSpace(ed.InstitutionName))
+                                                    {
+                                                        <p class="small mb-1 text-muted text-truncate" title="@ed.InstitutionName">@ed.InstitutionName</p>
+                                                    }
+                                                </div>
+                                                @if (!string.IsNullOrEmpty(duration))
+                                                {
+                                                    <span class="badge bg-primary-subtle text-primary-emphasis fw-semibold small shadow-sm">@duration</span>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrWhiteSpace(ed.FieldOfStudy))
+                                            {
+                                                <div class="edu-field-badge badge rounded-pill bg-info-subtle text-info-emphasis small mb-2 text-truncate" title="@ed.FieldOfStudy">
+                                                    @ed.FieldOfStudy
+                                                </div>
+                                            }
+                                            <p class="small text-secondary mb-3 d-flex align-items-center gap-1">
+                                                <span class="bi bi-calendar-range opacity-75"></span>
+                                                <span>@ed.StartDate – @ed.EndDate</span>
+                                            </p>
+                                            @if (!string.IsNullOrWhiteSpace(ed.Description))
+                                            {
+                                                <div class="edu-desc small text-muted mb-0">
+                                                    @{
+                                                        var moreEduDescLines = ed.Description
+                                                            .Replace("\r\n", "\n")
+                                                            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                                    }
+                                                    @foreach (var moreEduDescLine in moreEduDescLines) { <div>@moreEduDescLine</div> }
+                                                </div>
+                                            }
+                                            @if (ed.IsDeleted)
+                                            {
+                                                <span class="badge bg-danger position-absolute top-0 end-0 m-2 z-2">Deleted</span>
+                                            }
+                                        </div>
+                                        <div class="edu-hover-glow"></div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="education">
+                        <span class="toggle-text">Show More</span>
+                    </button>
+                }
+            </div>
+        }
+        else { <div class="alert alert-info mb-0">No education records.</div> }
     </div>
 </section>
 
 <!-- Projects -->
 <section id="projects" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>Projects
-        </h2>
-    </div>
+        <div class="section-title-wrap">
+            <div class="section-number">05</div>
+            <h2>Projects</h2>
+            <p>Some of the things I've built and contributed to.</p>
+        </div>
 
-    @if (Model.Projects?.Any() == true)
-    {
-        <div class="read-more-container" data-section="projects">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-                @{ var projectList = Model.Projects.ToList(); }
-                @foreach (var p in projectList.Take(6))
-                {
-                    // Expect ProjectDto has ExistingProjectImage (string?)
-                    var fileName = p.GetType().GetProperty("ExistingProjectImage")?.GetValue(p) as string;
-                    fileName = string.IsNullOrWhiteSpace(fileName) ? null : fileName.Trim();
-                    var imagePath = !string.IsNullOrWhiteSpace(fileName)
-                        ? Url.Content($"~/Files/Images/Projects/{fileName}")
-                        : null;
+        @if (Model.Projects?.Any() == true)
+        {
+            <div class="read-more-container" data-section="projects">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+                    @{ var projectList = Model.Projects.ToList(); }
+                    @foreach (var p in projectList.Take(6))
+                    {
+                        var fileName = p.GetType().GetProperty("ExistingProjectImage")?.GetValue(p) as string;
+                        fileName = string.IsNullOrWhiteSpace(fileName) ? null : fileName.Trim();
+                        var imagePath = !string.IsNullOrWhiteSpace(fileName)
+                            ? Url.Content($"~/Files/Images/Projects/{fileName}")
+                            : null;
 
-                    var tokens   = TechTokens(p).ToList();
-                    var repoUrl  = GetStringProp(p, "RepoUrl") ?? GetStringProp(p, "RepositoryUrl") ?? GetStringProp(p, "SourceUrl");
-                    var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
-                    var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
+                        var tokens   = TechTokens(p).ToList();
+                        var repoUrl  = GetStringProp(p, "RepoUrl") ?? GetStringProp(p, "RepositoryUrl") ?? GetStringProp(p, "SourceUrl");
+                        var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
+                        var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
 
-                    <div class="col d-flex">
-                        <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden"
-                             data-pd-title="@p.Title"
-                             data-pd-desc="@p.Description"
-                             data-pd-tags="@string.Join(",", tokens)"
-                             data-pd-site="@(siteUrl ?? "")"
-                             data-pd-repo="@(repoUrl ?? "")"
-                             data-pd-demo="@(demoUrl ?? "")">
-                            <div class="pc-accent"></div>
+                        <div class="col d-flex">
+                            <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden"
+                                 data-pd-title="@p.Title"
+                                 data-pd-desc="@p.Description"
+                                 data-pd-tags="@string.Join(",", tokens)"
+                                 data-pd-site="@(siteUrl ?? "")"
+                                 data-pd-repo="@(repoUrl ?? "")"
+                                 data-pd-demo="@(demoUrl ?? "")">
+                                <div class="pc-accent"></div>
 
-                            <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
-                                @if (!string.IsNullOrWhiteSpace(imagePath))
-                                {
-                                    <img src="@imagePath"
-                                         alt="@p.Title"
-                                         class="img-fluid project-thumb-img"
-                                         loading="lazy" />
-                                }
-                                else
-                                {
-                                    <div class="d-flex flex-column justify-content-center align-items-center h-100">
-                                        <i class="bi bi-images project-thumb-icon"></i>
-                                    </div>
-                                }
-                            </div>
+                                <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
+                                    @if (!string.IsNullOrWhiteSpace(imagePath))
+                                    {
+                                        <img src="@imagePath"
+                                             alt="@p.Title"
+                                             class="img-fluid project-thumb-img"
+                                             loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                                            <i class="bi bi-images project-thumb-icon"></i>
+                                        </div>
+                                    }
+                                </div>
 
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title h6 mb-2 text-truncate" title="@p.Title">@p.Title</h5>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title h6 mb-2 text-truncate" title="@p.Title">@p.Title</h5>
 
-                                @if (tokens.Count > 0)
-                                {
-                                    <div class="mb-2 d-flex flex-wrap gap-1 project-tags">
-                                        @foreach (var t in tokens)
+                                    @if (tokens.Count > 0)
+                                    {
+                                        <div class="mb-2 d-flex flex-wrap gap-1 project-tags">
+                                            @foreach (var t in tokens)
+                                            {
+                                                <span class="badge rounded-pill bg-info-subtle text-info-emphasis small">@t</span>
+                                            }
+                                        </div>
+                                    }
+
+                                    <p class="project-desc small text-muted flex-grow-1 mb-3 line-clamp-3">
+                                        @p.Description
+                                    </p>
+                                </div>
+
+                                <div class="pc-hover-glow"></div>
+                                <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <button type="button" class="btn btn-xs btn-outline-light fw-semibold btn-project-details"
+                                                aria-label="Details for @p.Title">Details</button>
+                                        @if (!string.IsNullOrWhiteSpace(siteUrl))
                                         {
-                                            <span class="badge rounded-pill bg-info-subtle text-info-emphasis small">@t</span>
+                                            <a href="@siteUrl" target="_blank" rel="noopener"
+                                               class="btn btn-xs btn-outline-light fw-semibold"
+                                               aria-label="Project site for @p.Title">Site</a>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(repoUrl))
+                                        {
+                                            <a href="@repoUrl" target="_blank" rel="noopener"
+                                               class="btn btn-xs btn-light fw-semibold"
+                                               aria-label="Repository for @p.Title">Repo</a>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(demoUrl))
+                                        {
+                                            <a href="@demoUrl" target="_blank" rel="noopener"
+                                               class="btn btn-xs btn-primary fw-semibold"
+                                               aria-label="Live demo for @p.Title">Live</a>
                                         }
                                     </div>
-                                }
-
-                                <p class="project-desc small text-muted flex-grow-1 mb-3 line-clamp-3">
-                                    @p.Description
-                                </p>
-                            </div>
-
-                            <div class="pc-hover-glow"></div>
-                            <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <button type="button" class="btn btn-xs btn-outline-light fw-semibold btn-project-details"
-                                            aria-label="Details for @p.Title">Details</button>
-                                    @if (!string.IsNullOrWhiteSpace(siteUrl))
-                                    {
-                                        <a href="@siteUrl" target="_blank" rel="noopener"
-                                           class="btn btn-xs btn-outline-light fw-semibold"
-                                           aria-label="Project site for @p.Title">Site</a>
-                                    }
-                                    @if (!string.IsNullOrWhiteSpace(repoUrl))
-                                    {
-                                        <a href="@repoUrl" target="_blank" rel="noopener"
-                                           class="btn btn-xs btn-light fw-semibold"
-                                           aria-label="Repository for @p.Title">Repo</a>
-                                    }
-                                    @if (!string.IsNullOrWhiteSpace(demoUrl))
-                                    {
-                                        <a href="@demoUrl" target="_blank" rel="noopener"
-                                           class="btn btn-xs btn-primary fw-semibold"
-                                           aria-label="Live demo for @p.Title">Live</a>
-                                    }
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-            
-            @if (projectList.Count > 6)
-            {
-                <div class="hidden-items">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mt-3">
-                        @foreach (var p in projectList.Skip(6))
-                        {
-                            // Expect ProjectDto has ExistingProjectImage (string?)
-                            var fileName = p.GetType().GetProperty("ExistingProjectImage")?.GetValue(p) as string;
-                            fileName = string.IsNullOrWhiteSpace(fileName) ? null : fileName.Trim();
-                            var imagePath = !string.IsNullOrWhiteSpace(fileName)
-                                ? Url.Content($"~/Files/Images/Projects/{fileName}")
-                                : null;
+                    }
+                </div>
 
-                            var tokens   = TechTokens(p).ToList();
-                            var repoUrl  = GetStringProp(p, "RepoUrl") ?? GetStringProp(p, "RepositoryUrl") ?? GetStringProp(p, "SourceUrl");
-                            var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
-                            var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
+                @if (projectList.Count > 6)
+                {
+                    <div class="hidden-items">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mt-3">
+                            @foreach (var p in projectList.Skip(6))
+                            {
+                                var fileName = p.GetType().GetProperty("ExistingProjectImage")?.GetValue(p) as string;
+                                fileName = string.IsNullOrWhiteSpace(fileName) ? null : fileName.Trim();
+                                var imagePath = !string.IsNullOrWhiteSpace(fileName)
+                                    ? Url.Content($"~/Files/Images/Projects/{fileName}")
+                                    : null;
 
-                            <div class="col d-flex">
-                                <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden"
-                                     data-pd-title="@p.Title"
-                                     data-pd-desc="@p.Description"
-                                     data-pd-tags="@string.Join(",", tokens)"
-                                     data-pd-site="@(siteUrl ?? "")"
-                                     data-pd-repo="@(repoUrl ?? "")"
-                                     data-pd-demo="@(demoUrl ?? "")">
-                                    <div class="pc-accent"></div>
+                                var tokens   = TechTokens(p).ToList();
+                                var repoUrl  = GetStringProp(p, "RepoUrl") ?? GetStringProp(p, "RepositoryUrl") ?? GetStringProp(p, "SourceUrl");
+                                var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
+                                var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
 
-                                    <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
-                                        @if (!string.IsNullOrWhiteSpace(imagePath))
-                                        {
-                                            <img src="@imagePath"
-                                                 alt="@p.Title"
-                                                 class="img-fluid project-thumb-img"
-                                                 loading="lazy" />
-                                        }
-                                        else
-                                        {
-                                            <div class="d-flex flex-column justify-content-center align-items-center h-100">
-<i class="bi bi-folder2-open project-thumb-icon"></i>
-                                            </div>
-                                        }
-                                    </div>
+                                <div class="col d-flex">
+                                    <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden"
+                                         data-pd-title="@p.Title"
+                                         data-pd-desc="@p.Description"
+                                         data-pd-tags="@string.Join(",", tokens)"
+                                         data-pd-site="@(siteUrl ?? "")"
+                                         data-pd-repo="@(repoUrl ?? "")"
+                                         data-pd-demo="@(demoUrl ?? "")">
+                                        <div class="pc-accent"></div>
 
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title h6 mb-2 text-truncate" title="@p.Title">@p.Title</h5>
+                                        <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
+                                            @if (!string.IsNullOrWhiteSpace(imagePath))
+                                            {
+                                                <img src="@imagePath"
+                                                     alt="@p.Title"
+                                                     class="img-fluid project-thumb-img"
+                                                     loading="lazy" />
+                                            }
+                                            else
+                                            {
+                                                <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                                                    <i class="bi bi-folder2-open project-thumb-icon"></i>
+                                                </div>
+                                            }
+                                        </div>
 
-                                        @if (tokens.Count > 0)
-                                        {
-                                            <div class="mb-2 d-flex flex-wrap gap-1 project-tags">
-                                                @foreach (var t in tokens)
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title h6 mb-2 text-truncate" title="@p.Title">@p.Title</h5>
+
+                                            @if (tokens.Count > 0)
+                                            {
+                                                <div class="mb-2 d-flex flex-wrap gap-1 project-tags">
+                                                    @foreach (var t in tokens)
+                                                    {
+                                                        <span class="badge rounded-pill bg-info-subtle text-info-emphasis small">@t</span>
+                                                    }
+                                                </div>
+                                            }
+
+                                            <p class="project-desc small text-muted flex-grow-1 mb-3 line-clamp-3">
+                                                @p.Description
+                                            </p>
+                                        </div>
+
+                                        <div class="pc-hover-glow"></div>
+                                        <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <button type="button" class="btn btn-xs btn-outline-light fw-semibold btn-project-details"
+                                                        aria-label="Details for @p.Title">Details</button>
+                                                @if (!string.IsNullOrWhiteSpace(siteUrl))
                                                 {
-                                                    <span class="badge rounded-pill bg-info-subtle text-info-emphasis small">@t</span>
+                                                    <a href="@siteUrl" target="_blank" rel="noopener"
+                                                       class="btn btn-xs btn-outline-light fw-semibold"
+                                                       aria-label="Project site for @p.Title">Site</a>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(repoUrl))
+                                                {
+                                                    <a href="@repoUrl" target="_blank" rel="noopener"
+                                                       class="btn btn-xs btn-light fw-semibold"
+                                                       aria-label="Repository for @p.Title">Repo</a>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(demoUrl))
+                                                {
+                                                    <a href="@demoUrl" target="_blank" rel="noopener"
+                                                       class="btn btn-xs btn-primary fw-semibold"
+                                                       aria-label="Live demo for @p.Title">Live</a>
                                                 }
                                             </div>
-                                        }
-
-                                        <p class="project-desc small text-muted flex-grow-1 mb-3 line-clamp-3">
-                                            @p.Description
-                                        </p>
-                                    </div>
-
-                                    <div class="pc-hover-glow"></div>
-                                    <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <button type="button" class="btn btn-xs btn-outline-light fw-semibold btn-project-details"
-                                                    aria-label="Details for @p.Title">Details</button>
-                                            @if (!string.IsNullOrWhiteSpace(siteUrl))
-                                            {
-                                                <a href="@siteUrl" target="_blank" rel="noopener"
-                                                   class="btn btn-xs btn-outline-light fw-semibold"
-                                                   aria-label="Project site for @p.Title">Site</a>
-                                            }
-                                            @if (!string.IsNullOrWhiteSpace(repoUrl))
-                                            {
-                                                <a href="@repoUrl" target="_blank" rel="noopener"
-                                                   class="btn btn-xs btn-light fw-semibold"
-                                                   aria-label="Repository for @p.Title">Repo</a>
-                                            }
-                                            @if (!string.IsNullOrWhiteSpace(demoUrl))
-                                            {
-                                                <a href="@demoUrl" target="_blank" rel="noopener"
-                                                   class="btn btn-xs btn-primary fw-semibold"
-                                                   aria-label="Live demo for @p.Title">Live</a>
-                                            }
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
-                </div>
-                <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="projects">
-                    <span class="toggle-text">Show More</span>
-                </button>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info mb-0">No projects available.</div>
-    }
+                    <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="projects">
+                        <span class="toggle-text">Show More</span>
+                    </button>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mb-0">No projects available.</div>
+        }
     </div>
 </section>
 
 <!-- Social Links -->
 <section id="social" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>Social Links
-        </h2>
-    </div>
-    @if (Model.SocialLinks?.Any() == true)
-    {
-        <div class="read-more-container" data-section="social">
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4">
-                @{ var socialList = Model.SocialLinks.ToList(); }
-                @foreach (var link in socialList.Take(5))
-                {
-                    var platform = link.PlatformName?.Trim() ?? "";
-                    var platformKey = platform.ToLowerInvariant();
-                    <div class="col">
-                        <div class="portfolio-card card card-social h-100 text-center position-relative overflow-hidden"
-                             data-platform="@platformKey">
-                            <div class="pc-accent"></div>
-                            <div class="card-body d-flex align-items-center justify-content-center">
-                                <div class="social-tile d-flex flex-column align-items-center">
-                                    <span class="social-icon mb-2">
-                                        <i class="@SocialIcon(platform)" aria-hidden="true"></i>
-                                    </span>
-                                    <span class="fw-semibold small text-truncate social-label" title="@platform">
-                                        @platform
-                                    </span>
+        <div class="section-title-wrap">
+            <div class="section-number">06</div>
+            <h2>Social Links</h2>
+            <p>Connect with me across the web.</p>
+        </div>
+        @if (Model.SocialLinks?.Any() == true)
+        {
+            <div class="read-more-container" data-section="social">
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4">
+                    @{ var socialList = Model.SocialLinks.ToList(); }
+                    @foreach (var link in socialList.Take(5))
+                    {
+                        var platform = link.PlatformName?.Trim() ?? "";
+                        var platformKey = platform.ToLowerInvariant();
+                        <div class="col">
+                            <div class="portfolio-card card card-social h-100 text-center position-relative overflow-hidden"
+                                 data-platform="@platformKey">
+                                <div class="pc-accent"></div>
+                                <div class="card-body d-flex align-items-center justify-content-center">
+                                    <div class="social-tile d-flex flex-column align-items-center">
+                                        <span class="social-icon mb-2">
+                                            <i class="@SocialIcon(platform)" aria-hidden="true"></i>
+                                        </span>
+                                        <span class="fw-semibold small text-truncate social-label" title="@platform">
+                                            @platform
+                                        </span>
+                                    </div>
                                 </div>
+                                <a href="@link.URL"
+                                   target="_blank"
+                                   rel="noopener"
+                                   class="stretched-link"
+                                   aria-label="@platform (opens in new tab)"></a>
+                                <div class="pc-hover-glow"></div>
                             </div>
-                            <a href="@link.URL"
-                               target="_blank"
-                               rel="noopener"
-                               class="stretched-link"
-                               aria-label="@platform (opens in new tab)"></a>
-                            <div class="pc-hover-glow"></div>
+                        </div>
+                    }
+                </div>
+
+                @if (socialList.Count > 5)
+                {
+                    <div class="hidden-items">
+                        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4 mt-3">
+                            @foreach (var link in socialList.Skip(5))
+                            {
+                                var platform = link.PlatformName?.Trim() ?? "";
+                                var platformKey = platform.ToLowerInvariant();
+                                <div class="col">
+                                    <div class="portfolio-card card card-social h-100 text-center position-relative overflow-hidden"
+                                         data-platform="@platformKey">
+                                        <div class="pc-accent"></div>
+                                        <div class="card-body d-flex align-items-center justify-content-center">
+                                            <div class="social-tile d-flex flex-column align-items-center">
+                                                <span class="social-icon mb-2">
+                                                    <i class="@SocialIcon(platform)" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="fw-semibold small text-truncate social-label" title="@platform">
+                                                    @platform
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <a href="@link.URL"
+                                           target="_blank"
+                                           rel="noopener"
+                                           class="stretched-link"
+                                           aria-label="@platform (opens in new tab)"></a>
+                                        <div class="pc-hover-glow"></div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
+                    <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="social">
+                        <span class="toggle-text">Show More</span>
+                    </button>
                 }
             </div>
-            
-            @if (socialList.Count > 5)
-            {
-                <div class="hidden-items">
-                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4 mt-3">
-                        @foreach (var link in socialList.Skip(5))
-                        {
-                            var platform = link.PlatformName?.Trim() ?? "";
-                            var platformKey = platform.ToLowerInvariant();
-                            <div class="col">
-                                <div class="portfolio-card card card-social h-100 text-center position-relative overflow-hidden"
-                                     data-platform="@platformKey">
-                                    <div class="pc-accent"></div>
-                                    <div class="card-body d-flex align-items-center justify-content-center">
-                                        <div class="social-tile d-flex flex-column align-items-center">
-                                            <span class="social-icon mb-2">
-                                                <i class="@SocialIcon(platform)" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="fw-semibold small text-truncate social-label" title="@platform">
-                                                @platform
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <a href="@link.URL"
-                                       target="_blank"
-                                       rel="noopener"
-                                       class="stretched-link"
-                                       aria-label="@platform (opens in new tab)"></a>
-                                    <div class="pc-hover-glow"></div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="social">
-                    <span class="toggle-text">Show More</span>
-                </button>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info mb-0">No social links.</div>
-    }
+        }
+        else
+        {
+            <div class="alert alert-info mb-0">No social links.</div>
+        }
     </div>
 </section>
 
 <!-- Contact -->
 <section id="contact" class="section-block">
     <div class="container">
-    <div class="d-flex justify-content-center mb-4">
-        <h2 class="h2 mb-0 section-heading position-relative">
-            <span class="section-accent me-2"></span>Contact
-        </h2>
-    </div>
-    @if (Model.Contacts?.Any() == true)
-    {
-        <div class="read-more-container" data-section="contact">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-                @{ var contactList = Model.Contacts.ToList(); }
-                @foreach (var c in contactList.Take(3))
-                {
-                    var type = c.ContactType?.Trim() ?? "";
-                    var (hasLink, href) = BuildContactLink(type, c.ContactValue);
-                    var icon = ContactIcon(type);
+        <div class="section-title-wrap">
+            <div class="section-number">07</div>
+            <h2>Contact</h2>
+            <p>Have a question or want to work together? Reach out.</p>
+        </div>
+        @if (Model.Contacts?.Any() == true)
+        {
+            <div class="read-more-container" data-section="contact">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                    @{ var contactList = Model.Contacts.ToList(); }
+                    @foreach (var c in contactList.Take(3))
+                    {
+                        var type = c.ContactType?.Trim() ?? "";
+                        var (hasLink, href) = BuildContactLink(type, c.ContactValue);
+                        var icon = ContactIcon(type);
 
-                    <div class="col">
-                        <div class="portfolio-card card card-contact h-100 position-relative overflow-hidden">
-                            <div class="pc-accent"></div>
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex align-items-start justify-content-between mb-2">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="contact-icon-wrapper">
-                                            <i class="@icon contact-icon" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="fw-semibold small text-truncate contact-type" title="@type">
-                                            @type
-                                        </span>
+                        <div class="col">
+                            <div class="portfolio-card card card-contact h-100 position-relative overflow-hidden">
+                                <div class="pc-accent"></div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex align-items-start justify-content-between mb-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="contact-icon-wrapper">
+                                                <i class="@icon contact-icon" aria-hidden="true"></i>
+                                            </span>
+                                            <span class="fw-semibold small text-truncate contact-type" title="@type">
+                                                @type
+                                            </span>
+                                        </div>
+                                        <div class="d-flex gap-1">
+                                            <button type="button"
+                                                    class="btn btn-clip btn-xs btn-copy-contact"
+                                                    data-copy="@c.ContactValue"
+                                                    aria-label="Copy @type">
+                                                <i class="bi bi-clipboard"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="d-flex gap-1">
-                                        <button type="button"
-                                                class="btn btn-clip btn-xs btn-copy-contact"
-                                                data-copy="@c.ContactValue"
-                                                aria-label="Copy @type">
-                                            <i class="bi bi-clipboard"></i>
-                                        </button>
+
+                                    <div class="mt-auto">
+                                        @if (hasLink)
+                                        {
+                                            <a href="@href"
+                                               class="contact-value small text-decoration-none d-inline-flex align-items-center gap-1"
+                                               target="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "_blank" : "_self")"
+                                               rel="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "noopener" : null)"
+                                               title="@c.ContactValue">
+                                                <span class="text-truncate">@c.ContactValue</span>
+                                                @if (href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    <i class="bi bi-box-arrow-up-right opacity-75 small"></i>
+                                                }
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="contact-value small text-muted text-break" title="@c.ContactValue">
+                                                @c.ContactValue
+                                            </span>
+                                        }
                                     </div>
                                 </div>
-
-                                <div class="mt-auto">
-                                    @if (hasLink)
-                                    {
-                                        <a href="@href"
-                                           class="contact-value small text-decoration-none d-inline-flex align-items-center gap-1"
-                                           target="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "_blank" : "_self")"
-                                           rel="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "noopener" : null)"
-                                           title="@c.ContactValue">
-                                            <span class="text-truncate">@c.ContactValue</span>
-                                            @if (href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                <i class="bi bi-box-arrow-up-right opacity-75 small"></i>
-                                            }
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="contact-value small text-muted text-break" title="@c.ContactValue">
-                                            @c.ContactValue
-                                        </span>
-                                    }
-                                </div>
+                                <div class="pc-hover-glow"></div>
                             </div>
-                            <div class="pc-hover-glow"></div>
+                        </div>
+                    }
+                </div>
+
+                @if (contactList.Count > 3)
+                {
+                    <div class="hidden-items">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mt-3">
+                            @foreach (var c in contactList.Skip(3))
+                            {
+                                var type = c.ContactType?.Trim() ?? "";
+                                var (hasLink, href) = BuildContactLink(type, c.ContactValue);
+                                var icon = ContactIcon(type);
+
+                                <div class="col">
+                                    <div class="portfolio-card card card-contact h-100 position-relative overflow-hidden">
+                                        <div class="pc-accent"></div>
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="contact-icon-wrapper">
+                                                        <i class="@icon contact-icon" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span class="fw-semibold small text-truncate contact-type" title="@type">
+                                                        @type
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex gap-1">
+                                                    <button type="button"
+                                                            class="btn btn-clip btn-xs btn-copy-contact"
+                                                            data-copy="@c.ContactValue"
+                                                            aria-label="Copy @type">
+                                                        <i class="bi bi-clipboard"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-auto">
+                                                @if (hasLink)
+                                                {
+                                                    <a href="@href"
+                                                       class="contact-value small text-decoration-none d-inline-flex align-items-center gap-1"
+                                                       target="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "_blank" : "_self")"
+                                                       rel="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "noopener" : null)"
+                                                       title="@c.ContactValue">
+                                                        <span class="text-truncate">@c.ContactValue</span>
+                                                        @if (href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                                                        {
+                                                            <i class="bi bi-box-arrow-up-right opacity-75 small"></i>
+                                                        }
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="contact-value small text-muted text-break" title="@c.ContactValue">
+                                                        @c.ContactValue
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="pc-hover-glow"></div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
+                    <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="contact">
+                        <span class="toggle-text">Show More</span>
+                    </button>
                 }
             </div>
-            
-            @if (contactList.Count > 3)
-            {
-                <div class="hidden-items">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mt-3">
-                        @foreach (var c in contactList.Skip(3))
-                        {
-                            var type = c.ContactType?.Trim() ?? "";
-                            var (hasLink, href) = BuildContactLink(type, c.ContactValue);
-                            var icon = ContactIcon(type);
-
-                            <div class="col">
-                                <div class="portfolio-card card card-contact h-100 position-relative overflow-hidden">
-                                    <div class="pc-accent"></div>
-                                    <div class="card-body d-flex flex-column">
-                                        <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="contact-icon-wrapper">
-                                                    <i class="@icon contact-icon" aria-hidden="true"></i>
-                                                </span>
-                                                <span class="fw-semibold small text-truncate contact-type" title="@type">
-                                                    @type
-                                                </span>
-                                            </div>
-                                            <div class="d-flex gap-1">
-                                                <button type="button"
-                                                        class="btn btn-clip btn-xs btn-copy-contact"
-                                                        data-copy="@c.ContactValue"
-                                                        aria-label="Copy @type">
-                                                    <i class="bi bi-clipboard"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-auto">
-                                            @if (hasLink)
-                                            {
-                                                <a href="@href"
-                                                   class="contact-value small text-decoration-none d-inline-flex align-items-center gap-1"
-                                                   target="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "_blank" : "_self")"
-                                                   rel="@(href.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "noopener" : null)"
-                                                   title="@c.ContactValue">
-                                                    <span class="text-truncate">@c.ContactValue</span>
-                                                    @if (href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                                                    {
-                                                        <i class="bi bi-box-arrow-up-right opacity-75 small"></i>
-                                                    }
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                <span class="contact-value small text-muted text-break" title="@c.ContactValue">
-                                                    @c.ContactValue
-                                                </span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="pc-hover-glow"></div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <button class="btn btn-sm btn-outline-primary toggle-btn" data-section="contact">
-                    <span class="toggle-text">Show More</span>
-                </button>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info mb-0">No contact entries.</div>
-    }
+        }
+        else
+        {
+            <div class="alert alert-info mb-0">No contact entries.</div>
+        }
     </div>
 </section>
 
@@ -1125,5 +1228,3 @@
         })();
     </script>
 }
-
-

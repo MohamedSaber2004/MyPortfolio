@@ -1,321 +1,202 @@
-# Professional Prompt – Redesign Authentication (Login & Register) Pages
+Prompt
 
-You are a Senior ASP.NET Core MVC Frontend Engineer, UI/UX Designer, and CSS Architecture Expert.
-
-First, analyze the entire repository and understand the authentication layout, shared layouts, partial views, CSS files, JavaScript, Bootstrap grid system, and responsive behavior before making any modifications.
+You are a Senior ASP.NET Core MVC Engineer, Frontend Architect, and CSS Debugging Expert.
 
 Repository:
 https://github.com/MohamedSaber2004/MyPortfolio
 
-## Objective
+Objective
 
-Completely redesign the **Login** and **Register** pages to achieve a premium, modern, responsive authentication experience.
+Before redesigning the UI, perform a complete frontend audit to identify the root cause of why the authentication pages (Login and Register) have broken layouts even though the CSS files appear to be loading.
 
-The current authentication pages suffer from severe layout issues, including:
+Do not apply temporary CSS fixes. Find and fix the underlying issue.
 
-* Excessive width
-* Broken margins
-* Incorrect padding
-* Poor content alignment
-* Forms stretched across the full screen
-* Weak visual hierarchy
-* Inconsistent spacing
-* Large empty areas
-* Generic Bootstrap appearance
+Phase 1 – Root Cause Analysis
 
-Fix the **root cause** instead of applying CSS overrides.
+Analyze the entire authentication system, including:
 
----
+Layouts
+_Layout.cshtml
+_AuthLayout.cshtml (if present)
+Shared layouts
+Partial views
 
-# 1. Authentication Layout
+Verify that the correct layout is used by Login and Register.
 
-Replace the current full-width form with a professional centered authentication layout.
+CSS Loading
 
-Create a maximum content width of approximately **1100px** and center it horizontally and vertically.
+Inspect every stylesheet loaded by the authentication pages.
 
-The layout should be:
+Verify:
 
-```
---------------------------------------------------------
-|                    Authentication Card               |
-|------------------------------------------------------|
-| Left Side (Branding) | Right Side (Login/Register)   |
-|                      |                               |
-| Logo                 | Form Title                   |
-| Short Description    | Subtitle                     |
-| Features             | Inputs                       |
-| Illustration         | Buttons                      |
-|                      | Links                        |
---------------------------------------------------------
-```
+Bootstrap CSS
+Site CSS
+Authentication CSS
+Theme CSS
+Vendor CSS
 
-The authentication container should never span the entire browser width.
+Check:
 
----
+Loading order
+Duplicate imports
+Missing files
+Incorrect paths
+Conflicting styles
+Grid System
 
-# 2. Fix Spacing System
+Inspect whether Bootstrap's grid system is functioning correctly.
 
-Implement a consistent spacing system using an 8px scale:
+Check whether:
 
-* 8px
-* 16px
-* 24px
-* 32px
-* 48px
-* 64px
+.container
+.container-fluid
+.row
+.col-*
 
-Ensure consistent:
+have been overridden.
 
-* Page padding
-* Card padding
-* Input spacing
-* Button spacing
-* Section spacing
-* Margins between headings and forms
+If Bootstrap classes have been redefined, locate where and explain why.
 
-Remove arbitrary margin and padding values.
+Authentication Wrapper
 
----
+Inspect the authentication wrapper.
 
-# 3. Center the Authentication Card
+Determine whether the intended layout should use:
 
-The login and register card should:
+Flexbox
+CSS Grid
+Bootstrap Grid
 
-* Be horizontally centered
-* Be vertically centered (or near center on smaller screens)
-* Have proper spacing from viewport edges
-* Maintain a balanced layout on all screen sizes
+Verify that the wrapper correctly applies:
 
-Avoid stretched forms.
+display:flex
+display:grid
+justify-content
+align-items
+gap
+max-width
+margin:auto
 
----
+If not, explain why.
 
-# 4. Improve Form Width
+CSS Conflicts
 
-Current issue:
+Search the entire project for CSS rules affecting:
 
-The inputs stretch almost the entire browser width.
+container
+row
+col
+card
+form
+form-control
+input
+body
+main
+section
+.auth
+.login
+.register
 
-Fix by:
+Identify any CSS rules overriding Bootstrap or the authentication styles.
 
-* Limiting form width
-* Using proper Bootstrap grid columns
-* Creating comfortable reading width
-* Improving whitespace
+JavaScript
 
----
+Check whether any JavaScript manipulates authentication layout or classes after page load.
 
-# 5. Modern Card Design
+Browser Rendering
 
-Redesign the authentication card with:
+Determine why the page renders as:
 
-* Rounded corners (16–20px)
-* Soft shadow
-* Glassmorphism or subtle dark surface
-* Thin border
-* Modern background
-* Smooth hover effect
+Brand Section
 
-The card should feel like a premium SaaS product.
+↓
 
----
+Login Form
 
-# 6. Branding Panel
+instead of
 
-On desktop, include a left branding panel with:
+Brand Section | Login Form
 
-* Website logo
-* Website name
-* Short marketing message
-* 3–4 feature highlights with icons
-* Optional illustration or abstract graphic
+Provide the exact reason.
 
-Example:
+Phase 2 – Fix Root Cause
 
-✓ Secure Authentication
+After identifying the issue:
 
-✓ Modern Portfolio Platform
+Fix it properly.
 
-✓ Fast & Responsive Experience
+Do NOT use:
 
-✓ Built with ASP.NET Core
+!important
+Fixed margins
+Fixed widths
+Random padding
+CSS hacks
 
-Hide or reposition this panel on mobile devices.
+Instead, restore the intended layout architecture.
 
----
+Phase 3 – Redesign Authentication
 
-# 7. Form Improvements
+Once the root cause is resolved, redesign Login and Register pages.
 
-Improve every form control by adding:
+Requirements:
 
-* Floating labels or well-aligned labels
-* Better placeholders
-* Consistent heights
-* Rounded corners
-* Focus glow
-* Smooth transitions
-* Password visibility toggle
-* Proper validation spacing
+Centered authentication card
+Max width around 1100px
+Two-column desktop layout
+Single-column mobile layout
+Premium SaaS appearance
+Proper spacing system (8px scale)
+Rounded cards
+Soft shadows
+Glassmorphism (optional)
+Professional typography
+Responsive design
+Smooth animations
+Consistent buttons
+Modern inputs
+Google login styling
+Password toggle
+Loading states
+Toast notifications
+Accessible design
 
----
+The authentication pages should resemble those of GitHub, Clerk, Vercel, Stripe, or Linear.
 
-# 8. Buttons
+Phase 4 – Repository-wide UI Audit
 
-Create premium buttons:
+After fixing authentication, analyze every Razor View in the repository.
 
-Primary Button:
+Check for:
 
-* Full width
-* Gradient or brand color
-* Rounded corners
-* Hover animation
-* Active state
-* Loading spinner during submit
+Broken spacing
+Margin inconsistencies
+Padding inconsistencies
+Nested containers
+Duplicate CSS
+Inline styles
+Bootstrap misuse
+Responsive issues
+Poor typography
+Inconsistent cards
+Poor button styles
+Broken grids
 
-Secondary Button (Google Login):
+Create a reusable design system and refactor all views to follow it.
 
-* White/outlined style
-* Proper Google icon
-* Better spacing
-* Hover effect
+Deliverables
 
----
+Provide:
 
-# 9. Typography
+The exact root cause of the authentication layout issue.
+Every file causing the issue.
+Every modified file.
+The reason for each modification.
+A summary of CSS conflicts found.
+Bootstrap issues found.
+Layout issues found.
+Responsive improvements.
+Performance improvements.
+A final UI architecture summary.
 
-Improve typography hierarchy:
-
-Page Title:
-
-* Large
-* Bold
-* Proper spacing
-
-Subtitle:
-
-* Muted color
-* Comfortable line height
-
-Labels:
-
-* Medium weight
-
-Helper text:
-
-* Smaller
-* Secondary color
-
----
-
-# 10. Responsive Design
-
-Ensure excellent responsiveness for:
-
-Desktop
-
-Laptop
-
-Tablet
-
-Mobile
-
-On smaller screens:
-
-* Remove two-column layout
-* Stack content vertically
-* Keep comfortable spacing
-* Maintain centered card
-* Prevent horizontal scrolling
-
----
-
-# 11. Background
-
-Replace the plain background with one of the following:
-
-* Soft gradient
-* Abstract blurred shapes
-* Minimal pattern
-* Glassmorphism background
-* Animated particles (subtle)
-* Professional dark theme
-
-Avoid distracting visuals.
-
----
-
-# 12. JavaScript Enhancements
-
-Add smooth animations:
-
-* Fade-in page
-* Card entrance animation
-* Button ripple
-* Input focus animation
-* Password toggle animation
-* Toast notifications
-* Loading animation during login/register
-* Smooth validation transitions
-
-Animations should be subtle and performance-friendly.
-
----
-
-# 13. Accessibility
-
-Ensure:
-
-* Keyboard navigation
-* Proper focus states
-* Label associations
-* Color contrast compliance
-* ARIA attributes where appropriate
-
----
-
-# 14. CSS Refactoring
-
-Refactor authentication styles by:
-
-* Removing duplicated CSS
-* Removing inline styles
-* Creating reusable authentication components
-* Using CSS variables for spacing, colors, shadows, border radius, and typography
-* Eliminating unnecessary Bootstrap utility classes
-
-Avoid using `!important` unless absolutely necessary.
-
----
-
-# 15. Preserve Existing Functionality
-
-Do NOT modify:
-
-* Authentication logic
-* Identity configuration
-* Controllers
-* Validation logic
-* Backend services
-* Routing
-* API endpoints
-
-Only improve the frontend presentation and layout.
-
----
-
-# Deliverables
-
-After completing the redesign, provide:
-
-1. A summary of all modified files.
-2. The root cause of the layout, padding, and margin issues.
-3. Details of the new authentication layout.
-4. Responsive improvements implemented.
-5. CSS architecture improvements.
-6. JavaScript enhancements added.
-7. Accessibility improvements.
-8. Performance optimizations.
-
-## Expected Result
-
-The final Login and Register pages should resemble the authentication experience of modern SaaS platforms such as **Vercel**, **Linear**, **Stripe**, **GitHub**, or **Clerk**—with a centered authentication card, balanced spacing, refined typography, modern animations, and a polished, production-ready design that feels professional rather than a default Bootstrap form.
+Important: Do not start redesigning until the root cause has been identified and fixed. Avoid cosmetic patches—implement a clean, maintainable solution that follows ASP.NET Core MVC and modern frontend best practices.
