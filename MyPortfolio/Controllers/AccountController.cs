@@ -12,8 +12,7 @@ namespace MyPortfolio.Controllers
     public class AccountController(UserManager<User> _userManager,
                                    RoleManager<Role> _roleManager,
                                    SignInManager<User> _signInManager,
-                                   IMailService _mailService,
-                                   IRoleChangeRequestService _roleChangeRequestService) : Controller
+                                   IMailService _mailService) : Controller
     {
         #region Register
         [HttpGet]
@@ -23,8 +22,6 @@ namespace MyPortfolio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {
-            var isFirstUser = !_userManager.Users.Any();
-
             var user = new User()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -57,24 +54,8 @@ namespace MyPortfolio.Controllers
                     }
                 }
 
-                if (isFirstUser)
-                {
-                    await _userManager.AddToRoleAsync(user, E_Role.Admin.ToString());
-                    TempData["Message"] = "Registration successful. You are the first user and have been assigned as Admin.";
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, E_Role.Pending.ToString());
-
-                    // إنشاء طلب تغيير الصلاحية تلقائياً
-                    var userRole = await _roleManager.FindByNameAsync(E_Role.User.ToString());
-                    if (userRole != null)
-                    {
-                        await _roleChangeRequestService.CreateRequestAsync(user.Id, userRole.Id);
-                    }
-
-                    TempData["Message"] = "Registration successful. Please wait for admin approval.";
-                }
+                await _userManager.AddToRoleAsync(user, E_Role.User.ToString());
+                TempData["Message"] = "Your account has been created successfully. You can now sign in.";
 
                 return RedirectToAction("Login");
             }
@@ -104,19 +85,11 @@ namespace MyPortfolio.Controllers
 
             if (user is not null)
             {
-                var isPending = await _userManager.IsInRoleAsync(user, "Pending");
-                if (isPending)
-                {
-                    ModelState.AddModelError(string.Empty, "Your account is pending approval. Please wait for admin confirmation.");
-                    return View(viewModel);
-                }
-
-                var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-
                 var Result = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
 
                 if (Result.Succeeded)
                 {
+                    var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
                     if (isAdmin)
                     {
                         TempData["Message"] = "Welcome, Admin!";
@@ -174,8 +147,6 @@ namespace MyPortfolio.Controllers
 
             if (user == null)
             {
-                var isFirstUser = !_userManager.Users.Any();
-
                 user = new User
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -212,32 +183,8 @@ namespace MyPortfolio.Controllers
                     }
                 }
 
-                if (isFirstUser)
-                {
-                    await _userManager.AddToRoleAsync(user, E_Role.Admin.ToString());
-                    TempData["Message"] = "Registration successful. You are the first user and have been assigned as Admin.";
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, E_Role.Pending.ToString());
-
-                    // إنشاء طلب تغيير الصلاحية تلقائياً
-                    var userRole = await _roleManager.FindByNameAsync(E_Role.User.ToString());
-                    if (userRole != null)
-                    {
-                        await _roleChangeRequestService.CreateRequestAsync(user.Id, userRole.Id);
-                    }
-
-                    TempData["Message"] = "Registration successful. Please wait for admin approval.";
-                    return RedirectToAction(nameof(Login));
-                }
-            }
-
-            var isPending = await _userManager.IsInRoleAsync(user, "Pending");
-            if (isPending)
-            {
-                TempData["Message"] = "Your account is pending approval. Please wait for admin confirmation.";
-                return RedirectToAction(nameof(Login));
+                await _userManager.AddToRoleAsync(user, E_Role.User.ToString());
+                TempData["Message"] = "Your account has been created successfully. You can now sign in.";
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);

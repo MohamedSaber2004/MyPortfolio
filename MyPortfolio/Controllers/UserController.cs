@@ -1,4 +1,3 @@
-using BusinessLogicLayer.Services.Interfaces;
 using DataAccessLayer.Models.RoleModels;
 using DataAccessLayer.Models.UserModels;
 using DataAccessLayer.Data.Contexts;
@@ -13,10 +12,8 @@ namespace MyPortfolio.Controllers
     [Authorize(Roles = "Admin")]
     public class UserController(UserManager<User> _userManager,
                                 RoleManager<Role> _roleManager,
-                                IUserService _userService,
                                 IWebHostEnvironment _environment,
-                                ILogger<UserController> _logger,
-                                PortfolioDbContext _dbContext) : Controller
+                                ILogger<UserController> _logger) : Controller
     {
         public async Task<IActionResult> Index(string? SearchUserName)
         {
@@ -32,7 +29,6 @@ namespace MyPortfolio.Controllers
             }
 
             var users = await querableUsers.ToListAsync();
-            ViewBag.PendingCount = await _userService.GetPendingUserCountAsync();
 
             var userViewModels = new List<UserViewModel>();
 
@@ -53,72 +49,6 @@ namespace MyPortfolio.Controllers
 
             return View(userViewModels);
         }
-
-
-        #region Pending Users
-        [HttpGet]
-        public async Task<IActionResult> PendingUsers()
-        {
-            var pendingUsers = await _userManager.GetUsersInRoleAsync("Pending");
-            var model = pendingUsers.Select(u => new UserManagerViewModel
-            {
-                Id = u.Id,
-                FullName = $"{u.FullName}",
-                UserName = u.UserName,
-                Email = u.Email,
-                RegisteredAt = u.CreatedOn
-            }).ToList();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ApproveUser(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-                return NotFound();
-
-            await _userManager.RemoveFromRoleAsync(user, "Pending");
-            await _userManager.AddToRoleAsync(user, "User");
-
-            user.LastModifiedOn = DateTime.Now;
-            user.LastModifiedBy = User?.Identity?.Name ?? "System";
-            await _userManager.UpdateAsync(user);
-
-            TempData["Message"] = "User approved successfully.";
-            return RedirectToAction("PendingUsers");
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> RejectUser(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
-                return NotFound();
-
-            // Delete related RoleChangeRequests first
-            var roleChangeRequests = await _dbContext.RoleChangeRequests
-                .Where(r => r.UserId == id)
-                .ToListAsync();
-
-            if (roleChangeRequests.Any())
-            {
-                _dbContext.RoleChangeRequests.RemoveRange(roleChangeRequests);
-                await _dbContext.SaveChangesAsync();
-            }
-
-            user.LastModifiedOn = DateTime.Now;
-            user.LastModifiedBy = User?.Identity?.Name ?? "System";
-            await _userManager.UpdateAsync(user);
-
-            await _userManager.DeleteAsync(user);
-
-            TempData["Message"] = "User rejected and removed.";
-            return RedirectToAction("PendingUsers");
-        }
-        #endregion
 
         #region Details Of Users
         public async Task<IActionResult> Details([FromRoute] string id)
@@ -278,17 +208,6 @@ namespace MyPortfolio.Controllers
                 var user = await _userManager.FindByIdAsync(id);
                 if (user is null)
                     return NotFound();
-
-                // Delete related RoleChangeRequests first
-                var roleChangeRequests = await _dbContext.RoleChangeRequests
-                    .Where(r => r.UserId == id)
-                    .ToListAsync();
-
-                if (roleChangeRequests.Any())
-                {
-                    _dbContext.RoleChangeRequests.RemoveRange(roleChangeRequests);
-                    await _dbContext.SaveChangesAsync();
-                }
 
                 user.IsDeleted = true;
                 user.LastModifiedOn = DateTime.Now;

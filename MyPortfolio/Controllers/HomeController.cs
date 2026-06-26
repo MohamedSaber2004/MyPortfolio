@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using MyPortfolio.Models;
 using MyPortfolio.Models.Home;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MyPortfolio.Controllers
 {
@@ -31,16 +30,6 @@ namespace MyPortfolio.Controllers
             _socialLinkService = socialLinkService;
             _contactService = contactService;
             _educationService = educationService;
-        }
-
-        public IActionResult Welcome()
-        {
-            // إذا كان المستخدم مسجل بالفعل، أعده إلى Home
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
         }
 
         public async Task<IActionResult> Index()

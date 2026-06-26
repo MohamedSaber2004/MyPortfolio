@@ -15,32 +15,20 @@ namespace MyPortfolio.Middleware
         {
             var path = context.Request.Path.Value ?? "";
 
-            // تخطي المسارات المتعلقة بـ authentication والموارد الثابتة
-            if (path.Contains("/signin", StringComparison.OrdinalIgnoreCase) ||
-                path.Contains("/callback", StringComparison.OrdinalIgnoreCase) ||
-                path.Contains("/auth", StringComparison.OrdinalIgnoreCase) ||
-                path.Contains("/account", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/lib", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/css", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/js", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/Images", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/Files", StringComparison.OrdinalIgnoreCase))
+            var publicPaths = new[]
             {
-                await _next(context);
-                return;
-            }
+                "/signin", "/callback", "/auth", "/account",
+                "/api", "/lib", "/css", "/js", "/Images", "/Files"
+            };
 
-            // الصفحة الرئيسية (Home/Index) متاحة للجميع بدون تسجيل دخول
-            // فقط الصفحات الأخرى تحتاج تسجيل دخول
-            var isHomePage = path == "/" ||
-                             string.Equals(path, "/Home", StringComparison.OrdinalIgnoreCase) ||
-                             string.Equals(path, "/Home/Index", StringComparison.OrdinalIgnoreCase);
-
-            if (!isHomePage && context.User.Identity?.IsAuthenticated != true)
+            foreach (var prefix in publicPaths)
             {
-                context.Response.Redirect($"/Account/Login?returnUrl={Uri.EscapeDataString(path)}");
-                return;
+                if (path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) ||
+                    (prefix.Length <= 4 && path.Contains(prefix, StringComparison.OrdinalIgnoreCase) && prefix.StartsWith("/")))
+                {
+                    await _next(context);
+                    return;
+                }
             }
 
             await _next(context);

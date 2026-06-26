@@ -1,38 +1,54 @@
 ﻿@using MyPortfolio.Models.ManagerModels.RoleModels
 @model RoleViewModel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Role Details";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <main class="main-content">
-    <div class="container py-4">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <h1 class="h3 mb-0">Role Details</h1>
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h1 class="page-title">Role Details</h1>
+            <p class="page-subtitle">Detailed information about this role.</p>
         </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-controller="Role" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a asp-action="Index" asp-controller="Role" class="btn btn-ghost">
+                <i class="bi bi-arrow-left"></i> Back to list
+            </a>
+        </div>
+    </div>
 
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">General</span>
-                <span class="badge @(Model.IsDeleted ? "bg-danger" : "bg-success")">
-                    @(Model.IsDeleted ? "Deleted" : "Active")
-                </span>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold" asp-for="RoleName"></label>
-                        <input asp-for="RoleName" class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary" readonly />
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm border-0 fade-in">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <span class="fw-semibold">
+                        <i class="bi bi-shield-lock me-2"></i>General Information
+                    </span>
+                    <span class="badge @(Model.IsDeleted ? "bg-danger" : "bg-success")">
+                        @(Model.IsDeleted ? "Deleted" : "Active")
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="RoleName"></label>
+                            <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">@Model.RoleName</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <div>
+                                <span class="badge @(Model.IsDeleted ? "bg-danger" : "bg-success")">
+                                    @(Model.IsDeleted ? "Deleted" : "Active")
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer bg-white d-flex gap-2">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">
-                    <i class="bi bi-pencil-square"></i> Edit
-                </a>
-                <a asp-action="Index" class="btn btn-outline-dark">Back to list</a>
             </div>
         </div>
     </div>
 </main>
-

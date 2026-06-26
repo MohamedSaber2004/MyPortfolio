@@ -10,11 +10,11 @@
 <main class="main-content">
     @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
     {
-        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3" style="bottom:25px; right:25px; z-index:100;">
-            <div class="toast fade show">
+        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-top-right">
+            <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
-                    <strong class="me-auto text-success">Notice</strong>
-                    <small>Just now</small>
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong class="me-auto">Success</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
@@ -24,7 +24,7 @@
         </div>
     }
 
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
             <h1 class="page-title">Education Management</h1>
             <p class="page-subtitle">View, search, and manage education records.</p>
@@ -36,18 +36,23 @@
         </div>
     </div>
 
-    <div class="card shadow border-0 mb-4">
+    <div class="card shadow-sm border-0 mb-4 fade-in">
         <div class="card-body">
             <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
                 <div class="col-md-9">
-                    <input id="educationSearchName"
-                           name="educationSearchName"
-                           class="form-control"
-                           value="@currentSearch"
-                           placeholder="Search by institution, degree, or field of study" />
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input id="educationSearchName"
+                               name="educationSearchName"
+                               class="form-control border-start-0 ps-0"
+                               value="@currentSearch"
+                               placeholder="Search by institution, degree, or field..." />
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <button id="searchBtn" type="submit" class="btn btn-outline-primary w-100">
+                    <button id="searchBtn" type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search"></i> Search
                     </button>
                 </div>
@@ -61,29 +66,29 @@
             <div class="card shadow border-0">
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped align-middle mb-0">
-                            <thead class="table-light text-center">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="text-center">
                                 <tr>
                                     <th>Institution</th>
                                     <th>Degree</th>
                                     <th>Field Of Study</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
+                                    <th>Dates</th>
                                     <th>Status</th>
-                                    <th>Details</th>
-                                    <th>Edit</th>
-                                    <th>Delete / Restore</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
                                 @foreach (var education in Model)
                                 {
                                     <tr class="@(education.IsDeleted ? "table-danger" : "")">
-                                        <td>@education.InstitutionName</td>
+                                        <td class="fw-semibold">@education.InstitutionName</td>
                                         <td>@education.Degree</td>
                                         <td>@education.FieldOfStudy</td>
-                                        <td>@education.StartDate.ToString("yyyy-MM")</td>
-                                        <td>@education.EndDate.ToString("yyyy-MM")</td>
+                                        <td>
+                                            <span class="d-block small">@education.StartDate.ToString("yyyy-MM")</span>
+                                            <span class="d-block small text-muted">to</span>
+                                            <span class="d-block small">@education.EndDate.ToString("yyyy-MM")</span>
+                                        </td>
                                         <td>
                                             @if (education.IsDeleted)
                                             {
@@ -95,72 +100,74 @@
                                             }
                                         </td>
                                         <td>
-                                            <a class="btn btn-sm btn-info text-white"
-                                               asp-action="Details"
-                                               asp-controller="Education"
-                                               asp-route-Id="@education.Id">
-                                                <i class="bi bi-eye"></i> Details
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-sm btn-warning text-dark"
-                                               asp-action="Edit"
-                                               asp-controller="Education"
-                                               asp-route-Id="@education.Id">
-                                                <i class="bi bi-pencil-square"></i> Edit
-                                            </a>
-                                        </td>
-                                        <td>
-                                            @if (education.IsDeleted)
-                                            {
-                                                <form asp-action="Restore"
-                                                      asp-controller="Education"
-                                                      asp-route-Id="@education.Id"
-                                                      method="post"
-                                                      class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a class="btn btn-sm btn-info"
+                                                   asp-action="Details"
+                                                   asp-controller="Education"
+                                                   asp-route-Id="@education.Id"
+                                                   title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a class="btn btn-sm btn-warning"
+                                                   asp-action="Edit"
+                                                   asp-controller="Education"
+                                                   asp-route-Id="@education.Id"
+                                                   title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                @if (education.IsDeleted)
+                                                {
+                                                    <form asp-action="Restore"
+                                                          asp-controller="Education"
+                                                          asp-route-Id="@education.Id"
+                                                          method="post"
+                                                          class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Restore">
+                                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal-@education.Id"
+                                                            title="Delete">
+                                                        <i class="bi bi-trash"></i>
                                                     </button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <button type="button"
-                                                        class="btn btn-sm btn-danger"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteEducationModal-@education.Id">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </button>
+                                                }
+                                            </div>
 
-                                                <div class="modal fade" id="deleteEducationModal-@education.Id" tabindex="-1" aria-labelledby="deleteEducationModalLabel-@education.Id" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content border-0">
-                                                            <div class="modal-header bg-danger text-white">
-                                                                <h5 class="modal-title" id="deleteEducationModalLabel-@education.Id">
-                                                                    <i class="bi bi-trash me-2"></i> Delete Education
-                                                                </h5>
-                                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                Are you sure you want to delete:
-                                                                <strong>@education.InstitutionName - @education.Degree</strong>?
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <form asp-action="Delete"
-                                                                      asp-controller="Education"
-                                                                      asp-route-Id="@education.Id"
-                                                                      method="post"
-                                                                      class="mt-0">
-                                                                    @Html.AntiForgeryToken()
-                                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                                </form>
-                                                            </div>
+                                            <div class="modal fade" id="deleteModal-@education.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@education.Id" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-sm">
+                                                    <div class="modal-content border-0">
+                                                        <div class="modal-header bg-danger text-white border-0">
+                                                            <h5 class="modal-title" id="deleteModalLabel-@education.Id">
+                                                                <i class="bi bi-trash me-2"></i> Delete Education
+                                                            </h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body text-start">
+                                                            <p class="mb-0">Are you sure you want to delete <strong>@education.InstitutionName - @education.Degree</strong>?</p>
+                                                        </div>
+                                                        <div class="modal-footer border-0">
+                                                            <form asp-action="Delete"
+                                                                  asp-controller="Education"
+                                                                  asp-route-Id="@education.Id"
+                                                                  method="post"
+                                                                  class="mt-0">
+                                                                @Html.AntiForgeryToken()
+                                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-danger">
+                                                                    <i class="bi bi-trash me-1"></i> Delete
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            }
+                                            </div>
                                         </td>
                                     </tr>
                                 }
@@ -172,8 +179,19 @@
         }
         else
         {
-            <div class="alert alert-info mt-2 mb-0">
-                <h4 class="mb-0">No education records found.</h4>
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                        <h4>No Education Records Found</h4>
+                        <p>There are no education records to display. Add a new education to get started.</p>
+                        <a class="btn btn-primary" asp-controller="Education" asp-action="Create">
+                            <i class="bi bi-plus-lg"></i> Add New Education
+                        </a>
+                    </div>
+                </div>
             </div>
         }
     </div>
@@ -181,31 +199,23 @@
 
 @section Scripts {
     <script>
-        (function () {
-            const btn = document.getElementById('searchBtn');
-            const input = document.getElementById('educationSearchName');
-            const containerSelector = '#educationTableContainer';
-
-            if (btn && input) {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const val = input.value;
-                    fetch('@Url.Action("Index","Education")?educationSearchName=' + encodeURIComponent(val), {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                        .then(r => r.text())
-                        .then(html => {
-                            const temp = document.createElement('div');
-                            temp.innerHTML = html;
-                            const newContent = temp.querySelector(containerSelector);
-                            if (newContent) {
-                                document.querySelector(containerSelector).innerHTML = newContent.innerHTML;
-                            }
-                        })
-                        .catch(console.error);
-                });
+        $(function () {
+            var toastEl = document.getElementById('successToast');
+            if (toastEl) {
+                setTimeout(function () {
+                    var toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                    toast.hide();
+                }, 5000);
             }
-        })();
+
+            $('#searchBtn').on('click', function (e) {
+                e.preventDefault();
+                var searchValue = $('#educationSearchName').val();
+                $.get('@Url.Action("Index", "Education")', { educationSearchName: searchValue }, function (data) {
+                    var newTable = $(data).find('#educationTableContainer').html();
+                    $('#educationTableContainer').html(newTable);
+                });
+            });
+        });
     </script>
 }
-

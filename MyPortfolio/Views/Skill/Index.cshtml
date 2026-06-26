@@ -1,5 +1,6 @@
 ﻿@using BusinessLogicLayer.DTos.SkillDTos
 @model IEnumerable<SkillDto>
+
 @{
     ViewData["Title"] = "Skills";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -8,11 +9,11 @@
 <main class="main-content">
     @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
     {
-        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3" style="bottom: 25px; right:25px; z-index: 100;">
-            <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-top-right">
+            <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
-                    <strong class="me-auto text-success">Success!!</strong>
-                    <small>Just now</small>
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong class="me-auto">Success</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
@@ -22,7 +23,7 @@
         </div>
     }
 
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
             <h1 class="page-title">Skill Management</h1>
             <p class="page-subtitle">View, search, and manage all skills.</p>
@@ -34,19 +35,26 @@
         </div>
     </div>
 
-    <div class="card shadow border-0 mb-4">
+    <div class="card shadow-sm border-0 mb-4 fade-in">
         <div class="card-body">
             <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
                 <div class="col-md-8">
-                    <input id="searchSkillName"
-                           class="form-control"
-                           type="text"
-                           name="skillSearchName"
-                           value="@(Context?.Request?.Query["skillSearchName"].ToString())"
-                           placeholder="Search Skill By Name or Level" />
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input id="searchSkillName"
+                               class="form-control border-start-0 ps-0"
+                               type="text"
+                               name="skillSearchName"
+                               value="@(Context?.Request?.Query["skillSearchName"].ToString())"
+                               placeholder="Search by name or level..." />
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <button id="searchBtn" type="submit" class="btn btn-outline-primary w-100">Search</button>
+                    <button id="searchBtn" type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
                 </div>
             </form>
         </div>
@@ -56,113 +64,126 @@
         @if (Model?.Any() ?? false)
         {
             <div class="card shadow border-0">
-                <div class="card-body">
-                    <table class="table table-hover table-striped align-middle mb-0">
-                        <thead class="table-light text-center">
-                            <tr>
-                                <th>@Html.DisplayNameFor(m => m.First().SkillName)</th>
-                                <th>@Html.DisplayNameFor(m => m.First().ProficiencyLevel)</th>
-                                <th>Status</th>
-                                <th>Details</th>
-                                <th>Update</th>
-                                <th>Delete / Restore</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-center">
-                            @foreach (var skill in Model)
-                            {
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="text-center">
                                 <tr>
-                                    <td>@skill.SkillName</td>
-                                    <td>@skill.ProficiencyLevel</td>
-                                    <td>
-                                        @if (skill.IsDeleted)
-                                        {
-                                            <span class="badge bg-danger">Deleted</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success">Active</span>
-                                        }
-                                    </td>
+                                    <th>@Html.DisplayNameFor(m => m.First().SkillName)</th>
+                                    <th>@Html.DisplayNameFor(m => m.First().ProficiencyLevel)</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                @foreach (var skill in Model)
+                                {
+                                    <tr class="@(skill.IsDeleted ? "table-danger" : "")">
+                                        <td class="fw-semibold">@skill.SkillName</td>
+                                        <td>@skill.ProficiencyLevel</td>
+                                        <td>
+                                            @if (skill.IsDeleted)
+                                            {
+                                                <span class="badge bg-danger">Deleted</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a asp-action="Details"
+                                                   asp-controller="Skill"
+                                                   asp-route-id="@skill.Id"
+                                                   class="btn btn-sm btn-info"
+                                                   title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit"
+                                                   asp-controller="Skill"
+                                                   asp-route-id="@skill.Id"
+                                                   class="btn btn-sm btn-warning"
+                                                   title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                @if (skill.IsDeleted)
+                                                {
+                                                    <form asp-action="Restore"
+                                                          asp-controller="Skill"
+                                                          asp-route-id="@skill.Id"
+                                                          method="post"
+                                                          class="d-inline">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-success" title="Restore">
+                                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal-@skill.Id"
+                                                            title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                }
+                                            </div>
 
-                                    <td>
-                                        <a asp-action="Details"
-                                           asp-controller="Skill"
-                                           asp-route-id="@skill.Id"
-                                           class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye"></i> Details
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a asp-action="Edit"
-                                           asp-controller="Skill"
-                                           asp-route-id="@skill.Id"
-                                           class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil-square"></i> Edit
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @if (skill.IsDeleted)
-                                        {
-                                            <form asp-action="Restore"
-                                                  asp-controller="Skill"
-                                                  asp-route-id="@skill.Id"
-                                                  method="post"
-                                                  class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-success">
-                                                    <i class="bi bi-arrow-counterclockwise"></i> Restore
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <button type="button"
-                                                    class="btn btn-sm btn-danger"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#DeleteModal-@skill.Id">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        }
-
-                                        <div class="modal fade" id="DeleteModal-@skill.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@skill.Id" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content border-0">
-                                                    <div class="modal-header bg-danger text-white">
-                                                        <h5 class="modal-title" id="deleteModalLabel-@skill.Id">
-                                                            <i class="bi bi-trash me-2"></i> Delete Skill
-                                                        </h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        Are you sure you want to delete the skill "@skill.SkillName"?
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <form asp-action="Delete"
-                                                              asp-controller="Skill"
-                                                              asp-route-id="@skill.Id"
-                                                              method="post"
-                                                              class="mt-0">
-                                                            @Html.AntiForgeryToken()
-                                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                                        </form>
+                                            <div class="modal fade" id="deleteModal-@skill.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@skill.Id" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-sm">
+                                                    <div class="modal-content border-0">
+                                                        <div class="modal-header bg-danger text-white border-0">
+                                                            <h5 class="modal-title" id="deleteModalLabel-@skill.Id">
+                                                                <i class="bi bi-trash me-2"></i> Delete Skill
+                                                            </h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body text-start">
+                                                            <p class="mb-0">Are you sure you want to delete <strong>@skill.SkillName</strong>?</p>
+                                                        </div>
+                                                        <div class="modal-footer border-0">
+                                                            <form asp-action="Delete"
+                                                                  asp-controller="Skill"
+                                                                  asp-route-id="@skill.Id"
+                                                                  method="post"
+                                                                  class="mt-0">
+                                                                @Html.AntiForgeryToken()
+                                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-danger">
+                                                                    <i class="bi bi-trash me-1"></i> Delete
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         }
         else
         {
-            <div class="alert alert-info mt-2 mb-0">
-                <h4 class="mb-0">No Skills Found!</h4>
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <h4>No Skills Found</h4>
+                        <p>There are no skills to display. Create a new skill to get started.</p>
+                        <a class="btn btn-primary" asp-controller="Skill" asp-action="Create">
+                            <i class="bi bi-plus-lg"></i> Add New Skill
+                        </a>
+                    </div>
+                </div>
             </div>
         }
     </div>
@@ -171,6 +192,14 @@
 @section Scripts {
     <script>
         $(function () {
+            var toastEl = document.getElementById('successToast');
+            if (toastEl) {
+                setTimeout(function () {
+                    var toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                    toast.hide();
+                }, 5000);
+            }
+
             $('#searchBtn').on('click', function (e) {
                 e.preventDefault();
                 var searchValue = $('#searchSkillName').val();
@@ -182,4 +211,3 @@
         });
     </script>
 }
-

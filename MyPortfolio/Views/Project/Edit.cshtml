@@ -23,14 +23,29 @@
 }
 
 <main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
             <h1 class="page-title">Edit Project</h1>
             <p class="page-subtitle">Update project details.</p>
         </div>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-secondary" asp-action="Index">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
     </div>
 
-    <div class="card shadow border-0">
+    @if (Model?.IsDeleted == true)
+    {
+        <div class="alert alert-warning d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>
+                This record is currently marked as deleted. You can update fields and save to keep it archived, or use Restore from the list to reactivate it.
+            </div>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 fade-in">
         <div class="card-body">
             <form asp-action="Edit"
                   asp-route-id="@Model!.Id"
@@ -79,8 +94,7 @@
                         <label class="form-label">Current Image</label>
                         <div class="mb-2">
                             <img src="@currentImgSrc"
-                                 class="img-thumbnail"
-                                 style="max-height:200px;"
+                                 class="img-thumbnail img-preview"
                                  alt="Current project image"
                                  onerror="this.onerror=null;this.src='@Url.Content("~/images/placeholders/project-placeholder.png")';" />
                         </div>
@@ -91,7 +105,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4">
+                <div class="mt-4 d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                 </div>
@@ -99,3 +113,25 @@
         </div>
     </div>
 </main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const start = document.getElementById('StartDate');
+            const end = document.getElementById('EndDate');
+            if (start && end) {
+                start.addEventListener('change', () => {
+                    if (start.value) {
+                        end.min = start.value;
+                        if (end.value && end.value < start.value) {
+                            end.value = start.value;
+                        }
+                    } else {
+                        end.removeAttribute('min');
+                    }
+                });
+            }
+        })();
+    </script>
+}

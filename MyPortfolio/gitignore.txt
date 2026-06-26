@@ -1,6 +1,0 @@
-﻿namespace MyPortfolio
-{
-    public class gitignore
-    {
-    }
-}

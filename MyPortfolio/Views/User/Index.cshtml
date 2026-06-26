@@ -1,4 +1,4 @@
-﻿ @using MyPortfolio.Models.ManagerModels.UserModels
+﻿@using MyPortfolio.Models.ManagerModels.UserModels
 @model IEnumerable<UserViewModel>
 @{
     ViewData["Title"] = "Users";
@@ -7,10 +7,11 @@
 
 @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
 {
-    <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3" style="bottom: 25px; right:25px; z-index: 100;">
-        <div class="toast fade show " role="alert" aria-live="assertive" aria-atomic="true">
+    <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-bottom-right">
+        <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <strong class="me-auto text-success">Success!!</strong>
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong class="me-auto">Success</strong>
                 <small>Just now</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -22,33 +23,28 @@
 }
 
 <main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between">
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
             <h1 class="page-title">User Management</h1>
             <p class="page-subtitle">View, search, and manage all users in the system.</p>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="PendingUsers" asp-controller="User" class="btn btn-warning position-relative">
-                <i class="bi bi-person-check"></i> Pending Requests
-                @if (ViewBag.PendingCount > 0)
-                {
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        @ViewBag.PendingCount
-                    </span>
-                }
-            </a>
-        </div>
     </div>
-    
 
-    <div class="card shadow border-0 mb-4">
+    <div class="card shadow-sm border-0 mb-4 fade-in">
         <div class="card-body">
             <form id="userSearchForm" class="row g-2 align-items-center" autocomplete="off">
                 <div class="col-md-8">
-                    <input class="form-control" type="text" id="searchUserName" name="SearchUserName" placeholder="Search User By Name" />
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input class="form-control border-start-0 ps-0" type="text" id="searchUserName" name="SearchUserName" placeholder="Search user by name..." />
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <button type="button" id="searchBtn" class="btn btn-outline-primary w-100">Search</button>
+                    <button type="button" id="searchBtn" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
                 </div>
             </form>
         </div>
@@ -57,70 +53,78 @@
     <div id="userTableContainer">
         @if (Model?.Any() ?? false)
         {
-            <div class="card shadow border-0">
-                <div class="card-body">
-                    <table class="table table-hover table-striped align-middle mb-0">
-                        <thead class="table-light text-center">
+            <div class="card shadow-sm border-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
                                 <th>@Html.DisplayNameFor(U => U.FullName)</th>
                                 <th>@Html.DisplayNameFor(U => U.Email)</th>
                                 <th>@Html.DisplayNameFor(U => U.UserName)</th>
                                 <th>@Html.DisplayNameFor(U => U.Roles)</th>
-                                <th>Details</th>
-                                <th>Update</th>
-                                <th>Delete</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="text-center">
+                        <tbody>
                             @foreach (var user in Model)
                             {
                                 <tr>
-                                    <td>@user.FullName</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="profile-avatar avatar-sm">
+                                                @user.FullName.Substring(0, Math.Min(2, user.FullName.Length)).ToUpper()
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">@user.FullName</div>
+                                                @if (user.IsDeleted)
+                                                {
+                                                    <span class="badge bg-danger badge-sm">Deleted</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>@user.Email</td>
                                     <td>@user.UserName</td>
                                     <td>
                                         @if (user.Roles.Any())
                                         {
-                                            <select name="SelectedRole" class="form-control" disabled>
+                                            <div class="d-flex flex-wrap gap-1">
                                                 @foreach (var role in user.Roles)
                                                 {
-                                                    <option value="@role">@role</option>
+                                                    <span class="badge bg-primary">@role</span>
                                                 }
-                                            </select>
+                                            </div>
                                         }
                                         else
                                         {
-                                            <span class="text-muted">No Roles</span>
+                                            <span class="text-muted small">—</span>
                                         }
                                     </td>
                                     <td>
-                                        <a asp-action="Details" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye"></i> Details
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a asp-action="Edit" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil"></i> Update
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @if (user.IsDeleted)
-                                        {
-                                            <form asp-action="Restore" asp-controller="User" asp-route-id="@user.Id" method="post" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-success">
-                                                    <i class="bi bi-arrow-counterclockwise"></i> Restore
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <a asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i> Delete
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a asp-action="Details" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-ghost" title="Details">
+                                                <i class="bi bi-eye"></i>
                                             </a>
-                                        }
+                                            <a asp-action="Edit" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-ghost" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            @if (user.IsDeleted)
+                                            {
+                                                <form asp-action="Restore" asp-controller="User" asp-route-id="@user.Id" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-ghost text-success" title="Restore">
+                                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-ghost text-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            }
+                                        </div>
                                     </td>
-                                   
                                 </tr>
                             }
                         </tbody>
@@ -130,22 +134,40 @@
         }
         else
         {
-            <div class="alert alert-info mt-4">
-                <h4>No User Found!</h4>
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h4>No Users Found</h4>
+                <p>No users match your search criteria. Try adjusting your search term.</p>
             </div>
         }
     </div>
 </main>
-<script>
-    $(function () {
-        // Dynamic search
-        $('#searchBtn').on('click', function (e) {
-            e.preventDefault();
-            var searchValue = $('#searchUserName').val();
-            $.get('@Url.Action("Index", "User")', { SearchUserName: searchValue }, function (data) {
-                var newTable = $(data).find('#userTableContainer').html();
-                $('#userTableContainer').html(newTable);
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $('#searchBtn').on('click', function (e) {
+                e.preventDefault();
+                var searchValue = $('#searchUserName').val();
+                $.get('@Url.Action("Index", "User")', { SearchUserName: searchValue }, function (data) {
+                    var newTable = $(data).find('#userTableContainer').html();
+                    $('#userTableContainer').html(newTable);
+                });
             });
+
+            $('#searchUserName').on('keypress', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $('#searchBtn').trigger('click');
+                }
+            });
+
+            setTimeout(function () {
+                $('.toast').toast('hide');
+            }, 5000);
         });
-    });
-</script>
+    </script>
+}

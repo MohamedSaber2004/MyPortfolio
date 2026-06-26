@@ -4,15 +4,15 @@
 
 <main class="main-content">
     <div class="page-header">
-        <h1 class="page-title">Dashboard Overview</h1>
-        <p class="page-subtitle">Welcome back! Here's what's happening with your portfolio.</p>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Overview of your portfolio activity and quick management tools.</p>
     </div>
 
     <!-- Welcome Banner -->
     <div class="welcome-banner fade-in">
-        <div class="welcome-text">
-            <h2>👋 Good to see you, Admin!</h2>
-            <p>Your portfolio is live and looking great. Manage your content below.</p>
+        <div>
+            <h2><i class="bi bi-stars"></i> Welcome back, Admin</h2>
+            <p>Your portfolio is live and performing. Here's the latest snapshot.</p>
         </div>
         <a asp-controller="Home" asp-action="Index" target="_blank" class="welcome-badge">
             <i class="bi bi-eye me-1"></i> View Portfolio
@@ -20,6 +20,7 @@
     </div>
 
     <!-- Quick Actions -->
+    <div class="dashboard-section-title fade-in"><i class="bi bi-lightning"></i> Quick Actions</div>
     <div class="quick-actions fade-in">
         <a asp-controller="Project" asp-action="Create" class="quick-action-card">
             <i class="bi bi-plus-circle-fill"></i>
@@ -47,80 +48,84 @@
         </a>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-        <div class="stat-card">
+    <!-- Stats Grid -->
+    <div class="dashboard-section-title fade-in"><i class="bi bi-graph-up-arrow"></i> Analytics Overview</div>
+    <div class="stats-grid fade-in">
+        <div class="stat-card type-primary">
             <div class="stat-header">
-                <div class="stat-title">Total Users</div>
-                <div class="stat-icon primary">
-                    <i class="bi bi-people-fill"></i>
-                </div>
+                <span class="stat-title">Total Users</span>
+                <div class="stat-icon primary"><i class="bi bi-people-fill"></i></div>
             </div>
             <div class="stat-value">2,847</div>
-            <div class="stat-change positive">
-                <i class="bi bi-arrow-up-short"></i>
-                <span>+12.5% from last month</span>
+            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +12.5% from last month</div>
+            <div class="stat-sparkline">
+                <span class="bar" style="height:12px"></span>
+                <span class="bar" style="height:18px"></span>
+                <span class="bar" style="height:8px"></span>
+                <span class="bar" style="height:22px"></span>
+                <span class="bar" style="height:16px"></span>
+                <span class="bar" style="height:28px"></span>
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card type-success">
             <div class="stat-header">
-                <div class="stat-title">Active Projects</div>
-                <div class="stat-icon success">
-                    <i class="bi bi-folder-check"></i>
-                </div>
+                <span class="stat-title">Active Projects</span>
+                <div class="stat-icon success"><i class="bi bi-folder-check"></i></div>
             </div>
             <div class="stat-value">24</div>
-            <div class="stat-change positive">
-                <i class="bi bi-arrow-up-short"></i>
-                <span>+3 new this week</span>
+            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +3 new this week</div>
+            <div class="stat-sparkline">
+                <span class="bar" style="height:8px"></span>
+                <span class="bar" style="height:14px"></span>
+                <span class="bar" style="height:10px"></span>
+                <span class="bar" style="height:20px"></span>
+                <span class="bar" style="height:16px"></span>
+                <span class="bar" style="height:24px"></span>
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card type-info">
             <div class="stat-header">
-                <div class="stat-title">Portfolio Views</div>
-                <div class="stat-icon info">
-                    <i class="bi bi-eye-fill"></i>
-                </div>
+                <span class="stat-title">Portfolio Views</span>
+                <div class="stat-icon info"><i class="bi bi-eye-fill"></i></div>
             </div>
             <div class="stat-value">1,204</div>
-            <div class="stat-change positive">
-                <i class="bi bi-arrow-up-short"></i>
-                <span>+8.2% from last month</span>
+            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +8.2% from last month</div>
+            <div class="stat-sparkline">
+                <span class="bar" style="height:4px"></span>
+                <span class="bar" style="height:10px"></span>
+                <span class="bar" style="height:18px"></span>
+                <span class="bar" style="height:12px"></span>
+                <span class="bar" style="height:22px"></span>
+                <span class="bar" style="height:28px"></span>
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card type-warning">
             <div class="stat-header">
-                <div class="stat-title">Skills Listed</div>
-                <div class="stat-icon warning">
-                    <i class="bi bi-lightning-charge-fill"></i>
-                </div>
+                <span class="stat-title">Skills Listed</span>
+                <div class="stat-icon warning"><i class="bi bi-lightning-charge-fill"></i></div>
             </div>
             <div class="stat-value">18</div>
-            <div class="stat-change positive">
-                <i class="bi bi-arrow-up-short"></i>
-                <span>+2 recently added</span>
+            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +2 recently added</div>
+            <div class="stat-sparkline">
+                <span class="bar" style="height:10px"></span>
+                <span class="bar" style="height:16px"></span>
+                <span class="bar" style="height:12px"></span>
+                <span class="bar" style="height:18px"></span>
+                <span class="bar" style="height:20px"></span>
+                <span class="bar" style="height:22px"></span>
             </div>
         </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Charts -->
     <div class="charts-grid fade-in">
         <div class="chart-card">
             <div class="chart-header">
-                <h3 class="chart-title">Portfolio Views — 2025</h3>
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Last 12 months
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Last 7 days</a></li>
-                        <li><a class="dropdown-item" href="#">Last 30 days</a></li>
-                        <li><a class="dropdown-item" href="#">Last 90 days</a></li>
-                    </ul>
-                </div>
+                <h3 class="chart-title">Portfolio Views <span class="text-muted fw-normal" style="font-size:0.75rem;">· Last 6 months</span></h3>
+                <span class="chart-action"><i class="bi bi-arrow-up text-success"></i> +8.2%</span>
             </div>
             <div class="chart-container">
                 <canvas id="analyticsChart"></canvas>
@@ -130,6 +135,7 @@
         <div class="chart-card">
             <div class="chart-header">
                 <h3 class="chart-title">Skills Distribution</h3>
+                <span class="chart-action">by count</span>
             </div>
             <div class="chart-container">
                 <canvas id="skillsChart"></canvas>
@@ -137,11 +143,11 @@
         </div>
     </div>
 
-    <!-- Second Row -->
     <div class="charts-grid fade-in">
         <div class="chart-card">
             <div class="chart-header">
                 <h3 class="chart-title">Projects by Month</h3>
+                <span class="chart-action"><i class="bi bi-calendar3"></i> 2026</span>
             </div>
             <div class="chart-container">
                 <canvas id="portfolioChart"></canvas>
@@ -151,6 +157,7 @@
         <div class="chart-card">
             <div class="chart-header">
                 <h3 class="chart-title">Recent Activity</h3>
+                <span class="chart-action">Latest</span>
             </div>
             <ul class="activity-list">
                 <li class="activity-item">
@@ -163,32 +170,117 @@
                 <li class="activity-item">
                     <div class="activity-icon success"><i class="bi bi-check-circle"></i></div>
                     <div class="activity-content">
-                        <div class="activity-title">Project added</div>
+                        <div class="activity-title">Project "Portfolio v2" published</div>
                         <div class="activity-time">1 hour ago</div>
                     </div>
                 </li>
                 <li class="activity-item">
                     <div class="activity-icon warning"><i class="bi bi-pencil-square"></i></div>
                     <div class="activity-content">
-                        <div class="activity-title">Skill updated</div>
+                        <div class="activity-title">Skill "React Native" updated</div>
                         <div class="activity-time">3 hours ago</div>
                     </div>
                 </li>
                 <li class="activity-item">
                     <div class="activity-icon info"><i class="bi bi-upload"></i></div>
                     <div class="activity-content">
-                        <div class="activity-title">New files uploaded</div>
+                        <div class="activity-title">New profile image uploaded</div>
                         <div class="activity-time">5 hours ago</div>
-                    </div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-icon danger"><i class="bi bi-trash"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">Old entry removed</div>
-                        <div class="activity-time">Yesterday</div>
                     </div>
                 </li>
             </ul>
         </div>
     </div>
 </main>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx1 = document.getElementById('analyticsChart');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+                        datasets: [{
+                            label: 'Views',
+                            data: [450, 620, 810, 750, 920, 1204],
+                            borderColor: '#6366f1',
+                            backgroundColor: function(ctx) {
+                                var g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 280);
+                                g.addColorStop(0, 'rgba(99,102,241,0.25)');
+                                g.addColorStop(1, 'rgba(99,102,241,0)');
+                                return g;
+                            },
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#6366f1',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { maxTicksLimit: 5 } }
+                        }
+                    }
+                });
+            }
+            var ctx2 = document.getElementById('skillsChart');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Backend','Frontend','Database','DevOps','Design'],
+                        datasets: [{
+                            data: [35, 25, 15, 10, 15],
+                            backgroundColor: ['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { usePointStyle: true, padding: 12 }
+                            }
+                        }
+                    }
+                });
+            }
+            var ctx3 = document.getElementById('portfolioChart');
+            if (ctx3) {
+                new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+                        datasets: [{
+                            label: 'Projects',
+                            data: [2, 1, 3, 2, 4, 3],
+                            backgroundColor: '#8b5cf6',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

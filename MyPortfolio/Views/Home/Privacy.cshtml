@@ -1,6 +1,41 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm border-0 fade-in">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="d-flex align-items-center justify-content-center rounded-3 p-2" style="background: var(--clr-primary-subtle); width: 48px; height: 48px;">
+                            <i class="bi bi-shield-check text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h1 class="h3 fw-bold mb-1">@ViewData["Title"]</h1>
+                            <p class="small text-muted mb-0">Last updated: @DateTime.UtcNow.ToString("MMMM yyyy")</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="text-muted" style="line-height: 1.8;">
+                        <p>Your privacy is important to us. This policy outlines how we collect, use, and protect your personal information.</p>
+
+                        <h5 class="fw-semibold mt-4 mb-2 text-primary">Information We Collect</h5>
+                        <p>We collect information you provide directly, such as your name and email address, when you register or contact us.</p>
+
+                        <h5 class="fw-semibold mt-4 mb-2 text-primary">How We Use Your Information</h5>
+                        <p>Your information is used solely for portfolio management, communication, and improving your experience on this site.</p>
+
+                        <h5 class="fw-semibold mt-4 mb-2 text-primary">Data Protection</h5>
+                        <p>We implement security measures to safeguard your data. No sharing with third parties occurs without your consent.</p>
+
+                        <h5 class="fw-semibold mt-4 mb-2 text-primary">Contact</h5>
+                        <p>If you have questions about this policy, please <a href="mailto:dev.mohamed104saber@gmail.com">contact us</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

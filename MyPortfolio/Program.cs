@@ -1,5 +1,4 @@
 using System.Reflection;
-using BusinessLogicLayer.Services.Implementations;
 using MyPortfolio.Middleware;
 using Serilog;
 
@@ -63,23 +62,27 @@ namespace MyPortfolio
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            builder.Services.AddAuthentication(options =>
+            var authBuilder = builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-            })
-            .AddGoogle(options =>
-            {
-                IConfigurationSection configurationBuilder = builder.Configuration.GetSection("Authentication:Google");
-                options.ClientId = configurationBuilder["ClientId"]!;
-                options.ClientSecret = configurationBuilder["ClientSecret"]!;
-                options.CorrelationCookie.SameSite = SameSiteMode.None;
-                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
-            builder.Services.AddAutoMapper(m => m.AddProfile(new mappingProfiles()));
+            var googleSection = builder.Configuration.GetSection("Authentication:Google");
+            var googleClientId = googleSection["ClientId"];
+            var googleClientSecret = googleSection["ClientSecret"];
+            if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
+            {
+                authBuilder.AddGoogle(options =>
+                {
+                    options.ClientId = googleClientId;
+                    options.ClientSecret = googleClientSecret;
+                    options.CorrelationCookie.SameSite = SameSiteMode.None;
+                    options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+                });
+            }
 
-            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddAutoMapper(m => m.AddProfile(new mappingProfiles()));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
@@ -89,7 +92,6 @@ namespace MyPortfolio
             builder.Services.AddScoped<IExperienceService, ExperienceService>();
             builder.Services.AddScoped<ISocialLinkService, SocialLinkService>();
             builder.Services.AddScoped<ISkillService, SkillService>();
-            builder.Services.AddScoped<IRoleChangeRequestService, RoleChangeRequestService>();
             #endregion
 
             var app = builder.Build();

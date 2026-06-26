@@ -1,0 +1,319 @@
+Prompt
+
+You are a Senior Frontend Engineer, UI/UX Designer, and ASP.NET Core MVC specialist.
+
+First, analyze the entire repository and understand the current architecture before making any changes.
+
+Repository:
+https://github.com/MohamedSaber2004/MyPortfolio
+
+Your objective is to completely redesign the application's user interface into a modern, premium, highly interactive portfolio website while preserving all existing functionality and backend logic.
+
+Main Goal
+
+Transform every page from a basic CRUD-style interface into a polished, responsive, professional web application with smooth JavaScript animations and an excellent user experience.
+
+Do NOT break any existing functionality.
+
+UI Design Requirements
+
+Create a modern UI inspired by premium websites such as:
+
+Apple
+Vercel
+Linear
+Stripe
+Framer
+Notion
+GitHub
+Awwwards-winning websites
+
+The design should feel:
+
+Clean
+Premium
+Minimal
+Elegant
+Modern
+Interactive
+
+Avoid generic Bootstrap-looking pages.
+
+Responsive Design
+
+Every page must be fully responsive for:
+
+Desktop
+Laptop
+Tablet
+Mobile
+
+No horizontal scrolling.
+
+No broken layouts.
+
+No overflowing elements.
+
+Use proper spacing and typography.
+
+Global Theme
+
+Create a consistent design system.
+
+Include:
+
+Color palette
+Typography scale
+Button styles
+Card styles
+Border radius
+Shadows
+Hover states
+Focus states
+Animation timing
+Spacing system
+Icon style
+Form style
+
+Every page must follow the same design language.
+
+Layout Improvements
+
+Improve:
+
+Navbar
+Footer
+Sidebar (if exists)
+Hero section
+Sections spacing
+Containers
+Cards
+Tables
+Forms
+Alerts
+Badges
+Modals
+Empty states
+Loading states
+
+Everything should feel consistent.
+
+JavaScript Animations
+
+Implement modern animations using lightweight libraries where appropriate (e.g., AOS, GSAP, Motion One, or vanilla IntersectionObserver). Avoid excessive dependencies.
+
+Include:
+
+Page Load
+Fade in
+Scale in
+Smooth appearance
+Scroll Animations
+
+Animate sections when entering viewport.
+
+Examples:
+
+Fade Up
+Fade Left
+Fade Right
+Zoom
+Slide
+Stagger animations
+
+Animations should trigger once and remain smooth.
+
+Cards
+
+Cards should have:
+
+Hover elevation
+Soft shadow animation
+Slight scale
+Border glow
+Smooth transitions
+Buttons
+
+Buttons should have:
+
+Ripple effect
+Hover animation
+Smooth background transition
+Active state
+Loading spinner
+Navbar
+
+Create:
+
+Sticky navbar
+Blur background on scroll
+Active navigation highlighting
+Smooth mobile menu
+Animated hamburger icon
+Hero Section
+
+Enhance with:
+
+Animated heading
+Typing effect (if suitable)
+Floating elements
+Gradient backgrounds
+CTA hover effects
+Scroll indicator
+Animated statistics counters
+Images
+
+Apply:
+
+Lazy loading
+Fade in on load
+Hover zoom
+Rounded corners
+Soft shadows
+Smooth transitions
+Forms
+
+Improve every form.
+
+Include:
+
+Floating labels
+Animated validation
+Focus glow
+Success animation
+Error shake animation
+Password visibility toggle
+Loading button while submitting
+Tables
+
+Modernize tables.
+
+Include:
+
+Sticky header
+Hover rows
+Rounded corners
+Search animation
+Pagination transitions
+Responsive collapse on mobile
+Dashboard
+
+If dashboards exist:
+
+Create modern cards with:
+
+Icons
+Statistics
+Progress bars
+Animated counters
+Mini charts if appropriate
+Empty States
+
+Every empty page should include:
+
+Illustration
+Friendly message
+Call-to-action button
+Loading Experience
+
+Replace plain loading indicators with:
+
+Skeleton loaders
+Animated placeholders
+Smooth fade transitions
+Toast Notifications
+
+Replace default alerts with modern toast notifications.
+
+Include:
+
+Success
+Error
+Warning
+Info
+
+Animate them smoothly.
+
+Modals
+
+Modern modal design:
+
+Backdrop blur
+Scale animation
+Escape support
+Smooth opening/closing
+Page Transitions
+
+Between pages:
+
+Fade transition
+Smooth loading animation
+Preserve scroll position where appropriate
+Icons
+
+Use a consistent icon library such as:
+
+Lucide
+Heroicons
+Font Awesome
+
+Remove inconsistent icons.
+
+Accessibility
+
+Maintain accessibility by ensuring:
+
+Proper color contrast
+Keyboard navigation
+Focus indicators
+ARIA attributes where needed
+Reduced motion support
+Performance
+
+Animations must remain smooth (target 60 FPS).
+
+Optimize by:
+
+Using CSS transforms instead of layout-changing animations
+Lazy loading assets
+Debouncing scroll events
+Avoiding animation of expensive properties
+Minimizing JavaScript overhead
+Code Quality
+
+Refactor frontend code to:
+
+Remove duplicated CSS
+Remove inline styles
+Organize CSS into reusable components
+Organize JavaScript into reusable modules
+Use semantic HTML
+Improve maintainability
+Preserve Existing Functionality
+
+Do NOT change:
+
+Business logic
+Authentication
+Authorization
+API contracts
+Backend endpoints
+Database logic
+Routing behavior
+
+Only improve presentation and user experience.
+
+Deliverables
+
+After completing the redesign, provide:
+
+A summary of all modified files.
+The purpose of each UI enhancement.
+All animation libraries added and why they were chosen.
+Performance optimizations implemented.
+Accessibility improvements made.
+Responsive design improvements.
+Before/after explanation for major pages.
+Suggestions for future UI enhancements.
+
+The final result should resemble a premium SaaS application or an Awwwards-quality portfolio website, with a cohesive design system, elegant animations, and a polished, production-ready user experience while keeping the existing backend fully intact.

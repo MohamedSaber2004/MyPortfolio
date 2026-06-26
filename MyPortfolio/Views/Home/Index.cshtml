@@ -118,95 +118,82 @@
 }
 
 <style>
-    .read-more-container {
-        position: relative;
+    .hidden-items {
+        display: none !important;
     }
-    
-    .read-more-container .hidden-items {
-        display: none;
-        animation: slideDown 0.3s ease-out;
+    .hidden-items.open {
+        display: block !important;
+        animation: slideDown 0.35s ease-out;
     }
-    
-    .read-more-container.expanded .hidden-items {
-        display: block;
-    }
-    
     .toggle-btn {
         margin-top: 1.5rem;
-        display: flex;
-        justify-content: center;
-        width: auto;
+    }
+    @@keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 </style>
 
-<script>
-    // CSS animation for slideDown - using escaped syntax for Razor
-    const style = document.createElement('style');
-    style.textContent = `
-        @@keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-</script>
-
-@* Pass authentication state to JavaScript *@
-<div id="auth-state" data-authenticated="@User.Identity?.IsAuthenticated.ToString().ToLower()" style="display:none;"></div>
-
-@* Login overlay shown when unauthenticated user clicks anything *@
-<div id="login-gate-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(10,10,20,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); align-items:center; justify-content:center; flex-direction:column; gap:1.5rem;">
-    <div style="background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:1.5rem; padding:2.5rem 3rem; text-align:center; max-width:420px; color:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-        <div style="font-size:3rem; margin-bottom:1rem;">🔐</div>
-        <h2 style="font-size:1.6rem; font-weight:700; margin-bottom:0.75rem;">Sign in to continue</h2>
-        <p style="opacity:0.8; margin-bottom:2rem; line-height:1.6;">You need an account to interact with this portfolio. Please sign in or create a new account.</p>
-        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-            <a href="@Url.Action("Login", "Account")" style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; font-weight:600; padding:0.7rem 1.8rem; border-radius:999px; text-decoration:none; font-size:0.95rem; transition:transform .2s,box-shadow .2s;">
-                <i class="bi bi-box-arrow-in-right"></i> Sign In
-            </a>
-            <a href="@Url.Action("Register", "Account")" style="display:inline-flex; align-items:center; gap:0.5rem; background:transparent; color:#fff; font-weight:600; padding:0.7rem 1.8rem; border-radius:999px; text-decoration:none; font-size:0.95rem; border:2px solid rgba(255,255,255,0.45); transition:transform .2s,background .2s;">
-                <i class="bi bi-pencil-square"></i> Register
-            </a>
-        </div>
-        <button onclick="document.getElementById('login-gate-overlay').style.display='none'" style="margin-top:1.5rem; background:transparent; border:none; color:rgba(255,255,255,0.5); font-size:0.85rem; cursor:pointer; text-decoration:underline;">Continue browsing</button>
-    </div>
-</div>
-
 <div class="hero">
     <h1>@displayName</h1>
-    <p class="lead">Skills · Experience · Projects · Open to opportunities</p>
+    <p class="lead">Software developer crafting clean, scalable, and user-centered digital experiences across the full stack.</p>
+    <div class="hero-badges">
+        <span class="hero-badge"><i class="bi bi-code-slash"></i> Full Stack</span>
+        <span class="hero-badge"><i class="bi bi-cloud"></i> Cloud</span>
+        <span class="hero-badge"><i class="bi bi-people"></i> Open Source</span>
+    </div>
     <div class="hero-cta">
-        <a href="#projects" class="btn-hero-primary">View Projects</a>
-        <a href="#contact" class="btn-hero-outline">Get in Touch</a>
+        <a href="#projects" class="btn-hero-primary"><i class="bi bi-grid"></i> View Projects</a>
+        <a href="#contact" class="btn-hero-outline"><i class="bi bi-chat-dots"></i> Get in Touch</a>
+    </div>
+    <div class="scroll-indicator">
+        <div class="mouse"></div>
+        <span>Scroll to explore</span>
     </div>
 </div>
 
 <!-- About -->
 <section id="about" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>About Me
         </h2>
     </div>
-    <div class="row align-items-center g-4">
-        <div class="col-12 col-md-4 text-center">
-            <img src="@photoUrl"
-                 alt="@displayName"
-                 class="img-fluid rounded-circle shadow-sm border border-3 border-light-subtle"
-                 width="240" height="240" loading="lazy" />
+    <div class="section-decoration">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="row align-items-center g-5 mt-2">
+        <div class="col-12 col-md-5 text-center">
+            <div class="position-relative d-inline-block">
+                <img src="@photoUrl"
+                     alt="@displayName"
+                     class="img-fluid rounded-4 shadow-lg border border-3 border-light-subtle"
+                     width="260" height="260" loading="lazy"
+                     style="object-fit:cover;" />
+
+            </div>
         </div>
-        <div class="col-12 col-md-8">
-            <p class="lead mb-3">@aboutShort</p>
-            <p class="text-muted mb-0">@aboutLong</p>
-            <div class="mt-3 d-flex flex-wrap gap-2">
-                <a href="~/files/CV.pdf" class="btn btn-sm btn-outline-primary">Download CV</a>
-                <a href="#contact" class="btn btn-sm btn-primary">Get in Touch</a>
+        <div class="col-12 col-md-7">
+            <p class="fs-5 fw-semibold mb-3" style="color: var(--text-primary);">@aboutShort</p>
+            <p class="text-muted mb-4" style="line-height: 1.8;">@aboutLong</p>
+            <div class="d-flex flex-wrap gap-3 mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-2 p-2" style="background: var(--clr-primary-subtle);">
+                        <i class="bi bi-code-slash text-primary"></i>
+                    </div>
+                    <div><div class="fw-semibold small">8</div><div class="text-muted" style="font-size:0.75rem;">Months Experience</div></div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-2 p-2" style="background: var(--clr-success); opacity:0.1;">
+                        <i class="bi bi-folder-check" style="color: var(--clr-success);"></i>
+                    </div>
+                    <div><div class="fw-semibold small">10+</div><div class="text-muted" style="font-size:0.75rem;">Projects</div></div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="@Url.Content("~/files/CV.pdf")" class="btn btn-outline-primary rounded-pill"><i class="bi bi-download"></i> Download CV</a>
+                <a href="#contact" class="btn btn-primary rounded-pill"><i class="bi bi-send"></i> Get in Touch</a>
             </div>
         </div>
     </div>
@@ -214,6 +201,7 @@
 
 <!-- Skills -->
 <section id="skills" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>Skills
@@ -238,11 +226,16 @@
                         <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
                             <div class="pc-accent"></div>
                             <div class="card-body p-3 d-flex flex-column">
-                                <div class="d-flex align-items-start justify-content-between mb-2">
-                                    <span class="fw-semibold small text-truncate" title="@s.SkillName">@s.SkillName</span>
-                                    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize">@levelKey</span>
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <div class="skill-icon-wrap">
+                                        <i class="bi bi-braces"></i>
+                                    </div>
+                                    <div class="flex-grow-1 min-width-0">
+                                        <span class="fw-semibold small text-truncate d-block" title="@s.SkillName">@s.SkillName</span>
+                                        <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize mt-1">@levelKey</span>
+                                    </div>
                                 </div>
-                                <div class="progress skill-progress mb-2" style="height:6px;" aria-label="Proficiency">
+                                <div class="progress skill-progress mb-2" aria-label="Proficiency">
                                     <div class="progress-bar" role="progressbar"
                                          style="width:@pct%;"
                                          aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
@@ -275,11 +268,16 @@
                                 <div class="portfolio-card card card-skill h-100 position-relative overflow-hidden">
                                     <div class="pc-accent"></div>
                                     <div class="card-body p-3 d-flex flex-column">
-                                        <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <span class="fw-semibold small text-truncate" title="@s.SkillName">@s.SkillName</span>
-                                            <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize">@levelKey</span>
+                                        <div class="d-flex align-items-center gap-2 mb-3">
+                                            <div class="skill-icon-wrap">
+                                                <i class="bi bi-braces"></i>
+                                            </div>
+                                            <div class="flex-grow-1 min-width-0">
+                                                <span class="fw-semibold small text-truncate d-block" title="@s.SkillName">@s.SkillName</span>
+                                                <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis small text-capitalize mt-1">@levelKey</span>
+                                            </div>
                                         </div>
-                                        <div class="progress skill-progress mb-2" style="height:6px;" aria-label="Proficiency">
+                                        <div class="progress skill-progress mb-2" aria-label="Proficiency">
                                             <div class="progress-bar" role="progressbar"
                                                  style="width:@pct%;"
                                                  aria-valuenow="@pct" aria-valuemin="0" aria-valuemax="100"></div>
@@ -301,10 +299,12 @@
         </div>
     }
     else { <div class="alert alert-info mb-0">No skills yet.</div> }
+    </div>
 </section>
 
 <!-- Experience -->
 <section id="experience" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>Experience
@@ -319,29 +319,31 @@
                 {
                     var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
                     <div class="col">
-                        <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden">
-                            <div class="pc-accent"></div>
-                            <div class="card-body p-4 d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden ps-3">
+                            <div class="card-body p-3 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
                                     <div class="me-2">
-                                        <h5 class="card-title fs-6 mb-1 text-truncate" title="@exp.Role">@exp.Role</h5>
-                                        <div class="small text-muted text-truncate" title="@exp.CompanyName">@exp.CompanyName</div>
+                                        <h5 class="card-title fs-6 mb-1" title="@exp.Role">@exp.Role</h5>
+                                        <div class="small text-muted" title="@exp.CompanyName">@exp.CompanyName</div>
                                     </div>
                                     @if (exp.IsDeleted)
                                     {
-                                        <span class="badge bg-danger small">Deleted</span>
+                                        <span class="badge bg-danger small flex-shrink-0">Deleted</span>
                                     }
                                 </div>
-                                <div class="small text-secondary mb-2">
-                                    <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="exp-date-badge">
+                                        <i class="bi bi-calendar3"></i>
+                                        <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                    </span>
                                     @if (!string.IsNullOrEmpty(durationLabel))
                                     {
-                                        <span class="ms-2 text-muted">(@durationLabel)</span>
+                                        <span class="small text-muted">· @durationLabel</span>
                                     }
                                 </div>
                                 @if (!string.IsNullOrWhiteSpace(exp.Description))
                                 {
-                                    <div class="small text-muted mb-0 exp-desc">
+                                    <div class="small text-muted mb-0 exp-desc" style="line-height:1.7;">
                                         @{
                                             var descLines = exp.Description
                                                 .Replace("\r\n", "\n")
@@ -351,7 +353,6 @@
                                     </div>
                                 }
                             </div>
-                            <div class="pc-hover-glow"></div>
                         </div>
                     </div>
                 }
@@ -365,29 +366,31 @@
                         {
                             var durationLabel = FormatDuration(exp.StartDate, exp.EndDate);
                             <div class="col">
-                                <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden">
-                                    <div class="pc-accent"></div>
-                                    <div class="card-body p-4 d-flex flex-column">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="portfolio-card card card-experience h-100 position-relative overflow-hidden ps-3">
+                                    <div class="card-body p-3 d-flex flex-column">
+                                        <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
                                             <div class="me-2">
-                                                <h5 class="card-title fs-6 mb-1 text-truncate" title="@exp.Role">@exp.Role</h5>
-                                                <div class="small text-muted text-truncate" title="@exp.CompanyName">@exp.CompanyName</div>
+                                                <h5 class="card-title fs-6 mb-1" title="@exp.Role">@exp.Role</h5>
+                                                <div class="small text-muted" title="@exp.CompanyName">@exp.CompanyName</div>
                                             </div>
                                             @if (exp.IsDeleted)
                                             {
-                                                <span class="badge bg-danger small">Deleted</span>
+                                                <span class="badge bg-danger small flex-shrink-0">Deleted</span>
                                             }
                                         </div>
-                                        <div class="small text-secondary mb-2">
-                                            <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <span class="exp-date-badge">
+                                                <i class="bi bi-calendar3"></i>
+                                                <span>@FormatDate(exp.StartDate) - @FormatDate(exp.EndDate)</span>
+                                            </span>
                                             @if (!string.IsNullOrEmpty(durationLabel))
                                             {
-                                                <span class="ms-2 text-muted">(@durationLabel)</span>
+                                                <span class="small text-muted">· @durationLabel</span>
                                             }
                                         </div>
                                         @if (!string.IsNullOrWhiteSpace(exp.Description))
                                         {
-                                            <div class="small text-muted mb-0 exp-desc">
+                                            <div class="small text-muted mb-0 exp-desc" style="line-height:1.7;">
                                                 @{
                                                     var moreDescLines = exp.Description
                                                         .Replace("\r\n", "\n")
@@ -397,7 +400,6 @@
                                             </div>
                                         }
                                     </div>
-                                    <div class="pc-hover-glow"></div>
                                 </div>
                             </div>
                         }
@@ -410,10 +412,12 @@
         </div>
     }
     else { <div class="alert alert-info mb-0">No experience records.</div> }
+    </div>
 </section>
 
 <!-- Education -->
 <section id="education" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>Education
@@ -539,10 +543,12 @@
         </div>
     }
     else { <div class="alert alert-info mb-0">No education records.</div> }
+    </div>
 </section>
 
 <!-- Projects -->
 <section id="projects" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>Projects
@@ -568,8 +574,14 @@
                     var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
                     var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
 
-                    <div class="col">
-                        <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden">
+                    <div class="col d-flex">
+                        <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden"
+                             data-pd-title="@p.Title"
+                             data-pd-desc="@p.Description"
+                             data-pd-tags="@string.Join(",", tokens)"
+                             data-pd-site="@(siteUrl ?? "")"
+                             data-pd-repo="@(repoUrl ?? "")"
+                             data-pd-demo="@(demoUrl ?? "")">
                             <div class="pc-accent"></div>
 
                             <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
@@ -582,8 +594,8 @@
                                 }
                                 else
                                 {
-                                    <div class="d-flex flex-column justify-content-center align-items-center h-100 project-thumb-placeholder">
-                                        <i class="bi bi-images" style="font-size: 3rem; color: var(--bs-secondary-color); opacity: 0.6;"></i>
+                                    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                                        <i class="bi bi-images project-thumb-icon"></i>
                                     </div>
                                 }
                             </div>
@@ -609,6 +621,8 @@
                             <div class="pc-hover-glow"></div>
                             <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
                                 <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-xs btn-outline-light fw-semibold btn-project-details"
+                                            aria-label="Details for @p.Title">Details</button>
                                     @if (!string.IsNullOrWhiteSpace(siteUrl))
                                     {
                                         <a href="@siteUrl" target="_blank" rel="noopener"
@@ -652,8 +666,14 @@
                             var demoUrl  = GetStringProp(p, "DemoUrl") ?? GetStringProp(p, "LiveUrl");
                             var siteUrl  = GetStringProp(p, "ProjectURL") ?? GetStringProp(p, "ProjectUrl") ?? GetStringProp(p, "SiteUrl");
 
-                            <div class="col">
-                                <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden">
+                            <div class="col d-flex">
+                                <div class="project-card portfolio-card card card-project h-100 position-relative overflow-hidden"
+                                     data-pd-title="@p.Title"
+                                     data-pd-desc="@p.Description"
+                                     data-pd-tags="@string.Join(",", tokens)"
+                                     data-pd-site="@(siteUrl ?? "")"
+                                     data-pd-repo="@(repoUrl ?? "")"
+                                     data-pd-demo="@(demoUrl ?? "")">
                                     <div class="pc-accent"></div>
 
                                     <div class="project-thumb ratio ratio-16x9 bg-body-secondary">
@@ -666,8 +686,8 @@
                                         }
                                         else
                                         {
-                                            <div class="d-flex flex-column justify-content-center align-items-center h-100 project-thumb-placeholder">
-                                                <i class="bi bi-images" style="font-size: 3rem; color: var(--bs-secondary-color); opacity: 0.6;"></i>
+                                            <div class="d-flex flex-column justify-content-center align-items-center h-100">
+<i class="bi bi-folder2-open project-thumb-icon"></i>
                                             </div>
                                         }
                                     </div>
@@ -693,6 +713,8 @@
                                     <div class="pc-hover-glow"></div>
                                     <div class="project-hover-overlay d-flex flex-column justify-content-end p-3">
                                         <div class="d-flex gap-2 flex-wrap">
+                                            <button type="button" class="btn btn-xs btn-outline-light fw-semibold btn-project-details"
+                                                    aria-label="Details for @p.Title">Details</button>
                                             @if (!string.IsNullOrWhiteSpace(siteUrl))
                                             {
                                                 <a href="@siteUrl" target="_blank" rel="noopener"
@@ -728,10 +750,12 @@
     {
         <div class="alert alert-info mb-0">No projects available.</div>
     }
+    </div>
 </section>
 
 <!-- Social Links -->
 <section id="social" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>Social Links
@@ -814,10 +838,12 @@
     {
         <div class="alert alert-info mb-0">No social links.</div>
     }
+    </div>
 </section>
 
 <!-- Contact -->
 <section id="contact" class="section-block">
+    <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <h2 class="h2 mb-0 section-heading position-relative">
             <span class="section-accent me-2"></span>Contact
@@ -958,7 +984,27 @@
     {
         <div class="alert alert-info mb-0">No contact entries.</div>
     }
+    </div>
+</section>
 
+<!-- Project Details Modal -->
+<div class="modal fade" id="projectDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="pdDescription" class="text-muted mb-3"></p>
+                <div class="d-flex flex-wrap gap-2 mb-3" id="pdTags"></div>
+                <div class="d-flex gap-2 flex-wrap" id="pdLinks"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
     <script>
         (function(){
             const cls = 'btn-copy-contact';
@@ -981,128 +1027,103 @@
                 }
             }, { passive: true });
         })();
+
+        (function(){
+            document.addEventListener('click', function(e) {
+                var btn = e.target.closest('.toggle-btn');
+                if (!btn) return;
+                var container = btn.closest('.read-more-container');
+                if (!container) return;
+                var hidden = container.querySelector('.hidden-items');
+                if (!hidden) return;
+                var isOpen = hidden.classList.toggle('open');
+                var textSpan = btn.querySelector('.toggle-text');
+                if (textSpan) textSpan.textContent = isOpen ? 'Show Less' : 'Show More';
+                if (isOpen && btn.scrollIntoView) {
+                    setTimeout(function() {
+                        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 150);
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                var btn = e.target.closest('.btn-project-details');
+                if (!btn) return;
+                var card = btn.closest('.project-card');
+                if (!card) return;
+                document.getElementById('pdTitle').textContent = card.getAttribute('data-pd-title');
+                document.getElementById('pdDescription').textContent = card.getAttribute('data-pd-desc');
+                var tagsStr = card.getAttribute('data-pd-tags');
+                var tagsEl = document.getElementById('pdTags');
+                tagsEl.innerHTML = '';
+                if (tagsStr) {
+                    tagsStr.split(',').forEach(function(t) {
+                        var span = document.createElement('span');
+                        span.className = 'badge rounded-pill bg-info-subtle text-info-emphasis small';
+                        span.textContent = t.trim();
+                        tagsEl.appendChild(span);
+                    });
+                }
+                var linksEl = document.getElementById('pdLinks');
+                linksEl.innerHTML = '';
+                ['pd-site','pd-repo','pd-demo'].forEach(function(k) {
+                    var url = card.getAttribute('data-' + k);
+                    if (!url) return;
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                    var label = k.replace('pd-','');
+                    a.className = 'btn btn-xs ' + (label === 'demo' ? 'btn-primary' : 'btn-outline-primary') + ' fw-semibold';
+                    a.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+                    linksEl.appendChild(a);
+                });
+                var modal = new bootstrap.Modal(document.getElementById('projectDetailsModal'));
+                modal.show();
+            });
+
+            const scrollBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                scrollBtn.classList.toggle('visible', window.scrollY > 400);
+            }, {passive:true});
+
+            const revealEls = document.querySelectorAll('.section-block, .portfolio-card, .edu-card');
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if(e.isIntersecting){
+                        e.target.classList.add('visible');
+                        e.target.style.opacity = '1';
+                        e.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {threshold: 0.1});
+            revealEls.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(24px)';
+                el.style.transition = 'opacity .7s ease, transform .7s ease';
+                io.observe(el);
+            });
+
+            const progBars = document.querySelectorAll('.skill-progress .progress-bar');
+            const barIO = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if(e.isIntersecting){
+                        const target = e.target.getAttribute('aria-valuenow') + '%';
+                        e.target.style.width = target;
+                        barIO.unobserve(e.target);
+                    }
+                });
+            }, {threshold: 0.3});
+            progBars.forEach(b => { b.style.width = '0'; barIO.observe(b); });
+
+            const navbar = document.querySelector('.main-navbar');
+            if(navbar){
+                window.addEventListener('scroll', () => {
+                    navbar.classList.toggle('scrolled', window.scrollY > 60);
+                }, {passive:true});
+            }
+        })();
     </script>
-</section>
+}
 
-<!-- Scroll-to-top button -->
-<button id="scrollTopBtn" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-    <i class="bi bi-arrow-up"></i>
-</button>
 
-<script>
-(function(){
-    // Handle Read More/Show Less buttons
-    const toggleButtons = document.querySelectorAll('.toggle-btn');
-    toggleButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const container = this.closest('.read-more-container');
-            const isExpanded = container.classList.toggle('expanded');
-            const textSpan = this.querySelector('.toggle-text');
-            
-            textSpan.textContent = isExpanded ? 'Show Less' : 'Show More';
-            
-            // Smooth scroll to this section if needed
-            if(isExpanded) {
-                setTimeout(() => {
-                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 150);
-            }
-        });
-    });
-
-    // Scroll-to-top visibility
-    const btn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => {
-        btn.classList.toggle('visible', window.scrollY > 400);
-    }, {passive:true});
-
-    // Scroll reveal using IntersectionObserver
-    const revealEls = document.querySelectorAll('.section-block, .portfolio-card, .edu-card');
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if(e.isIntersecting){
-                e.target.classList.add('visible');
-                e.target.style.opacity = '1';
-                e.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, {threshold: 0.1});
-
-    revealEls.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(24px)';
-        el.style.transition = 'opacity .7s ease, transform .7s ease';
-        io.observe(el);
-    });
-
-    // Animate skill progress bars when visible
-    const progBars = document.querySelectorAll('.skill-progress .progress-bar');
-    const barIO = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if(e.isIntersecting){
-                const target = e.target.getAttribute('aria-valuenow') + '%';
-                e.target.style.width = target;
-                barIO.unobserve(e.target);
-            }
-        });
-    }, {threshold: 0.3});
-    progBars.forEach(b => { b.style.width = '0'; barIO.observe(b); });
-
-    // Navbar glass effect on scroll
-    const navbar = document.querySelector('.main-navbar');
-    if(navbar){
-        window.addEventListener('scroll', () => {
-            navbar.classList.toggle('scrolled', window.scrollY > 60);
-        }, {passive:true});
-    }
-})();
-</script>
-
-<script>
-(function () {
-    // Read auth state injected by server
-    const authState = document.getElementById('auth-state');
-    const isAuthenticated = authState && authState.dataset.authenticated === 'true';
-
-    if (isAuthenticated) return; // Authenticated users: no restrictions
-
-    const overlay = document.getElementById('login-gate-overlay');
-    if (!overlay) return;
-
-    // Show overlay with flex
-    function showLoginGate(e) {
-        // Allow "Continue browsing" button and the overlay buttons themselves to work normally
-        if (e.target.closest('#login-gate-overlay')) return;
-
-        // Allow anchor links (same-page #id) to navigate freely — scroll is ok
-        const anchor = e.target.closest('a');
-        if (anchor) {
-            const href = anchor.getAttribute('href') || '';
-            // Internal hash links (#about, #projects etc.) are fine — they just scroll
-            if (href.startsWith('#')) return;
-        }
-
-        // Block interaction and show gate
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        overlay.style.display = 'flex';
-    }
-
-    // Intercept all clicks on the page body
-    document.addEventListener('click', showLoginGate, true);
-
-    // Subtle hint: add a faint "lock" cursor over interactive elements
-    const style = document.createElement('style');
-    style.textContent = `
-        .portfolio-card, .edu-card, .btn, button, [class*="card-"] {
-            cursor: pointer !important;
-        }
-        #login-gate-overlay { animation: gateIn .25s ease; }
-        @@keyframes gateIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
-})();
-</script>

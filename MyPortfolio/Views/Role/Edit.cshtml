@@ -1,35 +1,43 @@
 ﻿@using MyPortfolio.Models.ManagerModels.RoleModels
 @model CreateEditRoleViewModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Role";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <main class="main-content">
-    <div class="container py-4">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <h1 class="h3 mb-0">Edit Role</h1>
+    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <h1 class="page-title">Edit Role</h1>
+            <p class="page-subtitle">Update the role name.</p>
         </div>
+        <a asp-controller="Role" asp-action="Index" class="btn btn-ghost">
+            <i class="bi bi-arrow-left"></i> Back to list
+        </a>
+    </div>
 
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <form method="post" asp-controller="Role" asp-action="Edit" novalidate>
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@Context.Request.RouteValues["id"]" />
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <form method="post" asp-controller="Role" asp-action="Edit" novalidate>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Context.Request.RouteValues["id"]" />
 
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3" role="alert"></div>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
 
-                    <div class="row g-3">
-                        <partial name="RolePartialViews/CreateEditRolePartialView" model="Model" />
-                    </div>
+                        <div class="row g-3">
+                            <partial name="RolePartialViews/CreateEditRolePartialView" model="Model" />
+                        </div>
 
-                    <div class="mt-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Save
-                        </button>
-                        <a asp-controller="Role" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-                    </div>
-                </form>
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Save
+                            </button>
+                            <a asp-controller="Role" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -38,4 +46,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
