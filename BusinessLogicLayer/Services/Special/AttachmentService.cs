@@ -5,7 +5,7 @@ namespace BusinessLogicLayer.Services.Special
 {
     public class AttachmentService : IAttachmentService
     {
-        List<string> allowedExtensions = [".jpg", ".jpeg", ".png"];
+        List<string> allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf"];
         const int maxSize = 2_097_152;
         public string? Upload(IFormFile file, string FolderName)
         {

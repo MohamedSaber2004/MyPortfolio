@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTos.ContactDTos;
+using BusinessLogicLayer.DTos.CvDocumentDTos;
 using BusinessLogicLayer.DTos.EducationDTos;
 using BusinessLogicLayer.DTos.ExperienceDTos;
 using BusinessLogicLayer.DTos.ProjectDTos;
 using BusinessLogicLayer.DTos.SkillDTos;
 using BusinessLogicLayer.DTos.SocialLinksDTos;
 using DataAccessLayer.Models.ContactModels;
+using DataAccessLayer.Models.CvModels;
 using DataAccessLayer.Models.EducationModels;
 using DataAccessLayer.Models.ExperienceModels;
 using DataAccessLayer.Models.ProjectModels;
@@ -58,6 +60,10 @@ namespace BusinessLogicLayer.Profiles
             // Skill mappings
             CreateMap<Skill, SkillDto>().ReverseMap();
             CreateMap<Skill, SkillDetailsDto>();
+
+            // CvDocument mappings
+            CreateMap<CvDocument, CvDocumentDto>()
+                .ForMember(d => d.UploadedAt, opt => opt.MapFrom(s => s.CreatedOn));
         }
     }
 }

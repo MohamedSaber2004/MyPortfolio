@@ -1,10 +1,13 @@
-﻿@{
+﻿@using BusinessLogicLayer.Services.Interfaces
+@inject ICvDocumentService CvDocumentService
+@{
     string? currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     string? currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     bool isAdmin = User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin");
     bool isAuthenticated = User?.Identity?.IsAuthenticated == true;
     string NavActive(string c, string? a = null) =>
         currentController == c && (a == null || currentAction == a) ? "active fw-semibold" : "";
+    var cvFileName = System.Threading.Tasks.Task.Run(async () => await CvDocumentService.GetCvFileNameAsync()).GetAwaiter().GetResult();
 }
 
 <!DOCTYPE html>
@@ -25,7 +28,7 @@
 <body>
     <div class="gradient-bar"></div>
     <header>
-        <nav class="navbar navbar-expand-lg main-navbar">
+        <nav class="navbar navbar-expand-md main-navbar">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
                     <span class="badge bg-primary rounded-circle p-2">
@@ -149,7 +152,7 @@
                         <li><a href="mailto:dev.mohamed104saber@gmail.com"><i class="bi bi-envelope"></i> Email</a></li>
                         <li><a href="https://www.linkedin.com/in/mohamed-saber107/" target="_blank" rel="noopener"><i class="bi bi-linkedin"></i> LinkedIn</a></li>
                         <li><a href="https://github.com/MohamedSaber2004" target="_blank" rel="noopener"><i class="bi bi-github"></i> GitHub</a></li>
-                        <li><a href="/files/CV.pdf" target="_blank" rel="noopener"><i class="bi bi-file-earmark-person"></i> Résumé</a></li>
+                        <li><a href="~/Files/@(cvFileName ?? "CV.pdf")" target="_blank" rel="noopener"><i class="bi bi-file-earmark-person"></i> Résumé</a></li>
                     </ul>
                 </div>
 

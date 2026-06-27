@@ -13,6 +13,7 @@ namespace MyPortfolio.Controllers
         private readonly ISocialLinkService _socialLinkService;
         private readonly IContactService _contactService;
         private readonly IEducationService _educationService;
+        private readonly ICvDocumentService _cvDocumentService;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -21,7 +22,8 @@ namespace MyPortfolio.Controllers
             IProjectService projectService,
             ISocialLinkService socialLinkService,
             IContactService contactService,
-            IEducationService educationService)
+            IEducationService educationService,
+            ICvDocumentService cvDocumentService)
         {
             _logger = logger;
             _skillService = skillService;
@@ -30,6 +32,7 @@ namespace MyPortfolio.Controllers
             _socialLinkService = socialLinkService;
             _contactService = contactService;
             _educationService = educationService;
+            _cvDocumentService = cvDocumentService;
         }
 
         public async Task<IActionResult> Index()
@@ -41,7 +44,8 @@ namespace MyPortfolio.Controllers
                 Projects = (await _projectService.GetAllProjects(null)).ToList(),
                 SocialLinks = (await _socialLinkService.GetAllSocialLinksAsync()).ToList(),
                 Contacts = (await _contactService.GetAllContactsAsync(null)).ToList(),
-                Educations = (await _educationService.GetAllEducationsAsync(null)).ToList()
+                Educations = (await _educationService.GetAllEducationsAsync(null)).ToList(),
+                CvFileName = await _cvDocumentService.GetCvFileNameAsync()
             };
             return View(vm);
         }

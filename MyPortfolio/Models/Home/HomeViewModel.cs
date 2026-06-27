@@ -15,5 +15,6 @@ namespace MyPortfolio.Models.Home
         public IReadOnlyList<SocialLinksDto>? SocialLinks { get; init; }
         public IReadOnlyList<ContactDto>? Contacts { get; init; }
         public IReadOnlyList<EducationDto>? Educations { get; init; }
+        public string? CvFileName { get; init; }
     }
 }

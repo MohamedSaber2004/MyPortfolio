@@ -178,14 +178,60 @@
 
   /* ---------- Sidebar (Admin) ---------- */
   function initSidebar() {
-    const toggle = document.getElementById('sidebarToggle');
-    const sidebar = document.getElementById('sidebar');
+    var toggle = document.getElementById('sidebarToggle');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var content = document.getElementById('adminContent');
     if (!toggle || !sidebar) return;
-    toggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      const content = document.getElementById('adminContent');
-      if (content) content.classList.toggle('collapsed');
+
+    function isMobile() {
+      return window.innerWidth < 768;
+    }
+
+    function closeMobileSidebar() {
+      sidebar.classList.remove('show');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (isMobile()) {
+        sidebar.classList.toggle('show');
+        if (overlay) overlay.classList.toggle('active');
+      } else {
+        sidebar.classList.toggle('collapsed');
+        if (content) content.classList.toggle('collapsed');
+      }
     });
+
+    if (overlay) {
+      overlay.addEventListener('click', closeMobileSidebar);
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+        closeMobileSidebar();
+      }
+    });
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (!isMobile()) {
+          closeMobileSidebar();
+          sidebar.classList.remove('show');
+        }
+      }, 200);
+    });
+
+    if (content) {
+      content.addEventListener('click', function () {
+        if (isMobile() && sidebar.classList.contains('show')) {
+          closeMobileSidebar();
+        }
+      });
+    }
   }
 
   /* ---------- Initialize ---------- */

@@ -39,6 +39,9 @@
         </div>
     </header>
 
+    <!-- Sidebar overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-content">
@@ -132,6 +135,13 @@
                                 <div class="nav-indicator"></div>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="CvDocument" asp-action="Index">
+                                <i class="bi bi-filetype-pdf nav-icon"></i>
+                                <span class="nav-text">CV</span>
+                                <div class="nav-indicator"></div>
+                            </a>
+                        </li>
                     }
                 </ul>
             </div>
@@ -150,7 +160,7 @@
             </div>
         </div>
     </nav>
-    <div>
+    <div class="main-content" id="adminContent">
         @RenderBody()
     </div>
 
@@ -161,22 +171,6 @@
     @await RenderSectionAsync("Styles",required:false);
     @await RenderSectionAsync("Scripts",required:false)
     <script>
-        // Sidebar Toggle Functionality
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.querySelector('.main-content');
-
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
-
-        // Mobile Sidebar Toggle
-        if (window.innerWidth <= 768) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
-            });
-        }
-
         // Smooth Animations
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.stat-card, .chart-card');

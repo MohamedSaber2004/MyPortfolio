@@ -92,6 +92,7 @@ namespace MyPortfolio
             builder.Services.AddScoped<IExperienceService, ExperienceService>();
             builder.Services.AddScoped<ISocialLinkService, SocialLinkService>();
             builder.Services.AddScoped<ISkillService, SkillService>();
+            builder.Services.AddScoped<ICvDocumentService, CvDocumentService>();
             #endregion
 
             var app = builder.Build();
