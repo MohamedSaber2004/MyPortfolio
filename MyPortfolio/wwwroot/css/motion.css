@@ -1,0 +1,191 @@
+/* ==========================================================================
+   MyPortfolio — Motion
+   Keyframes, scroll reveals, staggered entrances. Everything here is
+   gated behind (prefers-reduced-motion: no-preference) except overlays,
+   which must still function for reduced-motion users.
+   ========================================================================== */
+
+/* ---------- Keyframes ---------- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(0.75rem); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(0.9rem) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(1.25rem) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(1.25rem) scale(0.96); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -150% 0; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(2.5rem, -1.75rem, 0) scale(1.08); }
+}
+
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(0.45rem); }
+}
+
+@keyframes draw-line {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ---------- Overlay motion (always on) ---------- */
+dialog.dialog[open],
+dialog.dialog[open]::backdrop,
+.toast {
+  animation-duration: var(--t-2);
+}
+
+/* ---------- Scroll reveal ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(var(--reveal-offset, 1.25rem));
+    transition: opacity var(--t-5) var(--ease-out), transform var(--t-5) var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 55ms);
+    will-change: opacity, transform;
+  }
+
+  .js [data-reveal='left'] { transform: translateX(calc(-1 * var(--reveal-offset, 1.25rem))); }
+  .js [data-reveal='right'] { transform: translateX(var(--reveal-offset, 1.25rem)); }
+  .js [data-reveal='zoom'] { transform: scale(0.965); }
+
+  .js [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(var(--i, 0) * 55ms);
+  }
+
+  /* Sequential children of a revealed group */
+  .js [data-stagger] > * {
+    opacity: 0;
+    transform: translateY(0.9rem);
+  }
+
+  .js [data-stagger].is-revealed > * {
+    animation: fade-up var(--t-5) var(--ease-out) forwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .js [data-reveal='auto'] {
+      opacity: 1;
+      transform: none;
+      animation: fade-up both var(--t-5) var(--ease-out);
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+/* ---------- Ambient hero field ---------- */
+.aura {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(0.5px);
+  pointer-events: none;
+  z-index: var(--z-below);
+}
+
+.aura--warm {
+  background: radial-gradient(circle, color-mix(in oklab, var(--ochre-400) 16%, transparent), transparent 68%);
+}
+
+.aura--cool {
+  background: radial-gradient(circle, color-mix(in oklab, var(--steel-600) 12%, transparent), transparent 68%);
+}
+
+.aura--a {
+  inline-size: 24rem;
+  block-size: 24rem;
+  inset-block-start: -10rem;
+  inset-inline-start: -7rem;
+}
+
+.aura--b {
+  inline-size: 20rem;
+  block-size: 20rem;
+  inset-block-end: -9rem;
+  inset-inline-end: -6rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .aura {
+    animation: drift 22s var(--ease-in-out) infinite alternate;
+  }
+
+  .aura--b {
+    animation-duration: 28s;
+    animation-direction: alternate-reverse;
+  }
+}
+
+/* Scroll cue */
+.scroll-cue__wheel {
+  animation: nudge 1.8s var(--ease-in-out) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue__wheel,
+  .aura {
+    animation: none;
+  }
+}
+
+/* ---------- State transitions ---------- */
+.smooth-colors {
+  transition: background-color var(--t-2) var(--ease-out), color var(--t-2) var(--ease-out),
+    border-color var(--t-2) var(--ease-out), box-shadow var(--t-2) var(--ease-out);
+}
+
+.dot--live {
+  animation: pulse-dot 2.4s var(--ease-in-out) infinite;
+}
+
+.fold-in {
+  animation: fade-up var(--t-3) var(--ease-out);
+}
+
+/* ---------- Page transition ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .main > .canvas,
+  main[role='main'] {
+    animation: fade-up var(--t-4) var(--ease-out) both;
+  }
+}
+
+/* Suppress the entrance animation while typing in admin forms */
+.form-page .canvas {
+  animation: none;
+}

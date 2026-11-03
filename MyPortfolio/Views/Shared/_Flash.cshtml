@@ -1,0 +1,35 @@
+@{
+    var notices = new List<(string Tone, string Title, string Text)>();
+    foreach (var (key, tone, title) in new[]
+    {
+        ("Message", "success", "Done"),
+        ("message", "success", "Done"),
+        ("Error", "danger", "Something went wrong"),
+        ("error", "danger", "Something went wrong")
+    })
+    {
+        if (TempData[key] is string text && !string.IsNullOrWhiteSpace(text))
+        {
+            notices.Add((tone, title, text));
+        }
+    }
+}
+@if (notices.Count > 0)
+{
+    <div class="toast-stack" role="region" aria-live="polite" aria-label="Notifications">
+        @foreach (var (tone, title, text) in notices)
+        {
+            var glyph = tone == "success" ? "check" : tone == "danger" ? "alert" : "info";
+            <div class="toast toast--@tone" role="@(tone == "danger" ? "alert" : "status")">
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-@glyph"></use></svg>
+                <div>
+                    <p class="toast__title">@title</p>
+                    <p class="toast__msg">@text</p>
+                </div>
+                <button type="button" class="btn btn--ghost btn--icon btn--sm" data-toast-close aria-label="Dismiss">
+                    <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-close"></use></svg>
+                </button>
+            </div>
+        }
+    </div>
+}

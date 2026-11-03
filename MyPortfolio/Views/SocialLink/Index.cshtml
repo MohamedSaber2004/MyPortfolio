@@ -1,219 +1,128 @@
-﻿@using MyPortfolio.Models.SocialLinkModels
+@using MyPortfolio.Models.SocialLinkModels
 @model IEnumerable<SocialLinkViewModel>
-
 @{
-    ViewData["Title"] = "Social Links";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Social links";
+    ViewData["PageKicker"] = "Content";
+    ViewData["PageTitle"] = "Social links";
+    ViewData["PageDesc"] = "Everything the landing Elsewhere grid is built from.";
+
+    var rows = Model?.ToList() ?? [];
+    var live = rows.Count(l => !l.IsDeleted);
 }
 
-<main class="main-content">
-    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
+@section PageActions {
+    <a class="btn btn--primary" asp-action="Create">
+        <ui-icon name="plus" size="sm" />
+        <span class="btn__label">New link</span>
+    </a>
+}
+
+<form class="toolbar" asp-action="Index" method="get" autocomplete="off" data-search="#socialTable">
+    <span class="input-wrap grow">
+        <span class="input-wrap__icon"><ui-icon name="search" size="sm" /></span>
+        <label class="sr-only" for="socialLinkSearchName">Search social links</label>
+        <input class="input" id="socialLinkSearchName" name="socialLinkSearchName" type="search"
+               value="@Context.Request.Query["socialLinkSearchName"]" placeholder="Platform or URL…" />
+    </span>
+    <button class="btn btn--soft" type="submit">
+        <ui-icon name="search" size="sm" />
+        <span class="btn__label">Search</span>
+    </button>
+    @if (!string.IsNullOrWhiteSpace(Context.Request.Query["socialLinkSearchName"]))
     {
-        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-top-right">
-            <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                    <strong class="me-auto">Success</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    @TempData["Message"]
-                </div>
-            </div>
+        <a class="btn btn--quiet" asp-action="Index">Clear</a>
+    }
+</form>
+
+<div id="socialTable">
+    @if (rows.Count == 0)
+    {
+        <div class="card">
+            <partial name="_EmptyState" model="@(new EmptyStateVm {
+                Title = "No social links match",
+                Text = "Nothing is shown on the public Elsewhere grid until at least one link exists.",
+                Icon = "share",
+                ActionHref = Url.Action("Create", "SocialLink"),
+                ActionLabel = "Add the first link" })" />
         </div>
     }
-
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">Social Links Management</h1>
-            <p class="page-subtitle">View, search, and manage all social links.</p>
+    else
+    {
+        <div class="table-wrap">
+            <table class="table table--stack table--sticky">
+                <caption class="sr-only">Social links, newest first as saved</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Platform</th>
+                        <th scope="col">URL</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="table__num">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var link in rows)
+                    {
+                        <tr data-deleted="@(link.IsDeleted ? "true" : "false")">
+                            <td data-label="Platform">
+                                <div class="table__main">
+                                    <a class="table__primary" asp-action="Details" asp-route-id="@link.Id">@link.PlatformName</a>
+                                </div>
+                            </td>
+                            <td data-label="URL">
+                                <div class="table__main">
+                                    <a href="@link.URL" target="_blank" rel="noopener">@link.URL<ui-icon name="external" size="sm" /></a>
+                                </div>
+                            </td>
+                            <td data-label="Status">
+                                <span class="badge badge--@(link.IsDeleted ? "danger" : "success")">
+                                    @(link.IsDeleted ? "Archived" : "Live")
+                                </span>
+                            </td>
+                            <td data-label="Actions">
+                                <div class="table__actions">
+                                    <a class="btn btn--icon btn--quiet" asp-action="Details" asp-route-id="@link.Id"
+                                       data-tip="Details" aria-label="@($"Details for {link.PlatformName}")">
+                                        <ui-icon name="eye" size="sm" />
+                                    </a>
+                                    <a class="btn btn--icon btn--quiet" asp-action="Edit" asp-route-id="@link.Id"
+                                       data-tip="Edit" aria-label="@($"Edit {link.PlatformName}")">
+                                        <ui-icon name="edit" size="sm" />
+                                    </a>
+                                    @if (link.IsDeleted)
+                                    {
+                                        <form asp-action="Restore" asp-route-id="@link.Id" method="post"
+                                              data-confirm-title="Restore link"
+                                              data-confirm="@($"Put {link.PlatformName} back on the public page?")">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn--icon btn--success" type="submit"
+                                                    data-tip="Restore" aria-label="@($"Restore {link.PlatformName}")">
+                                                <ui-icon name="restore" size="sm" />
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@link.Id" method="post"
+                                              data-confirm-title="Archive link"
+                                              data-confirm="@($"{link.PlatformName} disappears from the public Elsewhere grid. You can restore it later.")">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn--icon btn--danger" type="submit"
+                                                    data-tip="Delete" aria-label="@($"Delete {link.PlatformName}")">
+                                                <ui-icon name="del" size="sm" />
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-primary" asp-controller="SocialLink" asp-action="Create">
-                <i class="bi bi-plus-lg"></i> Add New Social Link
-            </a>
-        </div>
-    </div>
-
-    <div class="card shadow-sm border-0 mb-4 fade-in">
-        <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
-                <div class="col-md-8">
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
-                        <input id="searchSocialLinkName"
-                               class="form-control border-start-0 ps-0"
-                               type="text"
-                               name="socialLinkSearchName"
-                               value="@(Context?.Request?.Query["socialLinkSearchName"].ToString())"
-                               placeholder="Search by platform name..." />
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <button id="searchBtn" type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="socialLinkTableContainer">
-        @if (Model?.Any() ?? false)
-        {
-            <div class="card shadow-sm border-0 fade-in">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="text-center">
-                                <tr>
-                                    <th>@Html.DisplayNameFor(r => r.PlatformName)</th>
-                                    <th>@Html.DisplayNameFor(r => r.URL)</th>
-                                    <th>Status</th>
-                                    <th class="text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center">
-                                @foreach (var link in Model)
-                                {
-                                    <tr class="@(link.IsDeleted ? "table-danger" : "")">
-                                        <td class="fw-semibold">@link.PlatformName</td>
-                                        <td>
-                                            <a href="@link.URL" target="_blank" rel="noopener" class="text-decoration-none">
-                                                <i class="bi bi-box-arrow-up-right me-1 small"></i>@link.URL
-                                            </a>
-                                        </td>
-                                        <td>
-                                            @if (link.IsDeleted)
-                                            {
-                                                <span class="badge bg-danger">Deleted</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-success">Active</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <a asp-action="Details"
-                                                   asp-controller="SocialLink"
-                                                   asp-route-id="@link.Id"
-                                                   class="btn btn-sm btn-info"
-                                                   title="Details">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a asp-action="Edit"
-                                                   asp-controller="SocialLink"
-                                                   asp-route-id="@link.Id"
-                                                   class="btn btn-sm btn-warning"
-                                                   title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                @if (link.IsDeleted)
-                                                {
-                                                    <form asp-action="Restore"
-                                                          asp-controller="SocialLink"
-                                                          asp-route-id="@link.Id"
-                                                          method="post"
-                                                          class="d-inline">
-                                                        @Html.AntiForgeryToken()
-                                                        <button type="submit" class="btn btn-sm btn-success" title="Restore">
-                                                            <i class="bi bi-arrow-counterclockwise"></i>
-                                                        </button>
-                                                    </form>
-                                                }
-                                                else
-                                                {
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#deleteModal-@link.Id"
-                                                            title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                }
-                                            </div>
-
-                                            <div class="modal fade" id="deleteModal-@link.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@link.Id" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-sm">
-                                                    <div class="modal-content border-0">
-                                                        <div class="modal-header bg-danger text-white border-0">
-                                                            <h5 class="modal-title" id="deleteModalLabel-@link.Id">
-                                                                <i class="bi bi-trash me-2"></i> Delete Social Link
-                                                            </h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body text-start">
-                                                            <p class="mb-0">Are you sure you want to delete <strong>@link.PlatformName</strong>?</p>
-                                                        </div>
-                                                        <div class="modal-footer border-0">
-                                                            <form asp-action="Delete"
-                                                                  asp-controller="SocialLink"
-                                                                  asp-route-id="@link.Id"
-                                                                  method="post"
-                                                                  class="mt-0">
-                                                                @Html.AntiForgeryToken()
-                                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="submit" class="btn btn-danger">
-                                                                    <i class="bi bi-trash me-1"></i> Delete
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="card shadow-sm border-0 fade-in">
-                <div class="card-body">
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="bi bi-share"></i>
-                        </div>
-                        <h4>No Social Links Found</h4>
-                        <p>There are no social links to display. Create a new social link to get started.</p>
-                        <a class="btn btn-primary" asp-controller="SocialLink" asp-action="Create">
-                            <i class="bi bi-plus-lg"></i> Add New Social Link
-                        </a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</main>
-
-@section Scripts {
-    <script>
-        $(function () {
-            var toastEl = document.getElementById('successToast');
-            if (toastEl) {
-                setTimeout(function () {
-                    var toast = bootstrap.Toast.getOrCreateInstance(toastEl);
-                    toast.hide();
-                }, 5000);
-            }
-
-            $('#searchBtn').on('click', function (e) {
-                e.preventDefault();
-                var searchValue = $('#searchSocialLinkName').val();
-                $.get('@Url.Action("Index", "SocialLink")',
-                    { socialLinkSearchName: searchValue },
-                    function (data) {
-                        var newTable = $(data).find('#socialLinkTableContainer').html();
-                        $('#socialLinkTableContainer').html(newTable);
-                    });
-            });
-        });
-    </script>
-}
+        <p class="meta mt-3">
+            <span class="meta__item">@live live</span>
+            <span class="meta__item">@(rows.Count - live) archived</span>
+        </p>
+    }
+</div>

@@ -1,0 +1,21 @@
+@model MyPortfolio.Models.Shared.EmptyStateVm
+@{
+    var m = Model ?? new MyPortfolio.Models.Shared.EmptyStateVm();
+}
+<div class="empty">
+    <div class="empty__icon" aria-hidden="true">
+        <ui-icon name="@m.Icon" size="lg" />
+    </div>
+    <p class="empty__title">@m.Title</p>
+    @if (!string.IsNullOrWhiteSpace(m.Text))
+    {
+        <p class="empty__text">@m.Text</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(m.ActionHref))
+    {
+        <a class="btn btn--primary btn--sm" href="@m.ActionHref">
+            <ui-icon name="@m.ActionIcon" size="sm" />
+            @m.ActionLabel
+        </a>
+    }
+</div>

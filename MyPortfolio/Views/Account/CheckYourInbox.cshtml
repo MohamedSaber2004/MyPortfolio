@@ -1,28 +1,24 @@
-﻿@{
-    ViewData["Title"] = "Check Your Inbox";
+@{
+    ViewData["Title"] = "Check your inbox";
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-header">
-            <div class="auth-logo">
-                <i class="bi bi-envelope-check"></i>
-            </div>
-            <h1 class="auth-title">Check your inbox</h1>
-            <p class="auth-subtitle">We've sent you an email with instructions to reset your password.</p>
-        </div>
-        <div class="auth-body">
-            <div class="text-center mb-4">
-                <i class="bi bi-envelope-open text-primary" style="font-size: 2.5rem;"></i>
-            </div>
-            <a href="https://mail.google.com/mail/u/1/#inbox" target="_blank" class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2 mb-2">
-                <i class="bi bi-box-arrow-up-right"></i>
-                <span>Go To Your Inbox</span>
-            </a>
-            <div class="mt-3 text-center auth-meta">
-                <a asp-action="Login" class="text-decoration-none text-primary">Back to Sign in</a>
-            </div>
-        </div>
-    </div>
-</div>
+<h1 class="auth__title">Check your inbox</h1>
+<p class="auth__sub">If that address has an account, a reset link is on its way.</p>
+
+<ol class="auth__steps">
+    <li>Open the email titled <strong>Reset Password</strong>.</li>
+    <li>Follow the link — it only works once and expires with the token.</li>
+    <li>Nothing there? Check spam, then request the link again.</li>
+</ol>
+
+<a class="btn btn--outline btn--block" href="https://mail.google.com/mail/u/1/#inbox" target="_blank" rel="noopener">
+    <ui-icon name="external" size="sm" />
+    <span class="btn__label">Open Gmail</span>
+</a>
+
+<p class="auth__foot">
+    <a asp-action="ForgetPassword">Request another link</a>
+    &nbsp;·&nbsp;
+    <a asp-action="Login">Back to sign in</a>
+</p>

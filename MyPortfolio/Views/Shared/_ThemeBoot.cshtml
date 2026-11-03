@@ -1,0 +1,13 @@
+@* Runs before first paint: marks the document as scriptable and resolves the
+   colour scheme, so the theme never flashes. Keep inline — it must not wait for app.js.
+   Light is the shipping default; the OS preference is ignored until the visitor
+   picks a theme themselves, so first-time visitors always land on the paper palette. *@
+<script>
+    (function (d) {
+        var h = d.documentElement;
+        h.classList.add('js');
+        var mode;
+        try { mode = localStorage.getItem('mp:theme'); } catch (e) { mode = null; }
+        h.setAttribute('data-theme', mode === 'dark' ? 'dark' : 'light');
+    })(document);
+</script>

@@ -1,33 +1,24 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    var error = Model ?? new ErrorViewModel();
+    var status = error.StatusCode ?? 500;
+    ViewData["Title"] = status == 404 ? "Page not found" : "Error";
+    ViewData["MetaDescription"] = "Something went wrong on the way to this page.";
 }
 
-<div class="min-vh-100 d-flex align-items-center justify-content-center p-4" style="background: var(--bg-secondary);">
-    <div class="card shadow-lg border-0 fade-in" style="max-width: 520px; width: 100%;">
-        <div class="card-body text-center p-5">
-            <div class="d-inline-flex align-items-center justify-content-center rounded-4 p-3 mb-4 bg-danger-subtle">
-                <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
-            </div>
-            <h2 class="fw-bold mb-2">Something went wrong</h2>
-            <p class="text-muted mb-4">An unexpected error occurred while processing your request.</p>
+<div class="stopper">
+    <span class="stopper__code">@status</span>
+    <span class="tile tile--danger tile--lg">
+        <ui-icon name="@(status == 404 ? "close" : "warn")" />
+    </span>
+    <h1 class="text-2xl">@error.Headline</h1>
+    <p class="text-muted max-w-prose">@error.Blurb</p>
 
-            @if (Model.ShowRequestId)
-            {
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-3 mb-4 small" style="background: var(--bg-tertiary);">
-                    <span class="text-muted">Request ID:</span>
-                    <code class="fw-semibold">@Model.RequestId</code>
-                </div>
-            }
-
-            <hr class="my-4" />
-            <p class="small text-muted mb-4">
-                <strong>Development Mode</strong><br />
-                Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-            </p>
-            <a href="/" class="btn btn-primary rounded-pill px-4">
-                <i class="bi bi-house-door"></i> Back to Home
-            </a>
-        </div>
+    <div class="flex gap-3 wrap justify-center mt-4">
+        <a class="btn btn--primary" asp-controller="Home" asp-action="Index">
+            <ui-icon name="home" size="sm" />
+            <span class="btn__label">Back to the portfolio</span>
+        </a>
+        <a class="btn btn--outline" asp-controller="Home" asp-action="Privacy">Privacy note</a>
     </div>
 </div>

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using MyPortfolio.Helpers;
 using MyPortfolio.Models;
 using MyPortfolio.Models.Home;
 
@@ -14,6 +14,7 @@ namespace MyPortfolio.Controllers
         private readonly IContactService _contactService;
         private readonly IEducationService _educationService;
         private readonly ICvDocumentService _cvDocumentService;
+        private readonly IWebHostEnvironment _environment;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -23,7 +24,8 @@ namespace MyPortfolio.Controllers
             ISocialLinkService socialLinkService,
             IContactService contactService,
             IEducationService educationService,
-            ICvDocumentService cvDocumentService)
+            ICvDocumentService cvDocumentService,
+            IWebHostEnvironment environment)
         {
             _logger = logger;
             _skillService = skillService;
@@ -33,6 +35,7 @@ namespace MyPortfolio.Controllers
             _contactService = contactService;
             _educationService = educationService;
             _cvDocumentService = cvDocumentService;
+            _environment = environment;
         }
 
         public async Task<IActionResult> Index()
@@ -45,7 +48,8 @@ namespace MyPortfolio.Controllers
                 SocialLinks = (await _socialLinkService.GetAllSocialLinksAsync()).ToList(),
                 Contacts = (await _contactService.GetAllContactsAsync(null)).ToList(),
                 Educations = (await _educationService.GetAllEducationsAsync(null)).ToList(),
-                CvFileName = await _cvDocumentService.GetCvFileNameAsync()
+                CvFileName = await _cvDocumentService.GetCvFileNameAsync(),
+                PortraitUrl = HeroPortrait.PublicUrl(_environment)
             };
             return View(vm);
         }
@@ -56,9 +60,18 @@ namespace MyPortfolio.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? code)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            // Images and stylesheets never ask for HTML, so they get an empty 404 instead of a page of markup.
+            var accept = HttpContext.Request.Headers.Accept.ToString();
+            if (accept.Length > 0 && !accept.Contains("text/html", StringComparison.OrdinalIgnoreCase))
+            {
+                return NotFound();
+            }
+
+            // Status pages re-execute with ?code=…, the exception handler arrives with 500 already set.
+            var status = code ?? (HttpContext.Response.StatusCode >= 400 ? HttpContext.Response.StatusCode : 500);
+            return View(new ErrorViewModel { StatusCode = status });
         }
     }
 }

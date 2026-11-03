@@ -1,0 +1,89 @@
+@model MyPortfolio.Models.ProfileMediaModels.ProfileMediaVm
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Portrait";
+    ViewData["PageKicker"] = "Content";
+    ViewData["PageTitle"] = "Hero portrait";
+    ViewData["PageDesc"] = "The photo beside your name on the public landing page.";
+}
+
+<div class="dash-grid dash-grid--split">
+    <section class="card panel">
+        <header class="panel__hd">
+            <h2 class="card__title">Currently published</h2>
+            <span class="badge badge--@(Model.HasImage ? "success" : "warning")">
+                @(Model.HasImage ? "Live" : "Missing")
+            </span>
+        </header>
+
+        @if (Model.HasImage)
+        {
+            <div class="card__bd flex gap-4 items-start wrap">
+                <figure class="portrait">
+                    <img src="@Model.Url" alt="Current hero portrait" width="480" height="600" loading="lazy" />
+                </figure>
+                <dl class="dl grow">
+                    <div class="dl__row">
+                        <dt>File</dt>
+                        <dd class="break-any">@Model.FileName</dd>
+                    </div>
+                    <div class="dl__row">
+                        <dt>Weight</dt>
+                        <dd>@Model.SizeLabel</dd>
+                    </div>
+                    <div class="dl__row">
+                        <dt>Replaced</dt>
+                        <dd>@Display.Stamp(Model.UpdatedOn)</dd>
+                    </div>
+                    <div class="dl__row">
+                        <dt>Path</dt>
+                        <dd class="break-any mono">wwwroot/@HeroPortrait.RelativeFolder</dd>
+                    </div>
+                </dl>
+            </div>
+            <footer class="card__ft">
+                <p class="meta">
+                    <span class="meta__item">Cropped to 4:5 by the design system</span>
+                    <span class="meta__item">Export 768 × 960 for sharp results on 2× screens</span>
+                </p>
+            </footer>
+        }
+        else
+        {
+            <partial name="_EmptyState" model="@(new EmptyStateVm {
+                Title = "No portrait on file",
+                Text = "The hero section shows no photo until you upload one here.",
+                Icon = "image" })" />
+        }
+    </section>
+
+    <section class="card panel">
+        <header class="panel__hd">
+            <h2 class="card__title">Upload a replacement</h2>
+        </header>
+        <div class="card__bd">
+            <form asp-action="Upload" method="post" enctype="multipart/form-data" class="form-grid">
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <div class="field">
+                    <label class="field__label" for="PortraitFile">Image file</label>
+                    <div class="file">
+                        <input type="file" id="PortraitFile" name="PortraitFile"
+                               accept=".jpg,.jpeg,.png,.webp,image/*" required />
+                        <span class="field__hint">
+                            JPG, PNG or WebP up to 2 MB. The previous file is deleted once the new one lands,
+                            and the public page picks it up without a rebuild.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-foot">
+                    <button class="btn btn--primary" type="submit">
+                        <ui-icon name="upload" size="sm" />
+                        <span class="btn__label">Save portrait</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>

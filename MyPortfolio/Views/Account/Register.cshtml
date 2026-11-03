@@ -1,102 +1,101 @@
-﻿@model RegisterViewModel
+@model RegisterViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Create account";
+    ViewData["WidePanel"] = true;
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="auth-card">
-    <div class="text-center">
-        <div class="auth-logo mx-auto">
-            <i class="bi bi-person-plus"></i>
+<h1 class="auth__title">Create your account</h1>
+<p class="auth__sub">Accounts are for managing the portfolio, not for public visitors.</p>
+
+<form class="auth__form" asp-action="Register" asp-controller="Account" method="post" novalidate>
+    <div asp-validation-summary="All"></div>
+
+    <div class="form-grid form-grid--2">
+        <div class="field">
+            <label asp-for="FirstName" class="field__label"></label>
+            <input asp-for="FirstName" class="input" placeholder="First name" autocomplete="given-name" />
+            <span asp-validation-for="FirstName"></span>
         </div>
-        <h1 class="auth-title">Create your account</h1>
-        <p class="auth-subtitle">Join to explore the full portfolio experience.</p>
-    </div>
-
-    <div class="mt-4">
-        <form asp-action="Register" method="post" asp-controller="Account" novalidate>
-            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label asp-for="FirstName" class="form-label"></label>
-                    <div class="input-icon-wrap">
-                        <i class="bi bi-person input-icon"></i>
-                        <input asp-for="FirstName" class="form-control" placeholder="First name" required />
-                    </div>
-                    <span asp-validation-for="FirstName" class="text-danger small"></span>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="LastName" class="form-label"></label>
-                    <div class="input-icon-wrap">
-                        <i class="bi bi-person input-icon"></i>
-                        <input asp-for="LastName" class="form-control" placeholder="Last name" required />
-                    </div>
-                    <span asp-validation-for="LastName" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="mb-3 mt-3">
-                <label asp-for="UserName" class="form-label"></label>
-                <div class="input-icon-wrap">
-                    <i class="bi bi-at input-icon"></i>
-                    <input asp-for="UserName" class="form-control" placeholder="Choose a username" required />
-                </div>
-                <span asp-validation-for="UserName" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <div class="input-icon-wrap">
-                    <i class="bi bi-envelope input-icon"></i>
-                    <input asp-for="Email" class="form-control" placeholder="name@example.com" required />
-                </div>
-                <span asp-validation-for="Email" class="text-danger small"></span>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label asp-for="Password" class="form-label"></label>
-                    <div class="input-icon-wrap">
-                        <i class="bi bi-lock input-icon"></i>
-                        <input asp-for="Password" class="form-control" placeholder="Create password" required type="password" />
-                    </div>
-                    <span asp-validation-for="Password" class="text-danger small"></span>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="ConfirmPassword" class="form-label"></label>
-                    <div class="input-icon-wrap">
-                        <i class="bi bi-lock-fill input-icon"></i>
-                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm password" required type="password" />
-                    </div>
-                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="form-check mt-3">
-                <input asp-for="IsAgree" class="form-check-input" required />
-                <label asp-for="IsAgree" class="form-check-label">
-                    I agree to the <a href="#" class="text-decoration-none fw-semibold" style="color: #6366f1;">Terms & Conditions</a>
-                </label>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 mt-4">
-                <i class="bi bi-person-check me-1"></i> Create Account
-            </button>
-        </form>
-
-        <div class="auth-divider">or continue with</div>
-
-        <form asp-controller="Account" asp-action="GoogleLogin" method="post">
-            <button type="submit" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-google"></i>
-                Sign up with Google
-            </button>
-        </form>
-
-        <div class="mt-4 text-center auth-footer-text">
-            Already have an account?
-            <a asp-action="Login">Sign in</a>
+        <div class="field">
+            <label asp-for="LastName" class="field__label"></label>
+            <input asp-for="LastName" class="input" placeholder="Last name" autocomplete="family-name" />
+            <span asp-validation-for="LastName"></span>
         </div>
     </div>
-</div>
+
+    <div class="field">
+        <label asp-for="UserName" class="field__label"></label>
+        <span class="input-wrap">
+            <span class="input-wrap__icon">@@</span>
+            <input asp-for="UserName" class="input" placeholder="username" autocomplete="username" />
+        </span>
+        <span asp-validation-for="UserName"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="Email" class="field__label"></label>
+        <span class="input-wrap">
+            <span class="input-wrap__icon"><ui-icon name="mail" size="sm" /></span>
+            <input asp-for="Email" class="input" type="email" placeholder="name@example.com"
+                   autocomplete="email" inputmode="email" />
+        </span>
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div class="form-grid form-grid--2">
+        <div class="field">
+            <div class="flex items-baseline justify-between gap-3">
+                <label asp-for="Password" class="field__label"></label>
+                <button class="btn btn--quiet btn--sm" type="button" data-pw-toggle="Password"
+                        aria-pressed="false" aria-label="Show password">
+                    <ui-icon name="eye" size="sm" />
+                </button>
+            </div>
+            <input asp-for="Password" class="input" type="password" placeholder="Choose a password"
+                   autocomplete="new-password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="field">
+            <label asp-for="ConfirmPassword" class="field__label"></label>
+            <input asp-for="ConfirmPassword" class="input" type="password" placeholder="Repeat it"
+                   autocomplete="new-password" />
+            <span asp-validation-for="ConfirmPassword"></span>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="choice">
+            <input asp-for="IsAgree" type="checkbox" />
+            <span class="choice__text">
+                I agree to the
+                <a asp-controller="Home" asp-action="Privacy">terms and privacy note</a>.
+                <span class="choice__hint">Required — accounts are created manually for this portfolio.</span>
+            </span>
+        </label>
+        <span asp-validation-for="IsAgree"></span>
+    </div>
+
+    <button class="btn btn--primary btn--lg btn--block" type="submit">
+        <ui-icon name="plus" size="sm" />
+        <span class="btn__label">Create account</span>
+    </button>
+</form>
+
+<div class="auth__divider">or continue with</div>
+
+<form asp-controller="Account" asp-action="GoogleLogin" method="post">
+    <button class="btn btn--outline btn--block" type="submit">
+        <ui-icon name="web" size="sm" />
+        <span class="btn__label">Google</span>
+    </button>
+</form>
+
+<p class="auth__foot">
+    Already registered?
+    <a asp-action="Login">Sign in</a>
+</p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,286 +1,230 @@
+@model MyPortfolio.Models.DashboardModels.DashboardViewModel
 @{
     Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+    ViewData["PageKicker"] = "Overview";
+    ViewData["PageTitle"] = $"Welcome back, {Model.UserName}";
+    ViewData["PageDesc"] = "Every number here is read from the rows behind your public portfolio.";
+
+    int Active(string controller) => Model.Counters.First(c => c.Controller == controller).Active;
+    var social = Active("SocialLink");
+    var channels = Active("Contact");
+    var datedProjects = Model.ProjectsByYear.Sum(y => y.Value);
 }
 
-<main class="main-content">
-    <div class="page-header">
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-subtitle">Overview of your portfolio activity and quick management tools.</p>
-    </div>
+@section PageActions {
+    <a class="btn btn--quiet btn--sm" asp-controller="Home" asp-action="Index" target="_blank" rel="noopener">
+        <ui-icon name="external" size="sm" />
+        <span class="btn__label">Live site</span>
+    </a>
+    <a class="btn btn--primary btn--sm" asp-controller="Project" asp-action="Create">
+        <ui-icon name="plus" size="sm" />
+        <span class="btn__label">New project</span>
+    </a>
+}
 
-    <!-- Welcome Banner -->
-    <div class="welcome-banner fade-in">
-        <div>
-            <h2><i class="bi bi-stars"></i> Welcome back, Admin</h2>
-            <p>Your portfolio is live and performing. Here's the latest snapshot.</p>
-        </div>
-        <a asp-controller="Home" asp-action="Index" target="_blank" class="welcome-badge">
-            <i class="bi bi-eye me-1"></i> View Portfolio
-        </a>
-    </div>
+<div class="stack gap-6">
 
-    <!-- Quick Actions -->
-    <div class="dashboard-section-title fade-in"><i class="bi bi-lightning"></i> Quick Actions</div>
-    <div class="quick-actions fade-in">
-        <a asp-controller="Project" asp-action="Create" class="quick-action-card">
-            <i class="bi bi-plus-circle-fill"></i>
-            <span>New Project</span>
-        </a>
-        <a asp-controller="Skill" asp-action="Create" class="quick-action-card">
-            <i class="bi bi-lightning-fill"></i>
-            <span>Add Skill</span>
-        </a>
-        <a asp-controller="Expereience" asp-action="Create" class="quick-action-card">
-            <i class="bi bi-briefcase-fill"></i>
-            <span>Add Experience</span>
-        </a>
-        <a asp-controller="Education" asp-action="Create" class="quick-action-card">
-            <i class="bi bi-mortarboard-fill"></i>
-            <span>Add Education</span>
-        </a>
-        <a asp-controller="SocialLink" asp-action="Create" class="quick-action-card">
-            <i class="bi bi-share-fill"></i>
-            <span>Social Link</span>
-        </a>
-        <a asp-controller="User" asp-action="Index" class="quick-action-card">
-            <i class="bi bi-people-fill"></i>
-            <span>Manage Users</span>
-        </a>
-    </div>
+    <section class="dash-grid dash-grid--stats" aria-label="Content counts">
+        @foreach (var c in Model.Counters.Take(4))
+        {
+            <a class="stat" asp-controller="@c.Controller" asp-action="Index">
+                <span class="tile tile--accent stat__icon"><ui-icon name="@c.Icon" /></span>
+                <span class="stat__label">@c.Label</span>
+                <span class="stat__value" data-count="@c.Active">@c.Active</span>
+                <span class="stat__meta">@(c.Archived > 0 ? $"{c.Archived} archived" : "Nothing archived")</span>
+            </a>
+        }
+    </section>
 
-    <!-- Stats Grid -->
-    <div class="dashboard-section-title fade-in"><i class="bi bi-graph-up-arrow"></i> Analytics Overview</div>
-    <div class="stats-grid fade-in">
-        <div class="stat-card type-primary">
-            <div class="stat-header">
-                <span class="stat-title">Total Users</span>
-                <div class="stat-icon primary"><i class="bi bi-people-fill"></i></div>
-            </div>
-            <div class="stat-value">2,847</div>
-            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +12.5% from last month</div>
-            <div class="stat-sparkline">
-                <span class="bar" style="height:12px"></span>
-                <span class="bar" style="height:18px"></span>
-                <span class="bar" style="height:8px"></span>
-                <span class="bar" style="height:22px"></span>
-                <span class="bar" style="height:16px"></span>
-                <span class="bar" style="height:28px"></span>
-            </div>
-        </div>
+    <div class="dash-grid dash-grid--split">
 
-        <div class="stat-card type-success">
-            <div class="stat-header">
-                <span class="stat-title">Active Projects</span>
-                <div class="stat-icon success"><i class="bi bi-folder-check"></i></div>
-            </div>
-            <div class="stat-value">24</div>
-            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +3 new this week</div>
-            <div class="stat-sparkline">
-                <span class="bar" style="height:8px"></span>
-                <span class="bar" style="height:14px"></span>
-                <span class="bar" style="height:10px"></span>
-                <span class="bar" style="height:20px"></span>
-                <span class="bar" style="height:16px"></span>
-                <span class="bar" style="height:24px"></span>
-            </div>
-        </div>
+        <section class="card panel" aria-labelledby="latestHead">
+            <header class="panel__hd">
+                <h2 class="card__title" id="latestHead">Latest content</h2>
+                <a class="btn btn--quiet btn--sm" asp-controller="Project" asp-action="Index">
+                    <span class="btn__label">Manage</span>
+                    <ui-icon name="chevR" size="sm" />
+                </a>
+            </header>
+            @if (Model.Entries.Count == 0)
+            {
+                <partial name="_EmptyState" model="@(new EmptyStateVm {
+                    Title = "No dated content yet",
+                    Text = "Add a project, a role or a degree and it lands here.",
+                    Icon = "history",
+                    ActionHref = Url.Action("Create", "Project"),
+                    ActionLabel = "Add a project" })" />
+            }
+            else
+            {
+                <ul class="feed">
+                    @foreach (var e in Model.Entries)
+                    {
+                        <li class="feed__item">
+                            <span class="tile"><ui-icon name="@e.Icon" size="sm" /></span>
+                            <a class="feed__text" asp-controller="@e.Controller" asp-action="Edit" asp-route-id="@e.Id">@e.Text</a>
+                            <span class="feed__time">@e.When</span>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
 
-        <div class="stat-card type-info">
-            <div class="stat-header">
-                <span class="stat-title">Portfolio Views</span>
-                <div class="stat-icon info"><i class="bi bi-eye-fill"></i></div>
-            </div>
-            <div class="stat-value">1,204</div>
-            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +8.2% from last month</div>
-            <div class="stat-sparkline">
-                <span class="bar" style="height:4px"></span>
-                <span class="bar" style="height:10px"></span>
-                <span class="bar" style="height:18px"></span>
-                <span class="bar" style="height:12px"></span>
-                <span class="bar" style="height:22px"></span>
-                <span class="bar" style="height:28px"></span>
-            </div>
-        </div>
+        <div class="dash-grid">
+            <section class="card panel" aria-labelledby="levelsHead">
+                <header class="panel__hd">
+                    <h2 class="card__title" id="levelsHead">Skill levels</h2>
+                    <a class="badge badge--pill" asp-controller="Skill" asp-action="Index">@(Active("Skill") + " listed")</a>
+                </header>
+                <div class="bars">
+                    @foreach (var s in Model.SkillLevels)
+                    {
+                        <div class="bars__row">
+                            <span class="bars__label">@s.Label</span>
+                            <span class="bars__track"><span class="bars__fill" style="--value:@s.Percent%;"></span></span>
+                            <span class="bars__value">@s.Value</span>
+                        </div>
+                    }
+                </div>
+            </section>
 
-        <div class="stat-card type-warning">
-            <div class="stat-header">
-                <span class="stat-title">Skills Listed</span>
-                <div class="stat-icon warning"><i class="bi bi-lightning-charge-fill"></i></div>
-            </div>
-            <div class="stat-value">18</div>
-            <div class="stat-change positive"><i class="bi bi-arrow-up-short"></i> +2 recently added</div>
-            <div class="stat-sparkline">
-                <span class="bar" style="height:10px"></span>
-                <span class="bar" style="height:16px"></span>
-                <span class="bar" style="height:12px"></span>
-                <span class="bar" style="height:18px"></span>
-                <span class="bar" style="height:20px"></span>
-                <span class="bar" style="height:22px"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts -->
-    <div class="charts-grid fade-in">
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3 class="chart-title">Portfolio Views <span class="text-muted fw-normal small">· Last 6 months</span></h3>
-                <span class="chart-action"><i class="bi bi-arrow-up text-success"></i> +8.2%</span>
-            </div>
-            <div class="chart-container">
-                <canvas id="analyticsChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3 class="chart-title">Skills Distribution</h3>
-                <span class="chart-action">by count</span>
-            </div>
-            <div class="chart-container">
-                <canvas id="skillsChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="charts-grid fade-in">
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3 class="chart-title">Projects by Month</h3>
-                <span class="chart-action"><i class="bi bi-calendar3"></i> 2026</span>
-            </div>
-            <div class="chart-container">
-                <canvas id="portfolioChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3 class="chart-title">Recent Activity</h3>
-                <span class="chart-action">Latest</span>
-            </div>
-            <ul class="activity-list">
-                <li class="activity-item">
-                    <div class="activity-icon primary"><i class="bi bi-person-plus"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">New user registered</div>
-                        <div class="activity-time">2 minutes ago</div>
+            <section class="card panel" aria-labelledby="yearsHead">
+                <header class="panel__hd">
+                    <h2 class="card__title" id="yearsHead">Projects by year</h2>
+                    <span class="text-sm text-faint tabular">@datedProjects</span>
+                </header>
+                @if (Model.ProjectsByYear.Count == 0)
+                {
+                    <p class="text-sm text-muted">No project carries a start date yet.</p>
+                }
+                else
+                {
+                    <div class="spark" role="img" aria-label="Projects started per year">
+                        @foreach (var y in Model.ProjectsByYear)
+                        {
+                            <span class="spark__bar" style="--v:@y.Percent;" title="@($"{y.Label}: {y.Value}")"></span>
+                        }
                     </div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-icon success"><i class="bi bi-check-circle"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">Project "Portfolio v2" published</div>
-                        <div class="activity-time">1 hour ago</div>
-                    </div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-icon warning"><i class="bi bi-pencil-square"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">Skill "React Native" updated</div>
-                        <div class="activity-time">3 hours ago</div>
-                    </div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-icon info"><i class="bi bi-upload"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">New profile image uploaded</div>
-                        <div class="activity-time">5 hours ago</div>
-                    </div>
-                </li>
+                    <dl class="dl mt-4">
+                        @foreach (var y in Model.ProjectsByYear)
+                        {
+                            <div class="dl__row">
+                                <dt>@y.Label</dt>
+                                <dd>@y.Value</dd>
+                            </div>
+                        }
+                    </dl>
+                }
+            </section>
+        </div>
+    </div>
+
+    <div class="dash-grid dash-grid--split">
+
+        <section class="card panel" aria-labelledby="checksHead">
+            <header class="panel__hd">
+                <h2 class="card__title" id="checksHead">Publishing checks</h2>
+                <span class="badge @(Model.Checks.All(c => c.Passed) ? "badge--success" : "badge--warning")">
+                    @Model.Checks.Count(c => c.Passed) of @Model.Checks.Count
+                </span>
+            </header>
+            <ul class="list">
+                @foreach (var k in Model.Checks)
+                {
+                    <li class="list__item">
+                        <span class="tile tile--@(k.Passed ? "success" : "warning")">
+                            <ui-icon name="@(k.Passed ? "check" : "warn")" size="sm" />
+                        </span>
+                        <span class="grow @(k.Passed ? "text-muted" : "text-strong")">@k.Text</span>
+                        <a class="btn btn--quiet btn--sm" asp-controller="@k.Controller" asp-action="@(k.Passed ? "Index" : "Create")">
+                            <span class="btn__label">@(k.Passed ? "View" : "Fix")</span>
+                        </a>
+                    </li>
+                }
             </ul>
+        </section>
+
+        <div class="dash-grid">
+            <section class="card panel" aria-labelledby="accessHead">
+                <header class="panel__hd">
+                    <h2 class="card__title" id="accessHead">Access &amp; files</h2>
+                </header>
+                <dl class="dl">
+                    <div class="dl__row">
+                        <dt>CV on file</dt>
+                        <dd>
+                            @if (Model.Cv is null)
+                            {
+                                <span class="text-danger">None uploaded</span>
+                            }
+                            else
+                            {
+                                <a href="~/Files/@Model.Cv.FileName" target="_blank" rel="noopener">@Model.Cv.FileName</a>
+                            }
+                        </dd>
+                    </div>
+                    @if (Model.Cv is not null)
+                    {
+                        <div class="dl__row">
+                            <dt>Uploaded</dt>
+                            <dd>@Model.Cv.UploadedAt.ToString("dd MMM yyyy") · @Model.Cv.UploadedBy</dd>
+                        </div>
+                    }
+                    <div class="dl__row">
+                        <dt>Accounts</dt>
+                        <dd class="flex gap-2">
+                            <a class="badge badge--pill" asp-controller="User" asp-action="Index">@($"{Model.Users} users")</a>
+                            <a class="badge badge--pill" asp-controller="Role" asp-action="Index">@($"{Model.Roles} roles")</a>
+                        </dd>
+                    </div>
+                    <div class="dl__row">
+                        <dt>Outward links</dt>
+                        <dd>@social social · @channels contact</dd>
+                    </div>
+                    <div class="dl__row">
+                        <dt>Published rows</dt>
+                        <dd data-count="@Model.TotalActive">@Model.TotalActive</dd>
+                    </div>
+                </dl>
+                <div class="flex gap-2 mt-4 wrap">
+                    <a class="btn btn--soft btn--sm" asp-controller="CvDocument" asp-action="Index">
+                        <ui-icon name="pdf" size="sm" />
+                        <span class="btn__label">Documents</span>
+                    </a>
+                    <a class="btn btn--soft btn--sm" asp-controller="User" asp-action="Index">
+                        <ui-icon name="users" size="sm" />
+                        <span class="btn__label">Users</span>
+                    </a>
+                    <a class="btn btn--soft btn--sm" asp-controller="Role" asp-action="Index">
+                        <ui-icon name="shield" size="sm" />
+                        <span class="btn__label">Roles</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="card panel" aria-labelledby="platformsHead">
+                <header class="panel__hd">
+                    <h2 class="card__title" id="platformsHead">Linked platforms</h2>
+                    <a class="btn btn--quiet btn--sm" asp-controller="SocialLink" asp-action="Create">
+                        <ui-icon name="plus" size="sm" />
+                        <span class="btn__label">Add</span>
+                    </a>
+                </header>
+                @if (Model.Platforms.Count == 0)
+                {
+                    <p class="text-sm text-muted">Nothing linked to the Elsewhere section yet.</p>
+                }
+                else
+                {
+                    <ul class="tag-list">
+                        @foreach (var p in Model.Platforms)
+                        {
+                            <li><span class="tag">@p</span></li>
+                        }
+                    </ul>
+                }
+            </section>
         </div>
     </div>
-</main>
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var ctx1 = document.getElementById('analyticsChart');
-            if (ctx1) {
-                new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-                        datasets: [{
-                            label: 'Views',
-                            data: [450, 620, 810, 750, 920, 1204],
-                            borderColor: '#6366f1',
-                            backgroundColor: function(ctx) {
-                                var g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 280);
-                                g.addColorStop(0, 'rgba(99,102,241,0.25)');
-                                g.addColorStop(1, 'rgba(99,102,241,0)');
-                                return g;
-                            },
-                            fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#6366f1',
-                            pointBorderWidth: 2,
-                            pointRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { display: false } },
-                            y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { maxTicksLimit: 5 } }
-                        }
-                    }
-                });
-            }
-            var ctx2 = document.getElementById('skillsChart');
-            if (ctx2) {
-                new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Backend','Frontend','Database','DevOps','Design'],
-                        datasets: [{
-                            data: [35, 25, 15, 10, 15],
-                            backgroundColor: ['#6366f1','#06b6d4','#10b981','#f59e0b','#ef4444'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '70%',
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { usePointStyle: true, padding: 12 }
-                            }
-                        }
-                    }
-                });
-            }
-            var ctx3 = document.getElementById('portfolioChart');
-            if (ctx3) {
-                new Chart(ctx3, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-                        datasets: [{
-                            label: 'Projects',
-                            data: [2, 1, 3, 2, 4, 3],
-                            backgroundColor: '#8b5cf6',
-                            borderRadius: 6,
-                            borderSkipped: false
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { display: false } },
-                            y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { stepSize: 1 } }
-                        }
-                    }
-                });
-            }
-        });
-    </script>
-}
+</div>

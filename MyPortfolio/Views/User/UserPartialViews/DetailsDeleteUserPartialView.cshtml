@@ -1,71 +1,44 @@
-﻿@model UserDetailsViewModel
+@using MyPortfolio.Models.ManagerModels.UserModels
+@model UserDetailsViewModel
 
-<div class="row g-4">
-    <div class="col-md-6">
-        <label class="form-label mb-1">Full name</label>
-        <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">@Model.FullName</div>
+@* Read-only account summary, shared by User/Details and User/Delete. *@
+<dl class="dl">
+    <div class="dl__row">
+        <dt>Status</dt>
+        <dd>
+            <span class="badge badge--@(Model.IsDeleted ? "danger" : "success")">
+                @(Model.IsDeleted ? "Archived" : "Live")
+            </span>
+        </dd>
     </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Email</label>
-        <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">@Model.Email</div>
+    <div class="dl__row">
+        <dt>Full name</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.FullName) ? "—" : Model.FullName)</dd>
     </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Roles</label>
-        @if (Model.Roles?.Any() == true)
-        {
-            <div class="d-flex flex-wrap gap-1">
-                @foreach (var role in Model.Roles)
-                {
-                    <span class="badge bg-primary">@role</span>
-                }
-            </div>
-            <div class="form-text">Assigned roles (read-only)</div>
-        }
-        else
-        {
-            <div class="form-control-plaintext text-muted">No roles</div>
-        }
+    <div class="dl__row">
+        <dt>Email</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.Email) ? "—" : Model.Email)</dd>
     </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Created by</label>
-        <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">@Model.CreatedBy</div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Last modified by</label>
-        <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">
-            @(Model.LastModifiedBy ?? "—")
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Created on</label>
-        <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">
-            @Model.CreatedOn.ToString("yyyy-MM-dd HH:mm")
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Last modified on</label>
-        <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">
-            @(Model.LastModifiedOn?.ToString("yyyy-MM-dd HH:mm") ?? "—")
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label mb-1">Status</label>
-        <div>
-            @if (Model.IsDeleted)
+    <div class="dl__row">
+        <dt>Roles</dt>
+        <dd>
+            @if (Model.Roles.Count > 0)
             {
-                <span class="badge bg-danger">Deleted</span>
+                <ul class="tag-list">
+                    @foreach (var role in Model.Roles)
+                    {
+                        <li><span class="tag">@role</span></li>
+                    }
+                </ul>
             }
             else
             {
-                <span class="badge bg-success">Active</span>
+                <span class="text-sm text-faint">No roles assigned</span>
             }
-        </div>
+        </dd>
     </div>
-</div>
+    <div class="dl__row">
+        <dt>Record</dt>
+        <dd class="mono break-any">@Model.Id</dd>
+    </div>
+</dl>

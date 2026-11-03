@@ -1,0 +1,16 @@
+@* One shared danger-confirmation dialog per page; app.js wires every form[data-confirm] to it. *@
+<dialog class="dialog" id="confirmDialog" aria-labelledby="confirmDialog-title">
+    <div class="dialog__hd">
+        <h2 class="dialog__title" id="confirmDialog-title" data-dst="title">Please confirm</h2>
+    </div>
+    <div class="dialog__bd">
+        <p class="dialog__body-text" data-dst="message">Are you sure?</p>
+    </div>
+    <div class="dialog__ft">
+        <button type="button" class="btn btn--ghost" data-dialog-close>Cancel</button>
+        <button type="button" class="btn btn--danger" data-confirm-ok>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>
+            Yes, continue
+        </button>
+    </div>
+</dialog>

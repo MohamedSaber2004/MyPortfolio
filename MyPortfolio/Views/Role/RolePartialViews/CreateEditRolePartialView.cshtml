@@ -1,19 +1,22 @@
-﻿@using MyPortfolio.Models.ManagerModels.RoleModels
+@using MyPortfolio.Models.ManagerModels.RoleModels
 @model CreateEditRoleViewModel
 
-<div class="form-group mb-3 col-12">
-    <label class="form-label" asp-for="RoleName"></label>
+@* Shared by Role/Create and Role/Edit: a picker when candidates exist, a free-text name otherwise. *@
+<div class="field">
+    <label asp-for="RoleName" class="field__label"></label>
 
     @if (Model?.AvailableRoles?.Any() == true)
     {
-        <select asp-for="RoleName" asp-items="Model.AvailableRoles" class="form-select">
+        <select asp-for="RoleName" class="select" asp-items="Model.AvailableRoles">
             <option value="">Select role</option>
         </select>
+        <span class="field__hint">Pick the role you want to rename.</span>
     }
     else
     {
-        <input asp-for="RoleName" class="form-control" placeholder="Enter role name" />
+        <input asp-for="RoleName" class="input" placeholder="e.g. Editor" autocomplete="off" />
+        <span class="field__hint">Exact text the authorisation attributes match against.</span>
     }
 
-    <span asp-validation-for="RoleName" class="text-danger small"></span>
+    <span asp-validation-for="RoleName"></span>
 </div>

@@ -1,97 +1,79 @@
-﻿@using MyPortfolio.Models.ProjectModels
+@using MyPortfolio.Models.ProjectModels
 @model ProjectViewModel
-
 @{
-    ViewData["Title"] = "Create Project";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "New project";
+    ViewData["PageKicker"] = "Projects";
+    ViewData["PageTitle"] = "Add a project";
+    ViewData["PageDesc"] = "It joins the public Selected work grid as soon as you save.";
 }
 
-<main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">Create Project</h1>
-            <p class="page-subtitle">Add a new project.</p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-secondary" asp-action="Index">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
-        </div>
-    </div>
+@section PageActions {
+    <a class="btn btn--quiet" asp-action="Index">Back to list</a>
+}
 
-    <div class="card shadow-sm border-0 fade-in">
-        <div class="card-body">
-            <form asp-action="Create" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
-                @Html.AntiForgeryToken()
+<section class="card">
+    <div class="card__bd">
+        <form asp-action="Create" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
+            <div asp-validation-summary="ModelOnly"></div>
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="Title" class="form-label"></label>
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ProjectURL" class="form-label"></label>
-                        <input asp-for="ProjectURL" type="url" class="form-control" placeholder="https://example.com/project" />
-                        <span asp-validation-for="ProjectURL" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="Description" class="form-label"></label>
-                        <textarea asp-for="Description" rows="5" class="form-control"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="StartDate" class="form-label"></label>
-                        <input asp-for="StartDate" type="date" class="form-control" />
-                        <span asp-validation-for="StartDate" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="EndDate" class="form-label"></label>
-                        <input asp-for="EndDate" type="date" class="form-control" />
-                        <span asp-validation-for="EndDate" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ProjectImage" class="form-label"></label>
-                        <input asp-for="ProjectImage" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" />
-                        <span asp-validation-for="ProjectImage" class="text-danger"></span>
-                        <div class="form-text">Supported: JPG, JPEG, PNG, WEBP, GIF</div>
-                    </div>
+            <div class="form-grid form-grid--2">
+                <div class="field">
+                    <label asp-for="Title" class="field__label"></label>
+                    <input asp-for="Title" class="input" placeholder="e.g. MyPortfolio CMS" autocomplete="off" />
+                    <span asp-validation-for="Title"></span>
                 </div>
 
-                <div class="mt-4 d-flex gap-2 flex-wrap">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <div class="field">
+                    <label asp-for="ProjectURL" class="field__label"></label>
+                    <input asp-for="ProjectURL" class="input" type="url" inputmode="url"
+                           placeholder="https://…" autocomplete="off" />
+                    <span asp-validation-for="ProjectURL"></span>
                 </div>
-            </form>
-        </div>
+
+                <div class="field form-grid__full">
+                    <label asp-for="Description" class="field__label"></label>
+                    <textarea asp-for="Description" class="textarea" rows="5"
+                              placeholder="What it does, what it runs on, what you owned."></textarea>
+                    <span class="field__hint">Each line becomes a paragraph on the public page.</span>
+                    <span asp-validation-for="Description"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="StartDate" class="field__label"></label>
+                    <input asp-for="StartDate" class="input" type="date" />
+                    <span asp-validation-for="StartDate"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="EndDate" class="field__label"></label>
+                    <input asp-for="EndDate" class="input" type="date" />
+                    <span asp-validation-for="EndDate"></span>
+                </div>
+
+                <div class="field form-grid__full">
+                    <label asp-for="ProjectImage" class="field__label"></label>
+                    <div class="file" data-preview="#projectPreview">
+                        <input asp-for="ProjectImage" class="input" type="file" accept="image/*"
+                               data-preview="#projectPreview" />
+                    </div>
+                    <img class="preview" id="projectPreview" alt="" hidden />
+                    <span class="field__hint">Optional cover, shown at 16:9. JPG, JPEG, PNG, WEBP or GIF.</span>
+                    <span asp-validation-for="ProjectImage"></span>
+                </div>
+            </div>
+
+            <div class="form-foot">
+                <button class="btn btn--primary" type="submit">
+                    <ui-icon name="check" size="sm" />
+                    <span class="btn__label">Create project</span>
+                </button>
+                <a class="btn btn--quiet" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-</main>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        (function () {
-            const start = document.getElementById('StartDate');
-            const end = document.getElementById('EndDate');
-            if (start && end) {
-                start.addEventListener('change', () => {
-                    if (start.value) {
-                        end.min = start.value;
-                        if (end.value && end.value < start.value) {
-                            end.value = start.value;
-                        }
-                    } else {
-                        end.removeAttribute('min');
-                    }
-                });
-            }
-        })();
-    </script>
 }

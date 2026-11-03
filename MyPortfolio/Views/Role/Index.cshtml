@@ -1,167 +1,125 @@
-﻿@using MyPortfolio.Models.ManagerModels.RoleModels
+@using MyPortfolio.Models.ManagerModels.RoleModels
 @model IEnumerable<RoleViewModel>
 @{
+    Layout = "_AdminLayout";
     ViewData["Title"] = "Roles";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["PageKicker"] = "Access";
+    ViewData["PageTitle"] = "Roles";
+    ViewData["PageDesc"] = "The role names accounts are tagged with, and the admin area they unlock.";
+
+    var rows = Model?.ToList() ?? [];
+    var live = rows.Count(r => !r.IsDeleted);
 }
 
-@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
-{
-    <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-top-right">
-        <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                <strong class="me-auto">Success</strong>
-                <small>Just now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                @TempData["Message"]
-            </div>
-        </div>
-    </div>
+@section PageActions {
+    <a class="btn btn--primary" asp-action="Create">
+        <ui-icon name="plus" size="sm" />
+        <span class="btn__label">New role</span>
+    </a>
 }
 
-<main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">Role Management</h1>
-            <p class="page-subtitle">View, search, and manage all roles.</p>
-        </div>
-        <a class="btn btn-primary" asp-controller="Role" asp-action="Create">
-            <i class="bi bi-plus-lg"></i> Add New Role
-        </a>
-    </div>
-
-    <div class="card shadow-sm border-0 mb-4 fade-in">
-        <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-2 align-items-center" autocomplete="off">
-                <div class="col-md-8">
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
-                        <input class="form-control border-start-0 ps-0" type="text" name="RoleSearchName" placeholder="Search role by name..." />
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @if (Model?.Any() ?? false)
+<form class="toolbar" asp-action="Index" method="get" autocomplete="off" data-search="#roleTable">
+    <span class="input-wrap grow">
+        <span class="input-wrap__icon"><ui-icon name="search" size="sm" /></span>
+        <label class="sr-only" for="roleSearchName">Search roles</label>
+        <input class="input" id="roleSearchName" name="RoleSearchName" type="search"
+               value="@Context.Request.Query["RoleSearchName"]" placeholder="Role name…" />
+    </span>
+    <button class="btn btn--soft" type="submit">
+        <ui-icon name="search" size="sm" />
+        <span class="btn__label">Search</span>
+    </button>
+    @if (!string.IsNullOrWhiteSpace(Context.Request.Query["RoleSearchName"]))
     {
-        <div class="card shadow-sm border-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>@Html.DisplayNameFor(R => R.RoleName)</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var role in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="role-icon-box">
-                                            <i class="bi bi-shield-lock"></i>
-                                        </div>
-                                        <span class="fw-medium">@role.RoleName</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge @(role.IsDeleted ? "bg-danger" : "bg-success")">
-                                        @(role.IsDeleted ? "Deleted" : "Active")
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <a asp-action="Details" asp-controller="Role" asp-route-id="@role.Id" class="btn btn-sm btn-ghost" title="Details">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a asp-action="Edit" asp-controller="Role" asp-route-id="@role.Id" class="btn btn-sm btn-ghost" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        @if (role.IsDeleted)
-                                        {
-                                            <form asp-action="Restore" asp-controller="Role" asp-route-id="@role.Id" method="post" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-ghost text-success" title="Restore">
-                                                    <i class="bi bi-arrow-counterclockwise"></i>
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <button type="button" class="btn btn-sm btn-ghost text-danger" title="Delete"
-                                                    data-bs-toggle="modal" data-bs-target="#DeleteModal-@role.Id">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        }
-                                    </div>
+        <a class="btn btn--quiet" asp-action="Index">Clear</a>
+    }
+</form>
 
-                                    @if (!role.IsDeleted)
-                                    {
-                                        <div class="modal fade" id="DeleteModal-@role.Id" tabindex="-1" aria-labelledby="deleteModalLabel-@role.Id" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content border-0">
-                                                    <div class="modal-header bg-danger text-white">
-                                                        <h5 class="modal-title" id="deleteModalLabel-@role.Id">
-                                                            <i class="bi bi-trash me-2"></i> Delete Role
-                                                        </h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p class="mb-2">Are you sure you want to delete the role <strong>@role.RoleName</strong>?</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <form asp-action="Delete" asp-controller="Role" asp-route-id="@role.Id" method="post">
-                                                            @Html.AntiForgeryToken()
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-danger">
-                                                                <i class="bi bi-trash"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+<div id="roleTable">
+    @if (rows.Count == 0)
+    {
+        <div class="card">
+            <partial name="_EmptyState" model="@(new EmptyStateVm {
+                Title = "No roles match",
+                Text = "Nothing can be granted until at least one role exists.",
+                Icon = "shield",
+                ActionHref = Url.Action("Create", "Role"),
+                ActionLabel = "Add the first role" })" />
         </div>
     }
     else
     {
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="bi bi-shield-lock"></i>
-            </div>
-            <h4>No Roles Found</h4>
-            <p>No roles match your search criteria. Try adjusting your search term or create a new role.</p>
-            <a class="btn btn-primary" asp-controller="Role" asp-action="Create">
-                <i class="bi bi-plus-lg"></i> Add New Role
-            </a>
+        <div class="table-wrap">
+            <table class="table table--stack table--sticky">
+                <caption class="sr-only">Roles, in the order they were stored</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="table__num">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var role in rows)
+                    {
+                        <tr data-deleted="@(role.IsDeleted ? "true" : "false")">
+                            <td data-label="Role">
+                                <div class="table__main flex gap-3 items-center">
+                                    <span class="tile tile--accent" aria-hidden="true">
+                                        <ui-icon name="shield" size="sm" />
+                                    </span>
+                                    <a class="table__primary" asp-action="Details" asp-route-id="@role.Id">@role.RoleName</a>
+                                </div>
+                            </td>
+                            <td data-label="Status">
+                                <span class="badge badge--@(role.IsDeleted ? "danger" : "success")">
+                                    @(role.IsDeleted ? "Archived" : "Live")
+                                </span>
+                            </td>
+                            <td data-label="Actions">
+                                <div class="table__actions">
+                                    <a class="btn btn--icon btn--quiet" asp-action="Details" asp-route-id="@role.Id"
+                                       data-tip="Details" aria-label="@($"Details for {role.RoleName}")">
+                                        <ui-icon name="eye" size="sm" />
+                                    </a>
+                                    <a class="btn btn--icon btn--quiet" asp-action="Edit" asp-route-id="@role.Id"
+                                       data-tip="Edit" aria-label="@($"Edit {role.RoleName}")">
+                                        <ui-icon name="edit" size="sm" />
+                                    </a>
+                                    @if (role.IsDeleted)
+                                    {
+                                        <form asp-action="Restore" asp-route-id="@role.Id" method="post"
+                                              data-confirm-title="Restore role"
+                                              data-confirm="@($"Put {role.RoleName} back in the picker?")">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn--icon btn--success" type="submit"
+                                                    data-tip="Restore" aria-label="@($"Restore {role.RoleName}")">
+                                                <ui-icon name="restore" size="sm" />
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@role.Id" method="post"
+                                              data-confirm-title="Archive role"
+                                              data-confirm="@($"{role.RoleName} stops appearing in the role pickers. Accounts keep the tag until you remove it.")">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn--icon btn--danger" type="submit"
+                                                    data-tip="Delete" aria-label="@($"Delete {role.RoleName}")">
+                                                <ui-icon name="del" size="sm" />
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
+        <p class="meta mt-3">
+            <span class="meta__item">@live live</span>
+            <span class="meta__item">@(rows.Count - live) archived</span>
+        </p>
     }
-</main>
-
-@section Scripts {
-    <script>
-        setTimeout(function () {
-            $('.toast').toast('hide');
-        }, 5000);
-    </script>
-}
+</div>

@@ -1,93 +1,83 @@
 @using BusinessLogicLayer.DTos.CvDocumentDTos
 @model CvDocumentDto?
-
 @{
-    ViewData["Title"] = "CV Management";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Résumé";
+    ViewData["PageKicker"] = "Content";
+    ViewData["PageTitle"] = "Résumé";
+    ViewData["PageDesc"] = "The PDF behind the full-résumé button on the public page.";
 }
 
-<main class="main-content">
-    @if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
-    {
-        <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-top-right">
-            <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                    <strong class="me-auto">Success</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    @TempData["Message"]
-                </div>
-            </div>
-        </div>
-    }
+<div class="dash-grid dash-grid--split">
+    <section class="card panel">
+        <header class="panel__hd">
+            <h2 class="card__title">Current document</h2>
+            <span class="badge badge--@(Model is null ? "warning" : "success")">
+                @(Model is null ? "Missing" : "Published")
+            </span>
+        </header>
 
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">CV Management</h1>
-            <p class="page-subtitle">Upload or replace your resume / CV (PDF only, max 2 MB).</p>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 fade-in">
-                <div class="card-body">
-                    <h5 class="fw-bold mb-3">Current CV</h5>
-                    @if (Model is not null)
-                    {
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <i class="bi bi-filetype-pdf fs-1 text-danger"></i>
-                            <div>
-                                <div class="fw-semibold">@Model.FileName</div>
-                                <div class="small text-muted">Uploaded @Model.UploadedAt.ToString("g") by @Model.UploadedBy</div>
-                            </div>
-                        </div>
-                        <a href="@Url.Content("~/Files/" + Model.FileName)" target="_blank" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-eye"></i> View CV
+        @if (Model is not null)
+        {
+            var fileHref = Url.Content("~/Files/" + Model.FileName);
+            <ul class="list">
+                <li class="list__item">
+                    <span class="tile tile--danger" aria-hidden="true"><ui-icon name="pdf" size="sm" /></span>
+                    <span class="grow min-w-0">
+                        <a class="table__primary break-any" href="@fileHref" target="_blank" rel="noopener">@Model.FileName</a>
+                        <span class="table__sub">Uploaded @Display.Stamp(Model.UploadedAt) by @Model.UploadedBy</span>
+                    </span>
+                    <div class="table__actions">
+                        <a class="btn btn--icon btn--quiet" href="@fileHref" download
+                           data-tip="Download" aria-label="@($"Download {Model.FileName}")">
+                            <ui-icon name="download" size="sm" />
                         </a>
-                        <a href="@Url.Content("~/Files/" + Model.FileName)" download class="btn btn-primary btn-sm ms-2">
-                            <i class="bi bi-download"></i> Download
-                        </a>
-                    }
-                    else
+                    </div>
+                </li>
+            </ul>
+            <footer class="card__ft">
+                <p class="meta">
+                    <span class="meta__item mono">#@Model.Id</span>
+                    <span class="meta__item">Newest upload wins on the public page</span>
+                </p>
+            </footer>
+        }
+        else
+        {
+            <partial name="_EmptyState" model="@(new EmptyStateVm {
+                Title = "No résumé yet",
+                Text = "Upload a PDF and the public contact section starts offering it straight away.",
+                Icon = "pdf" })" />
+        }
+    </section>
+
+    <section class="card panel">
+        <header class="panel__hd">
+            <h2 class="card__title">Upload a new copy</h2>
+        </header>
+        <div class="card__bd">
+            <form asp-action="Upload" method="post" enctype="multipart/form-data" class="form-grid">
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <div class="field">
+                    <label class="field__label" for="CvFile">PDF file</label>
+                    <div class="file">
+                        <input type="file" id="CvFile" name="CvFile" accept=".pdf,application/pdf" required />
+                        <span class="field__hint">PDF only, up to 2 MB. The newest upload is what the public page serves.</span>
+                    </div>
+                    @if (ViewData.ModelState.TryGetValue("CvFile", out var fileState) && fileState.Errors.Count > 0)
                     {
-                        <div class="text-center py-4">
-                            <i class="bi bi-file-earmark-x fs-1 text-muted"></i>
-                            <p class="text-muted mt-2 mb-0">No CV uploaded yet.</p>
-                        </div>
+                        <p class="text-sm text-strong" role="alert">@fileState.Errors[0].ErrorMessage</p>
                     }
                 </div>
-            </div>
-        </div>
 
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 fade-in">
-                <div class="card-body">
-                    <h5 class="fw-bold mb-3">Upload New CV</h5>
-                    <form asp-action="Upload" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
-                        @Html.AntiForgeryToken()
-
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                        <div class="mb-3">
-                            <label for="CvFile" class="form-label">Select PDF File</label>
-                            <input type="file" name="CvFile" id="CvFile" class="form-control" accept=".pdf,application/pdf" required />
-                            <span asp-validation-for="@(new UploadCvDocumentDto()).CvFile" class="text-danger"></span>
-                            <div class="form-text">Only PDF files up to 2 MB are accepted.</div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-upload"></i> Upload CV
-                        </button>
-                    </form>
+                <div class="form-foot">
+                    <button class="btn btn--primary" type="submit">
+                        <ui-icon name="upload" size="sm" />
+                        <span class="btn__label">Upload CV</span>
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
-    </div>
-</main>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    </section>
+</div>

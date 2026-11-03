@@ -1,137 +1,113 @@
 @using MyPortfolio.Models.ProjectModels
 @model ProjectViewModel
-
 @{
-    ViewData["Title"] = "Edit Project";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Edit project";
+    ViewData["PageKicker"] = "Projects";
+    ViewData["PageTitle"] = "Edit project";
+    ViewData["PageDesc"] = string.IsNullOrWhiteSpace(Model.Title) ? "Update this project." : Model.Title;
 
-    string webBase = "~/Files/Images/Projects/";
-    string? stored = Model?.ExistingProjectImage;
-    string? currentImgSrc = !string.IsNullOrWhiteSpace(stored)
-        ? (
-            stored.StartsWith("http://", System.StringComparison.OrdinalIgnoreCase) || stored.StartsWith("https://", System.StringComparison.OrdinalIgnoreCase)
-                ? stored
-                : Url.Content(
-                    stored.StartsWith("~") || stored.StartsWith("/")
-                        ? stored
-                        : (stored.Contains("Files/Images/Projects", System.StringComparison.OrdinalIgnoreCase)
-                            ? "~/" + stored.TrimStart('/')
-                            : webBase + stored.TrimStart('/'))
-                  )
-          )
-        : Url.Content("~/images/placeholders/project-placeholder.png");
+    var cover = CoverSrc(Model.ExistingProjectImage);
 }
 
-<main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">Edit Project</h1>
-            <p class="page-subtitle">Update project details.</p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-secondary" asp-action="Index">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
+@section PageActions {
+    <a class="btn btn--quiet" asp-action="Index">Back to list</a>
+    <a class="btn btn--soft" asp-action="Details" asp-route-id="@Model.Id">
+        <ui-icon name="eye" size="sm" />
+        <span class="btn__label">Details</span>
+    </a>
+}
+
+@if (Model.IsDeleted)
+{
+    <div class="alert alert--warning mb-5">
+        <ui-icon name="warn" />
+        <div class="alert__body">
+            <p class="alert__title">This project is archived</p>
+            <p class="alert__text">Saving keeps it off the public page. Use Restore in the list to publish it again.</p>
         </div>
     </div>
+}
 
-    @if (Model?.IsDeleted == true)
-    {
-        <div class="alert alert-warning d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-            <div>
-                This record is currently marked as deleted. You can update fields and save to keep it archived, or use Restore from the list to reactivate it.
+<section class="card">
+    <div class="card__bd">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post"
+              enctype="multipart/form-data" autocomplete="off" novalidate>
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-grid form-grid--2">
+                <div class="field">
+                    <label asp-for="Title" class="field__label"></label>
+                    <input asp-for="Title" class="input" autocomplete="off" />
+                    <span asp-validation-for="Title"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="ProjectURL" class="field__label"></label>
+                    <input asp-for="ProjectURL" class="input" type="url" inputmode="url"
+                           placeholder="https://…" autocomplete="off" />
+                    <span asp-validation-for="ProjectURL"></span>
+                </div>
+
+                <div class="field form-grid__full">
+                    <label asp-for="Description" class="field__label"></label>
+                    <textarea asp-for="Description" class="textarea" rows="5"></textarea>
+                    <span class="field__hint">Each line becomes a paragraph on the public page.</span>
+                    <span asp-validation-for="Description"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="StartDate" class="field__label"></label>
+                    <input asp-for="StartDate" class="input" type="date" />
+                    <span asp-validation-for="StartDate"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="EndDate" class="field__label"></label>
+                    <input asp-for="EndDate" class="input" type="date" />
+                    <span asp-validation-for="EndDate"></span>
+                </div>
+
+                <div class="field form-grid__full">
+                    <label asp-for="ProjectImage" class="field__label"></label>
+                    @if (cover.Length > 0)
+                    {
+                        <img class="preview" src="@cover" alt="@($"{Model.Title} cover")" loading="lazy" decoding="async" />
+                        <span class="field__hint">
+                            Current file <span class="mono break-any">@Model.ExistingProjectImage</span> — a new upload replaces it.
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="field__hint">No cover saved yet, so the public card falls back to a folder glyph.</span>
+                    }
+                    <div class="file" data-preview="#projectPreview">
+                        <input asp-for="ProjectImage" class="input" type="file" accept="image/*"
+                               data-preview="#projectPreview" />
+                    </div>
+                    <img class="preview" id="projectPreview" alt="" hidden />
+                    <span asp-validation-for="ProjectImage"></span>
+                </div>
             </div>
-        </div>
-    }
 
-    <div class="card shadow-sm border-0 fade-in">
-        <div class="card-body">
-            <form asp-action="Edit"
-                  asp-route-id="@Model!.Id"
-                  method="post"
-                  enctype="multipart/form-data"
-                  autocomplete="off"
-                  novalidate>
-                @Html.AntiForgeryToken()
-
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <input type="hidden" asp-for="Id" />
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="Title" class="form-label"></label>
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ProjectURL" class="form-label"></label>
-                        <input asp-for="ProjectURL" type="url" class="form-control" />
-                        <span asp-validation-for="ProjectURL" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="Description" class="form-label"></label>
-                        <textarea asp-for="Description" rows="5" class="form-control"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="StartDate" class="form-label"></label>
-                        <input asp-for="StartDate" type="date" class="form-control" />
-                        <span asp-validation-for="StartDate" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="EndDate" class="form-label"></label>
-                        <input asp-for="EndDate" type="date" class="form-control" />
-                        <span asp-validation-for="EndDate" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Current Image</label>
-                        <div class="mb-2">
-                            <img src="@currentImgSrc"
-                                 class="img-thumbnail img-preview"
-                                 alt="Current project image"
-                                 onerror="this.onerror=null;this.src='@Url.Content("~/images/placeholders/project-placeholder.png")';" />
-                        </div>
-
-                        <label asp-for="ProjectImage" class="form-label mt-2">Replace Image</label>
-                        <input asp-for="ProjectImage" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" />
-                        <span asp-validation-for="ProjectImage" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="mt-4 d-flex gap-2 flex-wrap">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
-        </div>
+            <div class="form-foot">
+                <button class="btn btn--primary" type="submit">
+                    <ui-icon name="save" size="sm" />
+                    <span class="btn__label">Save changes</span>
+                </button>
+                <a class="btn btn--quiet" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-</main>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        (function () {
-            const start = document.getElementById('StartDate');
-            const end = document.getElementById('EndDate');
-            if (start && end) {
-                start.addEventListener('change', () => {
-                    if (start.value) {
-                        end.min = start.value;
-                        if (end.value && end.value < start.value) {
-                            end.value = start.value;
-                        }
-                    } else {
-                        end.removeAttribute('min');
-                    }
-                });
-            }
-        })();
-    </script>
+}
+
+@functions {
+    static string CoverSrc(string? file) => string.IsNullOrWhiteSpace(file)
+        ? string.Empty
+        : $"/Files/Images/Projects/{Uri.EscapeDataString(file.Trim())}";
 }

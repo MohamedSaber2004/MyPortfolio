@@ -81,11 +81,19 @@ namespace MyPortfolio.Controllers
             if (!ModelState.IsValid) return View(viewModel);
 
             var normalizedEmail = _userManager.NormalizeEmail(viewModel.Email);
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail && !u.IsDeleted);
 
             if (user is not null)
             {
-                var Result = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
+                var Result = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, true);
+
+                if (Result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "Too many failed attempts. Try again in a few minutes.");
+                    return View(viewModel);
+                }
 
                 if (Result.Succeeded)
                 {

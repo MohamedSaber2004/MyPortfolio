@@ -1,54 +1,86 @@
-﻿@using MyPortfolio.Models.ManagerModels.RoleModels
+@using MyPortfolio.Models.ManagerModels.RoleModels
 @model RoleViewModel
 @{
-    ViewData["Title"] = "Role Details";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.RoleName;
+    ViewData["PageKicker"] = "Role";
+    ViewData["PageTitle"] = string.IsNullOrWhiteSpace(Model.RoleName) ? "Role" : Model.RoleName;
+    ViewData["PageDesc"] = Model.IsDeleted ? "Archived access group." : "Active access group.";
 }
 
-<main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">Role Details</h1>
-            <p class="page-subtitle">Detailed information about this role.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a asp-action="Edit" asp-controller="Role" asp-route-id="@Model.Id" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a asp-action="Index" asp-controller="Role" class="btn btn-ghost">
-                <i class="bi bi-arrow-left"></i> Back to list
-            </a>
-        </div>
-    </div>
+@section PageActions {
+    <a class="btn btn--quiet" asp-action="Index">All roles</a>
+    <a class="btn btn--primary" asp-action="Edit" asp-route-id="@Model.Id">
+        <ui-icon name="edit" size="sm" />
+        <span class="btn__label">Edit</span>
+    </a>
+}
 
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-8">
-            <div class="card shadow-sm border-0 fade-in">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <span class="fw-semibold">
-                        <i class="bi bi-shield-lock me-2"></i>General Information
+<div class="dash-grid dash-grid--split">
+    <section class="card">
+        <h2 class="sr-only">Role details</h2>
+        <dl class="dl">
+            <div class="dl__row">
+                <dt>Status</dt>
+                <dd>
+                    <span class="badge badge--@(Model.IsDeleted ? "danger" : "success")">
+                        @(Model.IsDeleted ? "Archived" : "Live")
                     </span>
-                    <span class="badge @(Model.IsDeleted ? "bg-danger" : "bg-success")">
-                        @(Model.IsDeleted ? "Deleted" : "Active")
-                    </span>
-                </div>
-                <div class="card-body">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label" asp-for="RoleName"></label>
-                            <div class="form-control-plaintext border rounded px-3 py-2 bg-body-secondary">@Model.RoleName</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Status</label>
-                            <div>
-                                <span class="badge @(Model.IsDeleted ? "bg-danger" : "bg-success")">
-                                    @(Model.IsDeleted ? "Deleted" : "Active")
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </dd>
             </div>
-        </div>
+            <div class="dl__row">
+                <dt>Role name</dt>
+                <dd>@(string.IsNullOrWhiteSpace(Model.RoleName) ? "—" : Model.RoleName)</dd>
+            </div>
+            <div class="dl__row">
+                <dt>Record</dt>
+                <dd class="mono break-any">@Model.Id</dd>
+            </div>
+        </dl>
+    </section>
+
+    <div class="dash-grid">
+        <section class="card panel">
+            <header class="panel__hd">
+                <h2 class="card__title">Members</h2>
+                <ui-icon name="key" size="sm" />
+            </header>
+            <p class="text-sm text-muted mb-3">This role is handed out one account at a time in the user editor.</p>
+            <a class="btn btn--soft" asp-controller="User" asp-action="Index">
+                <ui-icon name="users" size="sm" />
+                <span class="btn__label">Open users</span>
+            </a>
+        </section>
+
+        <section class="card panel">
+            <header class="panel__hd">
+                <h2 class="card__title">Danger zone</h2>
+            </header>
+            @if (Model.IsDeleted)
+            {
+                <form asp-action="Restore" asp-route-id="@Model.Id" method="post"
+                      data-confirm-title="Restore role"
+                      data-confirm="@($"Put {Model.RoleName} back in the pickers?")">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn--success btn--block" type="submit">
+                        <ui-icon name="restore" size="sm" />
+                        <span class="btn__label">Restore this role</span>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <p class="text-sm text-muted mb-3">Archiving hides the role from the pickers. Accounts already tagged with it keep the tag.</p>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                      data-confirm-title="Archive role"
+                      data-confirm="@($"{Model.RoleName} stops appearing in the role pickers. You can restore it later.")">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn--danger btn--block" type="submit">
+                        <ui-icon name="del" size="sm" />
+                        <span class="btn__label">Archive this role</span>
+                    </button>
+                </form>
+            }
+        </section>
     </div>
-</main>
+</div>

@@ -1,173 +1,149 @@
-﻿@using MyPortfolio.Models.ManagerModels.UserModels
+@using MyPortfolio.Models.ManagerModels.UserModels
 @model IEnumerable<UserViewModel>
 @{
+    Layout = "_AdminLayout";
     ViewData["Title"] = "Users";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["PageKicker"] = "Access";
+    ViewData["PageTitle"] = "Users";
+    ViewData["PageDesc"] = "Every account that can reach the admin area, and what it is allowed to open.";
+
+    var rows = Model?.ToList() ?? [];
+    var live = rows.Count(u => !u.IsDeleted);
+
+    static string Initials(string? name)
+    {
+        var parts = (name ?? string.Empty)
+            .Split(new[] { ' ', '.', '_', '-', '@', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length == 0
+            ? "?"
+            : new string(parts.Take(2).Select(p => char.ToUpperInvariant(p[0])).ToArray());
+    }
 }
 
-@if (!string.IsNullOrWhiteSpace(TempData["Message"] as string))
-{
-    <div aria-live="polite" aria-atomic="true" class="toast-container position-fixed p-3 toast-top-right">
-        <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                <strong class="me-auto">Success</strong>
-                <small>Just now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                @TempData["Message"]
-            </div>
-        </div>
-    </div>
+@section PageActions {
+    <a class="btn btn--quiet" asp-controller="Role" asp-action="Index">
+        <ui-icon name="shield" size="sm" />
+        <span class="btn__label">Roles</span>
+    </a>
 }
 
-<main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">User Management</h1>
-            <p class="page-subtitle">View, search, and manage all users in the system.</p>
-        </div>
-    </div>
+<form class="toolbar" asp-action="Index" method="get" autocomplete="off" data-search="#userTable">
+    <span class="input-wrap grow">
+        <span class="input-wrap__icon"><ui-icon name="search" size="sm" /></span>
+        <label class="sr-only" for="searchUserName">Search users</label>
+        <input class="input" id="searchUserName" name="SearchUserName" type="search"
+               value="@Context.Request.Query["SearchUserName"]" placeholder="Full name…" />
+    </span>
+    <button class="btn btn--soft" type="submit">
+        <ui-icon name="search" size="sm" />
+        <span class="btn__label">Search</span>
+    </button>
+    @if (!string.IsNullOrWhiteSpace(Context.Request.Query["SearchUserName"]))
+    {
+        <a class="btn btn--quiet" asp-action="Index">Clear</a>
+    }
+</form>
 
-    <div class="card shadow-sm border-0 mb-4 fade-in">
-        <div class="card-body">
-            <form id="userSearchForm" class="row g-2 align-items-center" autocomplete="off">
-                <div class="col-md-8">
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
-                        <input class="form-control border-start-0 ps-0" type="text" id="searchUserName" name="SearchUserName" placeholder="Search user by name..." />
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <button type="button" id="searchBtn" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                </div>
-            </form>
+<div id="userTable">
+    @if (rows.Count == 0)
+    {
+        <div class="card">
+            <partial name="_EmptyState" model="@(new EmptyStateVm {
+                Title = "No users match",
+                Text = "Nobody is registered with that name. Try a shorter term.",
+                Icon = "users" })" />
         </div>
-    </div>
-
-    <div id="userTableContainer">
-        @if (Model?.Any() ?? false)
-        {
-            <div class="card shadow-sm border-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>@Html.DisplayNameFor(U => U.FullName)</th>
-                                <th>@Html.DisplayNameFor(U => U.Email)</th>
-                                <th>@Html.DisplayNameFor(U => U.UserName)</th>
-                                <th>@Html.DisplayNameFor(U => U.Roles)</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="profile-avatar avatar-sm">
-                                                @user.FullName.Substring(0, Math.Min(2, user.FullName.Length)).ToUpper()
-                                            </div>
-                                            <div>
-                                                <div class="fw-semibold">@user.FullName</div>
-                                                @if (user.IsDeleted)
-                                                {
-                                                    <span class="badge bg-danger badge-sm">Deleted</span>
-                                                }
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>@user.Email</td>
-                                    <td>@user.UserName</td>
-                                    <td>
-                                        @if (user.Roles.Any())
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="table table--stack table--sticky">
+                <caption class="sr-only">Accounts, in the order they were stored</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Roles</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="table__num">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in rows)
+                    {
+                        <tr data-deleted="@(user.IsDeleted ? "true" : "false")">
+                            <td data-label="User">
+                                <div class="table__main flex gap-3 items-center">
+                                    <span class="avatar avatar--sm" aria-hidden="true">@Initials(user.FullName)</span>
+                                    <span class="min-w-0">
+                                        <a class="table__primary" asp-action="Details" asp-route-id="@user.Id">@user.FullName</a>
+                                        <span class="table__sub">@user.Email</span>
+                                        @if (!string.IsNullOrWhiteSpace(user.UserName) &&
+                                              !string.Equals(user.UserName, user.Email, StringComparison.Ordinal))
                                         {
-                                            <div class="d-flex flex-wrap gap-1">
-                                                @foreach (var role in user.Roles)
-                                                {
-                                                    <span class="badge bg-primary">@role</span>
-                                                }
-                                            </div>
+                                            <span class="table__sub">@user.UserName</span>
                                         }
-                                        else
+                                    </span>
+                                </div>
+                            </td>
+                            <td data-label="Roles">
+                                @if (user.Roles.Count > 0)
+                                {
+                                    <ul class="tag-list">
+                                        @foreach (var role in user.Roles)
                                         {
-                                            <span class="text-muted small">—</span>
+                                            <li><span class="tag">@role</span></li>
                                         }
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <a asp-action="Details" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-ghost" title="Details">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a asp-action="Edit" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-ghost" title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            @if (user.IsDeleted)
-                                            {
-                                                <form asp-action="Restore" asp-controller="User" asp-route-id="@user.Id" method="post" class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-sm btn-ghost text-success" title="Restore">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <a asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" class="btn btn-sm btn-ghost text-danger" title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            }
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="bi bi-people"></i>
-                </div>
-                <h4>No Users Found</h4>
-                <p>No users match your search criteria. Try adjusting your search term.</p>
-            </div>
-        }
-    </div>
-</main>
-
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script>
-        $(function () {
-            $('#searchBtn').on('click', function (e) {
-                e.preventDefault();
-                var searchValue = $('#searchUserName').val();
-                $.get('@Url.Action("Index", "User")', { SearchUserName: searchValue }, function (data) {
-                    var newTable = $(data).find('#userTableContainer').html();
-                    $('#userTableContainer').html(newTable);
-                });
-            });
-
-            $('#searchUserName').on('keypress', function (e) {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    $('#searchBtn').trigger('click');
-                }
-            });
-
-            setTimeout(function () {
-                $('.toast').toast('hide');
-            }, 5000);
-        });
-    </script>
-}
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span class="text-sm text-faint">No roles</span>
+                                }
+                            </td>
+                            <td data-label="Status">
+                                <span class="badge badge--@(user.IsDeleted ? "danger" : "success")">
+                                    @(user.IsDeleted ? "Archived" : "Live")
+                                </span>
+                            </td>
+                            <td data-label="Actions">
+                                <div class="table__actions">
+                                    <a class="btn btn--icon btn--quiet" asp-action="Details" asp-route-id="@user.Id"
+                                       data-tip="Details" aria-label="@($"Details for {user.FullName}")">
+                                        <ui-icon name="eye" size="sm" />
+                                    </a>
+                                    <a class="btn btn--icon btn--quiet" asp-action="Edit" asp-route-id="@user.Id"
+                                       data-tip="Edit" aria-label="@($"Edit {user.FullName}")">
+                                        <ui-icon name="edit" size="sm" />
+                                    </a>
+                                    @if (user.IsDeleted)
+                                    {
+                                        <form asp-action="Restore" asp-route-id="@user.Id" method="post"
+                                              data-confirm-title="Restore user"
+                                              data-confirm="@($"Give {user.FullName} access to the admin area again?")">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn btn--icon btn--success" type="submit"
+                                                    data-tip="Restore" aria-label="@($"Restore {user.FullName}")">
+                                                <ui-icon name="restore" size="sm" />
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn--icon btn--danger" asp-action="Delete" asp-route-id="@user.Id"
+                                           data-tip="Delete" aria-label="@($"Delete {user.FullName}")">
+                                            <ui-icon name="del" size="sm" />
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <p class="meta mt-3">
+            <span class="meta__item">@live live</span>
+            <span class="meta__item">@(rows.Count - live) archived</span>
+        </p>
+    }
+</div>

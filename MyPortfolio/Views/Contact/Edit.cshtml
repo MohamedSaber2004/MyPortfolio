@@ -1,81 +1,78 @@
-﻿@using MyPortfolio.Models.ContactModels
+@using MyPortfolio.Models.ContactModels
 @model ContactViewModel
 @{
-    ViewData["Title"] = "Edit Contact";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Edit channel";
+    ViewData["PageKicker"] = "Contacts";
+    ViewData["PageTitle"] = "Edit contact channel";
+    ViewData["PageDesc"] = string.IsNullOrWhiteSpace(Model.ContactType)
+        ? "Update this contact channel."
+        : Model.ContactType;
 }
 
-<main class="main-content">
-    <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="page-title">Edit Contact</h1>
-            <p class="page-subtitle">Update contact information.</p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-secondary" asp-action="Index">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
+@section PageActions {
+    <a class="btn btn--quiet" asp-action="Index">Back to list</a>
+    <a class="btn btn--soft" asp-action="Details" asp-route-id="@Model.Id">
+        <ui-icon name="eye" size="sm" />
+        <span class="btn__label">Details</span>
+    </a>
+}
+
+@if (Model.IsDeleted)
+{
+    <div class="alert alert--warning mb-5">
+        <ui-icon name="warn" />
+        <div class="alert__body">
+            <p class="alert__title">This channel is archived</p>
+            <p class="alert__text">Saving keeps it off the public page. Use Restore in the list to publish it again.</p>
         </div>
     </div>
+}
 
-    @if (Model.IsDeleted)
-    {
-        <div class="alert alert-warning d-flex align-items-center gap-2">
-            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-            <div>
-                This record is currently marked as deleted. You can update fields and save to keep it archived, or use Restore from the list to reactivate it.
+<section class="card">
+    <div class="card__bd">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post" novalidate autocomplete="off"
+              class="form-grid form-grid--2">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="field">
+                <label asp-for="ContactType" class="field__label"></label>
+                <input asp-for="ContactType" class="input" list="contactTypeOptions" autocomplete="off" />
+                <datalist id="contactTypeOptions">
+                    <option value="Email"></option>
+                    <option value="Phone"></option>
+                    <option value="Mobile"></option>
+                    <option value="Website"></option>
+                    <option value="LinkedIn"></option>
+                    <option value="GitHub"></option>
+                    <option value="Twitter"></option>
+                    <option value="Facebook"></option>
+                    <option value="Instagram"></option>
+                    <option value="Telegram"></option>
+                    <option value="WhatsApp"></option>
+                </datalist>
+                <span class="field__hint">Sets which glyph the public card uses.</span>
+                <span asp-validation-for="ContactType"></span>
             </div>
-        </div>
-    }
 
-    <div class="card shadow-sm border-0 fade-in">
-        <div class="card-body">
-            <form asp-action="Edit"
-                  asp-route-Id="@Model.Id"
-                  method="post"
-                  autocomplete="off"
-                  novalidate>
-                @Html.AntiForgeryToken()
+            <div class="field">
+                <label asp-for="ContactValue" class="field__label"></label>
+                <input asp-for="ContactValue" class="input" autocomplete="off" />
+                <span class="field__hint">Email becomes a mailto: link, Phone a tel: link, WhatsApp a wa.me link.</span>
+                <span asp-validation-for="ContactValue"></span>
+            </div>
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <input type="hidden" asp-for="Id" />
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="ContactType" class="form-label"></label>
-                        <input asp-for="ContactType" class="form-control" list="contactTypeOptions" placeholder="e.g., Email, Phone, Website" />
-                        <datalist id="contactTypeOptions">
-                            <option value="Email"></option>
-                            <option value="Phone"></option>
-                            <option value="Mobile"></option>
-                            <option value="Website"></option>
-                            <option value="LinkedIn"></option>
-                            <option value="GitHub"></option>
-                            <option value="Twitter"></option>
-                            <option value="Facebook"></option>
-                            <option value="Instagram"></option>
-                            <option value="Telegram"></option>
-                            <option value="WhatsApp"></option>
-                        </datalist>
-                        <span asp-validation-for="ContactType" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ContactValue" class="form-label"></label>
-                        <input asp-for="ContactValue" class="form-control" placeholder="Enter the contact value (email/phone/url)" />
-                        <span asp-validation-for="ContactValue" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="mt-4 d-flex gap-2 flex-wrap">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save Changes</button>
-                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
-        </div>
+            <div class="form-foot form-grid__full">
+                <button class="btn btn--primary" type="submit">
+                    <ui-icon name="save" size="sm" />
+                    <span class="btn__label">Save changes</span>
+                </button>
+                <a class="btn btn--quiet" asp-action="Index">Cancel</a>
+            </div>
+        </form>
     </div>
-</main>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
